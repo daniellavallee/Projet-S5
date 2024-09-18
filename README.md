@@ -1,9 +1,9 @@
 # Projet-S5
 # Description
 Le projet a pour mandat la conception d'un système de contrôle pour un véhicule autonome livreur de breuvage. <br>
-Les concepteurs développeront un système de simulation permettant d'implémenter et de tester le système de contrôle à l'aide d'un modèle du véhicule et du breuvage. La simulation sera effectué dans GoDot.
+Les concepteurs développeront un système de simulation permettant d'implémenter et de tester le système de contrôle à l'aide d'un modèle du véhicule et du breuvage. La simulation sera effectué dans Godot.
 
-# Organisation des fichiers
+# Organisation des dossiers
 ## Livrables
 Ce dossier contient tous les fichiers associés aux <b>livrables</b> qui nécessitent un développement logiciel. Il sont nommés en fonction du nom du livrable associé.
 
