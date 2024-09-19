@@ -3,7 +3,7 @@
 % Description: Calcul de la trajectoire d'un parcours en fonction de points
 % de référence fourni.
 % Auteur: Daniel Lavallée, Mathieu Sévigny, Tristan Lafontaine, Émile Bois, Vincent
-% Kilanowski
+% Kilanowski.
 % Date: 2024-09-19
 
 %% Configuration du fichier
