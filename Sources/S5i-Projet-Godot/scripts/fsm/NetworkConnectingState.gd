@@ -24,8 +24,6 @@ func on_process(delta: float) -> void:
 # Called every physics frame when this state is active.
 func on_physics_process(delta: float) -> void:
 	pass
-	
-
 
 # Called when there is an input event while this state is active.
 func on_input(event: InputEvent) -> void:
@@ -51,9 +49,39 @@ func _disconnected(id, was_clean = false):
 	# was correctly notified by the remote peer before closing the socket.
 	print("Client %d disconnected, clean: %s" % [id, str(was_clean)])
 
+func _get_datetime_iso():
+	var seconds = Time.get_unix_time_from_system()
+	var datetime = Time.get_datetime_string_from_system()
+	var milliseconds = seconds - int(seconds)
+	var milliseconds_text = "%.6f" % milliseconds
+	milliseconds_text = milliseconds_text.right(milliseconds_text.length() - 2)
+	return datetime + "." + milliseconds_text
+
+func _create_godot_response(line_follower,sonar):
+	var time = _get_datetime_iso()
+	var obj = {
+		"line_follower" : line_follower,
+		"sonar" : sonar,
+		"time" : time
+	}
+	return JSON.stringify(obj)
+
+func _get_line_follower():
+	return [0,0,0,0,0]
+func _get_sonar():
+	return 0
+func _control(wheel_angle, bw_speed):
+	pass
 func _on_data(id,message):
 	# Print the received packet, you MUST always use get_peer(id).get_packet to receive data,
 	# and not get_packet directly when not using the MultiplayerAPI.
-	current_value = message
-	print(message)
-	get_parent().socket.send(id,message)
+	var json = JSON.new()
+	var error = json.parse(message)
+	if error == OK:
+		var data_received = json.data
+		var wheel_angle = data_received["wheel_angle"]
+		var bw_speed = data_received["bw_speed"]
+		_control(wheel_angle,bw_speed)
+		var response = _create_godot_response(_get_line_follower(),_get_sonar())
+		get_parent().socket.send(id,response)
+	
