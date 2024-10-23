@@ -1,32 +1,7 @@
-[gd_scene load_steps=96 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=83 format=4 uid="uid://cogelau7mjbo8"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
-[ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
-[ext_resource type="Script" path="res://scripts/fsm/NetworkInitState.gd" id="3_lglb8"]
-[ext_resource type="Script" path="res://scripts/fsm/NetworkWaitingState.gd" id="4_s7v0d"]
-[ext_resource type="Script" path="res://scripts/fsm/NetworkConnectingState.gd" id="5_itktg"]
-[ext_resource type="Script" path="res://scripts/fsm/NetworkProcessState.gd" id="6_017ts"]
-[ext_resource type="PackedScene" uid="uid://drn06gighqsxr" path="res://assets/blend/parcours.glb" id="7_48u5u"]
-[ext_resource type="Script" path="res://scripts/voiture.gd" id="8_aowo3"]
-[ext_resource type="Script" path="res://scripts/ultrason.gd" id="9_b3g7i"]
-
-[sub_resource type="GDScript" id="GDScript_d2gei"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y2p80"]
-albedo_color = Color(1, 0, 1, 1)
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jv41d"]
-sky_top_color = Color(0.635294, 0.756863, 0.901961, 1)
-sky_horizon_color = Color(0.839216, 0.890196, 0.929412, 1)
-ground_bottom_color = Color(0.580392, 0.737255, 0.796078, 1)
-ground_horizon_color = Color(0.686275, 0.815686, 0.890196, 1)
-
-[sub_resource type="Sky" id="Sky_nfout"]
-sky_material = SubResource("ProceduralSkyMaterial_jv41d")
-
-[sub_resource type="Environment" id="Environment_c8ocf"]
-background_mode = 2
-sky = SubResource("Sky_nfout")
+[ext_resource type="Script" path="res://scripts/voiture.gd" id="1_qwg35"]
+[ext_resource type="Script" path="res://scripts/ultrason.gd" id="2_83m6s"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x6rtr"]
 resource_name = "Material_0.003"
@@ -1268,272 +1243,221 @@ shadow_mesh = SubResource("ArrayMesh_i5ee6")
 [sub_resource type="BoxShape3D" id="BoxShape3D_fqcy0"]
 size = Vector3(0.276001, 0.0928955, 0.125214)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0gs1o"]
+[node name="voiture3D" type="Node3D"]
+transform = Transform3D(-0.441521, 0, -0.89725, 0, 1, 0, 0.89725, 0, -0.441521, 4.98623, 0.0392992, 0.933369)
+script = ExtResource("1_qwg35")
 
-[node name="Main" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.0135775)
-script = ExtResource("1_eka3w")
-
-[node name="NetworkFSM" type="Node" parent="." node_paths=PackedStringArray("current_state")]
-script = ExtResource("2_wl1fq")
-current_state = NodePath("NetworkWaitingState")
-
-[node name="NetworkInitState" type="Node" parent="NetworkFSM"]
-script = ExtResource("3_lglb8")
-
-[node name="NetworkWaitingState" type="Node" parent="NetworkFSM"]
-script = ExtResource("4_s7v0d")
-
-[node name="NetworkConnectingState" type="Node" parent="NetworkFSM"]
-script = ExtResource("5_itktg")
-
-[node name="NetworkProcessState" type="Node" parent="NetworkFSM"]
-script = ExtResource("6_017ts")
-
-[node name="NetworkDisconnectingState" type="Node" parent="NetworkFSM"]
-script = SubResource("GDScript_d2gei")
-
-[node name="Floor" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.053, -0.25, -0.027)
-size = Vector3(5, 0.5, 5)
-material = SubResource("StandardMaterial3D_y2p80")
-
-[node name="PiCar#Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, -0.258819, 0.965926, 0, 0.965926, 0.258819, -1, 1.13133e-08, -4.2222e-08, 2, 1, 0)
-current = true
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_c8ocf")
-
-[node name="parcours" parent="." instance=ExtResource("7_48u5u")]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
-
-[node name="voiture3D" type="Node3D" parent="."]
-transform = Transform3D(-0.441521, 0, -0.89725, 0, 1, 0, 0.89725, 0, -0.441521, -0.0658955, 0.0392992, 0.933369)
-script = ExtResource("8_aowo3")
-
-[node name="Camera3D" type="Camera3D" parent="voiture3D"]
+[node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.511952, 0.455254, -0.728457, -0.0286334, 0.856587, 0.515207, 0.858538, -0.242903, 0.451567, -0.36945, 0.217021, 0.131866)
 current = true
 
-[node name="capteurUltrason-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="capteurUltrason-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.861283, 0, 0.508125, 0, 1, 0, -0.508125, 0, 0.861283, 0.0787196, 0.0250787, -0.0964115)
 mesh = SubResource("ArrayMesh_t7k7b")
 skeleton = NodePath("")
 
-[node name="Area3D" type="Area3D" parent="voiture3D/capteurUltrason-1"]
-script = ExtResource("9_b3g7i")
+[node name="Area3D" type="Area3D" parent="capteurUltrason-1"]
+script = ExtResource("2_83m6s")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="voiture3D/capteurUltrason-1/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="capteurUltrason-1/Area3D"]
 transform = Transform3D(1.00001, 0, -7.52509e-07, 0, 1, 0, 7.52509e-07, 0, 1.00001, 0.314974, 0.0416992, 2.38419e-06)
 shape = SubResource("BoxShape3D_56nj8")
 
-[node name="Copie de voiture_plaque_principal^voiture_3D-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="Copie de voiture_plaque_principal^voiture_3D-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.033061, 0.0232087, -0.0621679)
 mesh = SubResource("ArrayMesh_smnfh")
 skeleton = NodePath("")
 
-[node name="Pneu-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="Pneu-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, -0.456059, 0.736326, 0, -0.854918, -0.529511, 0.866123, 0.269058, -0.434405, -0.0650506, 0.00937741, 0.0190628)
 mesh = SubResource("ArrayMesh_0nmbw")
 skeleton = NodePath("")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="voiture3D/Pneu-1"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Pneu-1"]
 navigation_mesh = SubResource("NavigationMesh_nbhdl")
 
-[node name="Pneu-2" type="MeshInstance3D" parent="voiture3D"]
+[node name="Pneu-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.122784, 0.00936201, -0.0713511)
 mesh = SubResource("ArrayMesh_8lk2m")
 skeleton = NodePath("")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="voiture3D/Pneu-2"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Pneu-2"]
 navigation_mesh = SubResource("NavigationMesh_uksbb")
 
-[node name="Pneu-5" type="MeshInstance3D" parent="voiture3D"]
+[node name="Pneu-5" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.511321, 0, -0.8667, 0, 1.00629, 0, 0.8667, 0, 0.511321, 0.0569291, 0.0107317, -0.0529296)
 mesh = SubResource("ArrayMesh_ksc48")
 skeleton = NodePath("")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="voiture3D/Pneu-5"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Pneu-5"]
 navigation_mesh = SubResource("NavigationMesh_nn2il")
 
-[node name="Pneu-6" type="MeshInstance3D" parent="voiture3D"]
+[node name="Pneu-6" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.00211096, 0.0107087, -0.145005)
 mesh = SubResource("ArrayMesh_v6c8n")
 skeleton = NodePath("")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="voiture3D/Pneu-6"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Pneu-6"]
 navigation_mesh = SubResource("NavigationMesh_vjt2d")
 
-[node name="soucoupeV2-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="soucoupeV2-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.0210586, 0.0461087, -0.117829)
 mesh = SubResource("ArrayMesh_wkxfg")
 skeleton = NodePath("")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="voiture3D/soucoupeV2-1"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="soucoupeV2-1"]
 navigation_mesh = SubResource("NavigationMesh_q1hjg")
 
-[node name="SuiveurDeLigne-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="SuiveurDeLigne-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0.861283, 3.08019e-07, 0, -3.57628e-07, 1, 0.861283, -0.508125, -1.8172e-07, 0.0203743, -0.00341609, -0.108859)
 mesh = SubResource("ArrayMesh_rjxiv")
 skeleton = NodePath("")
 
-[node name="support_soucoupe-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="support_soucoupe-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.508125, 0, 0.861283, 0, 1, 0, -0.861283, 0, -0.508125, 0.06568, 0.0441087, -0.0913949)
 mesh = SubResource("ArrayMesh_xyu37")
 skeleton = NodePath("")
 
-[node name="support_suiveur_ligne-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="support_suiveur_ligne-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.0528512, -0.00553133, -0.113027)
 mesh = SubResource("ArrayMesh_k6cfp")
 skeleton = NodePath("")
 
-[node name="vis-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="vis-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.0576272, -0.00142609, -0.150491)
 mesh = SubResource("ArrayMesh_1rww5")
 skeleton = NodePath("")
 
-[node name="vis-2" type="MeshInstance3D" parent="voiture3D"]
+[node name="vis-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, 0.0880518, -0.0014713, -0.100323)
 mesh = SubResource("ArrayMesh_gl3uw")
 skeleton = NodePath("")
 
-[node name="vis_6-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="vis_6-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.0435247, 0.0289001, -0.120349)
 mesh = SubResource("ArrayMesh_aebm3")
 skeleton = NodePath("")
 
-[node name="vis_6-2" type="MeshInstance3D" parent="voiture3D"]
+[node name="vis_6-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, 0.055367, 0.0289434, -0.101373)
 mesh = SubResource("ArrayMesh_5qduc")
 skeleton = NodePath("")
 
-[node name="voiture_batterie-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_batterie-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.0514641, 0.00177867, -0.0517914)
 mesh = SubResource("ArrayMesh_7kh2a")
 skeleton = NodePath("")
 
-[node name="voiture_controleur_controleur-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_controleur_controleur-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.108396, 0.0250787, -0.0613718)
 mesh = SubResource("ArrayMesh_fl5va")
 skeleton = NodePath("")
 
-[node name="voiture_controleur_moteurs-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_controleur_moteurs-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.133083, 0.0251824, -0.0297246)
 mesh = SubResource("ArrayMesh_6r6lc")
 skeleton = NodePath("")
 
-[node name="voiture_moteur_droit-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_moteur_droit-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.1548, -0.00313799, -0.0359175)
 mesh = SubResource("ArrayMesh_mdbc2")
 skeleton = NodePath("")
 
-[node name="voiture_moteur_gauche-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_moteur_gauche-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.125186, -0.00319282, 0.0155437)
 mesh = SubResource("ArrayMesh_cuqcm")
 skeleton = NodePath("")
 
-[node name="voiture_plaque_dessous_avant-2" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_plaque_dessous_avant-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.016788, -0.00366133, -0.0946586)
 mesh = SubResource("ArrayMesh_vm5ms")
 skeleton = NodePath("")
 
-[node name="voiture_plaque_dessous_moteur-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_plaque_dessous_moteur-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.143645, -0.00500799, -0.0424988)
 mesh = SubResource("ArrayMesh_ugpt5")
 skeleton = NodePath("")
 
-[node name="voiture_plaque_route_avant-3" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_plaque_route_avant-3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, 0.0430107, -0.00183859, -0.0629444)
 mesh = SubResource("ArrayMesh_k3xgx")
 skeleton = NodePath("")
 
-[node name="voiture_plaque_route_avant-4" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_plaque_route_avant-4" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.508125, 0, 0.861283, 0, 1, 0, -0.861283, 0, -0.508125, 0.0159512, -0.00179133, -0.135046)
 mesh = SubResource("ArrayMesh_i43yd")
 skeleton = NodePath("")
 
-[node name="voiture_raspberry-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_raspberry-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, -0.0788321, 0.0500317, -0.084393)
 mesh = SubResource("ArrayMesh_c83ne")
 skeleton = NodePath("")
 
-[node name="voiture_vise-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.326284, 0, -0.945271, 0, 1, 0, 0.945271, 0, 0.326284, -0.0660954, 0.0250787, -0.0829637)
 mesh = SubResource("ArrayMesh_tjph2")
 skeleton = NodePath("")
 
-[node name="voiture_vise-10" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-10" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.109038, -0.00124194, -0.00530577)
 mesh = SubResource("ArrayMesh_wbh0a")
 skeleton = NodePath("")
 
-[node name="voiture_vise-11" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-11" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.058074, -0.00174591, -0.0191803)
 mesh = SubResource("ArrayMesh_b7gbf")
 skeleton = NodePath("")
 
-[node name="voiture_vise-12" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-12" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.085269, -0.00174591, -0.0652754)
 mesh = SubResource("ArrayMesh_2baue")
 skeleton = NodePath("")
 
-[node name="voiture_vise-2" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.109649, 0, -0.999622, 0, 1.00562, 0, 0.999622, 0, -0.109649, -0.0332403, 0.0251824, -0.027118)
 mesh = SubResource("ArrayMesh_gf6rv")
 skeleton = NodePath("")
 
-[node name="voiture_vise-3" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.346556, 0, -0.944016, 0, 1.00562, 0, 0.944016, 0, 0.346556, -0.00225973, 0.0251824, -0.0453963)
 mesh = SubResource("ArrayMesh_sn63t")
 skeleton = NodePath("")
 
-[node name="voiture_vise-4" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-4" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.496535, 0, -0.868016, 0, 1, 0, 0.868016, 0, 0.496535, -0.0352874, 0.0250787, -0.101139)
 mesh = SubResource("ArrayMesh_f11ng")
 skeleton = NodePath("")
 
-[node name="voiture_vise-5" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-5" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.508125, 0, -0.861283, 0, 1, 0, 0.861283, 0, 0.508125, 0.0146399, -0.00179133, -0.123769)
 mesh = SubResource("ArrayMesh_n1hjb")
 skeleton = NodePath("")
 
-[node name="voiture_vise-6" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-6" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, 0.044076, -0.00183859, -0.0747163)
 mesh = SubResource("ArrayMesh_b5de5")
 skeleton = NodePath("")
 
-[node name="voiture_vise-7" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-7" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.00687027, -0.00183859, -0.0911925)
 mesh = SubResource("ArrayMesh_galfb")
 skeleton = NodePath("")
 
-[node name="voiture_vise-8" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-8" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, 0.00520039, -0.00183859, -0.0707307)
 mesh = SubResource("ArrayMesh_y5xqf")
 skeleton = NodePath("")
 
-[node name="voiture_vise-9" type="MeshInstance3D" parent="voiture3D"]
+[node name="voiture_vise-9" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.510981, 0, -0.866123, 0, 1.00562, 0, 0.866123, 0, 0.510981, -0.121489, -0.00190132, -0.025367)
 mesh = SubResource("ArrayMesh_8i1rp")
 skeleton = NodePath("")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="voiture3D"]
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0340064, 0, -0.0453935)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="voiture3D/RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 transform = Transform3D(0.878442, 0, 0.477849, 0, 1, 0, -0.477849, 0, 0.878442, 0.00942874, 0.0342407, -0.0240707)
 shape = SubResource("BoxShape3D_fqcy0")
 
-[node name="Obstacle" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.319845, 0.077, 1.35848)
-use_collision = true
-size = Vector3(0.115, 0.075, 0.065)
-
-[node name="RigidBody3D" type="RigidBody3D" parent="Obstacle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Obstacle/RigidBody3D"]
-shape = SubResource("BoxShape3D_0gs1o")
-
-[connection signal="body_entered" from="voiture3D/capteurUltrason-1/Area3D" to="voiture3D/capteurUltrason-1/Area3D" method="_on_body_entered"]
+[connection signal="body_entered" from="capteurUltrason-1/Area3D" to="capteurUltrason-1/Area3D" method="_on_body_entered"]
