@@ -17,3 +17,7 @@ func _process(delta: float) -> void:
 		position += Vector3.BACK * delta * speed
 	if Input.is_action_pressed("ui_down"):
 		position += Vector3.FORWARD * delta * speed
+	if Input.is_key_pressed(KEY_A) :
+		rotate_y(0.1)
+	if Input.is_key_pressed(KEY_D) :
+		rotate_y(-0.1)

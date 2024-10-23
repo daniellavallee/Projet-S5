@@ -1316,16 +1316,16 @@ script = ExtResource("8_aowo3")
 transform = Transform3D(0.511952, 0.455254, -0.728457, -0.0286334, 0.856587, 0.515207, 0.858538, -0.242903, 0.451567, -0.36945, 0.217021, 0.131866)
 current = true
 
-[node name="capteurUltrason-1" type="MeshInstance3D" parent="voiture3D"]
+[node name="capteurUltrason" type="MeshInstance3D" parent="voiture3D"]
 transform = Transform3D(0.861283, 0, 0.508125, 0, 1, 0, -0.508125, 0, 0.861283, 0.0787196, 0.0250787, -0.0964115)
 mesh = SubResource("ArrayMesh_t7k7b")
 skeleton = NodePath("")
 
-[node name="Area3D" type="Area3D" parent="voiture3D/capteurUltrason-1"]
+[node name="Area3D" type="Area3D" parent="voiture3D/capteurUltrason"]
 script = ExtResource("9_b3g7i")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="voiture3D/capteurUltrason-1/Area3D"]
-transform = Transform3D(1.00001, 0, -7.52509e-07, 0, 1, 0, 7.52509e-07, 0, 1.00001, 0.314974, 0.0416992, 2.38419e-06)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="voiture3D/capteurUltrason/Area3D"]
+transform = Transform3D(1.00001, 0, -7.82311e-07, 0, 1, 0, 7.82311e-07, 0, 1.00001, 0.314974, 0.0416992, 2.38419e-06)
 shape = SubResource("BoxShape3D_56nj8")
 
 [node name="Copie de voiture_plaque_principal^voiture_3D-1" type="MeshInstance3D" parent="voiture3D"]
@@ -1536,4 +1536,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Obstacle/RigidBody3D"]
 shape = SubResource("BoxShape3D_0gs1o")
 
-[connection signal="body_entered" from="voiture3D/capteurUltrason-1/Area3D" to="voiture3D/capteurUltrason-1/Area3D" method="_on_body_entered"]
+[connection signal="body_entered" from="voiture3D/capteurUltrason/Area3D" to="voiture3D/capteurUltrason/Area3D" method="_on_body_entered"]
+[connection signal="body_exited" from="voiture3D/capteurUltrason/Area3D" to="voiture3D/capteurUltrason/Area3D" method="_on_body_exited"]
