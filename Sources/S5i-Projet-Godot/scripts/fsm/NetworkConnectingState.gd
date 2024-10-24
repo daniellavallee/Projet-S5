@@ -69,7 +69,7 @@ func _create_godot_response(line_follower,sonar):
 func _get_line_follower():
 	return [0,0,0,0,0]
 func _get_sonar():
-	return 0
+	return GlobalData.distance
 func _control(wheel_angle, bw_speed):
 	pass
 func _on_data(id,message):

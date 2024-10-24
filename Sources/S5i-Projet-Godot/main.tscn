@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=31 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://drn06gighqsxr" path="res://assets/blend/parcours.glb" id="7_48u5u"]
 [ext_resource type="Script" path="res://scripts/vehicle_body_3d.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
+[ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
 
 [sub_resource type="GDScript" id="GDScript_d2gei"]
 
@@ -124,6 +125,9 @@ albedo_color = Color(0.135012, 0.135012, 0.135012, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ggs0t"]
 size = Vector3(1, 0.994036, 4.0249)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_03wvy"]
+size = Vector3(1, 1, 9)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_j8e2q"]
 size = Vector3(60, 2, 60)
 
@@ -135,7 +139,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_eka3w")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, -0.531399, 0.847122, 0, 0.847122, 0.531399, -1, 2.32282e-08, -3.70289e-08, 22.6987, 14.1129, 1.48655)
+transform = Transform3D(-4.37114e-08, -0.531399, 0.847122, 0, 0.847122, 0.531399, -1, 2.32282e-08, -3.70289e-08, 10.2224, 8.77556, 10.6041)
 
 [node name="NetworkFSM" type="Node" parent="." node_paths=PackedStringArray("current_state")]
 script = ExtResource("2_wl1fq")
@@ -178,26 +182,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Obstacle/RigidBody3D"]
 shape = SubResource("BoxShape3D_0gs1o")
 
-[node name="VehicleBody3D" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
-script = ExtResource("8_d48fy")
-
-[node name="Ball" type="RigidBody3D" parent="VehicleBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0383511, 2.32111, 1.34783)
+[node name="Ball" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0383511, 5.33013, 1.34783)
 collision_layer = 3
 collision_mask = 3
 can_sleep = false
 freeze_mode = 1
 
-[node name="Corps" type="MeshInstance3D" parent="VehicleBody3D/Ball"]
+[node name="Corps" type="MeshInstance3D" parent="Ball"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 layers = 3
 mesh = SubResource("ArrayMesh_s7idd")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehicleBody3D/Ball"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -0.000305772, 1.19209e-07, 0.00317621)
 shape = SubResource("ConcavePolygonShape3D_bt56u")
+
+[node name="VehicleBody3D" type="VehicleBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
+script = ExtResource("8_d48fy")
 
 [node name="voiture_3D" parent="VehicleBody3D" instance=ExtResource("9_p6v8i")]
 transform = Transform3D(-20, 0, -1.7224e-06, 0, 19.564, 0, 1.74846e-06, 0, -19.702, -1.47401, -0.351459, -0.285655)
@@ -262,6 +266,17 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00132489, -0.383795, 0.0089733)
 shape = SubResource("BoxShape3D_ggs0t")
 
+[node name="Ultrason" type="CSGBox3D" parent="VehicleBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0782998, 0.661619, 2.04749)
+size = Vector3(0.1, 0.1, 0.01)
+
+[node name="Area3D" type="Area3D" parent="VehicleBody3D/Ultrason"]
+script = ExtResource("10_bqm1h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VehicleBody3D/Ultrason/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5)
+shape = SubResource("BoxShape3D_03wvy")
+
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.26534)
 
@@ -272,3 +287,6 @@ shape = SubResource("BoxShape3D_j8e2q")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791205, 0.0853496)
 mesh = SubResource("BoxMesh_q7l7c")
+
+[connection signal="body_entered" from="VehicleBody3D/Ultrason/Area3D" to="VehicleBody3D/Ultrason/Area3D" method="_on_body_entered"]
+[connection signal="body_exited" from="VehicleBody3D/Ultrason/Area3D" to="VehicleBody3D/Ultrason/Area3D" method="_on_body_exited"]

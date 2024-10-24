@@ -7,7 +7,7 @@ import keyboard
 
 class TestLoop(BaseLoop):
     def __init__(self, host: Hosts = False) -> None:
-        super().__init__(host, is_verbose=False)
+        super().__init__(host, is_verbose=True)
     def control(self, rpi_response: RaspberryPiResponse) -> ControllerResponse:
         sys.stdout.flush()
         if keyboard.is_pressed('up'):
