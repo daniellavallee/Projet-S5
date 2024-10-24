@@ -8,7 +8,7 @@ class Time():
     def __init__(self) -> None:
         self.last_datetime = datetime.now()
         self.dt : timedelta = timedelta(0)
-    def refresh(self, response:RaspberryPiResponse):
+    def update_time(self, response:RaspberryPiResponse):
         current_datetime = response.get_datetime()
         self.dt = current_datetime - self.last_datetime
         self.last_datetime = current_datetime
