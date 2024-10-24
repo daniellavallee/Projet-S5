@@ -1,6 +1,6 @@
 extends Area3D
 var enterArea = false
-var parent = get_parent()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -12,8 +12,11 @@ func _process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node3D) -> void:
-	while body.name == "Obstacle":
-		print(body.global_position)
-		print(parent.name)
-		await get_tree().create_timer(1).timeout
-		
+	enterArea = true
+	while body.name == "Obstacle" and enterArea:
+		var distance = int(global_position.distance_to(body.global_position) * 100)
+		print(distance)
+		await get_tree().create_timer(0.5).timeout
+
+func _on_body_exited(body: Node3D) -> void:
+	enterArea = false
