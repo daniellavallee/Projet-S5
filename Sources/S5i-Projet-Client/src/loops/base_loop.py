@@ -30,6 +30,7 @@ class BaseLoop(ABC):
             ws.send(message)
             result = ws.recv()
             rpr = read_raspberry_pi_response(result)
+            self.time_module.update_time(rpr)
             controls = self.get_controls(rpr)
             response = ControllerResponse(*controls)
             if self.is_verbose:

@@ -7,7 +7,6 @@ class MainLoop(BaseLoop):
         super().__init__(host, is_verbose=is_verbose)
         self.current_state : RunStates = RunStates.STARTING
     def get_controls(self, rpi_response: RaspberryPiResponse) -> ControllerResponse:
-        self.time_module.update_time(rpi_response)
         if self.current_state == RunStates.STARTING:
             self.current_state = RunStates.LINE_FOLLOWING
         if self.current_state == RunStates.LINE_FOLLOWING:
