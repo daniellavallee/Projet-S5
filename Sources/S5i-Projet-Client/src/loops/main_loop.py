@@ -12,5 +12,5 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.LINE_FOLLOWING:
             self.current_state = self.line_follower_module.run_follower(rpi_response)
         if self.current_state == RunStates.FINDING_LINE:
-            self.motors_module.angle = self.line_follower_module.run_finder(rpi_response)
+            self.current_state = self.line_follower_module.run_finder(rpi_response)
         return ControllerResponse(self.motors_module.angle, self.motors_module.speed)
