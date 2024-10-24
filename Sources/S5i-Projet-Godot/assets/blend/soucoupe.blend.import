@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dhw27gk6nbfgu"
-path="res://.godot/imported/SHC Free Cybertruck.blend-bd8116590ccf6afcfabb3e64a09c9ea2.scn"
+uid="uid://cpkjb08jccaej"
+path="res://.godot/imported/soucoupe.blend-6960d9484f8f2dcf0ce6a6f75b16e7b7.scn"
 
 [deps]
 
-source_file="res://assets/3d/uploads_files_2176038_SHC+Free+Cybertruck/SHC Free Cybertruck.blend"
-dest_files=["res://.godot/imported/SHC Free Cybertruck.blend-bd8116590ccf6afcfabb3e64a09c9ea2.scn"]
+source_file="res://assets/blend/soucoupe.blend"
+dest_files=["res://.godot/imported/soucoupe.blend-6960d9484f8f2dcf0ce6a6f75b16e7b7.scn"]
 
 [params]
 

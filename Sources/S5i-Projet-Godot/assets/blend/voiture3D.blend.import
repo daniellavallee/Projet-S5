@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://m0bsuulo44qg"
+uid="uid://cpca8xbtwgndv"
 path="res://.godot/imported/voiture3D.blend-ee39954d227765cfa43ab88ed5a1c8ac.scn"
 
 [deps]
@@ -33,20 +33,29 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "nodes": {
+"PATH:Camera": {
+"import/skip_import": true
+},
+"PATH:Camera3D_001": {
+"import/skip_import": true
+},
+"PATH:Light": {
+"import/skip_import": true
+},
+"PATH:current": {
+"import/skip_import": true
+},
 "PATH:voiture_3D/Pneu-1": {
-"generate/navmesh": 1
+"import/skip_import": true
 },
 "PATH:voiture_3D/Pneu-2": {
-"generate/navmesh": 1
+"import/skip_import": true
 },
 "PATH:voiture_3D/Pneu-5": {
-"generate/navmesh": 1
+"import/skip_import": true
 },
 "PATH:voiture_3D/Pneu-6": {
-"generate/navmesh": 1
-},
-"PATH:voiture_3D/soucoupeV2-1": {
-"generate/navmesh": 1
+"import/skip_import": true
 }
 }
 }
