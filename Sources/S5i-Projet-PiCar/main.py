@@ -10,7 +10,7 @@ async def echo(websocket: WebSocketServerProtocol):
     async for message in websocket:
         try:
             controller_response = read_controller_response(message)
-            print(f"Received: {controller_response}")
+            #print(f"Received: {controller_response}")
             control(controller_response)
             line_follower = read_line_follower()
             sonar = read_sonar()
@@ -18,7 +18,7 @@ async def echo(websocket: WebSocketServerProtocol):
             
             response = RaspberryPiResponse(line_follower, sonar, time)
             raspberry_pi_response = write_raspberry_pi_response(response)
-            print(f"Sent: {raspberry_pi_response}")
+            #print(f"Sent: {raspberry_pi_response}")
             await websocket.send(raspberry_pi_response)
         except Exception as e:
             print(f"Error: {e}")
