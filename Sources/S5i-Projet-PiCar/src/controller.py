@@ -13,11 +13,11 @@ def control_front_wheels(angle:int):
         fw.turn(angle)
 
 def control_back_wheels(speed:int):
-    bw.speed = speed
+    bw.speed = abs(speed)
     if (speed>0):
-        bw.forward()
-    elif (speed<0):
         bw.backward()
+    elif (speed<0):
+        bw.forward()
     else:
         bw.stop()
     
