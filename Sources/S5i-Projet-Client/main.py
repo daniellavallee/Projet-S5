@@ -1,15 +1,24 @@
-from src.ws import WebSocketClient
-from src.json_helper import read_raspberry_pi_response, write_controller_response
-from src.models import ControllerResponse
-HOST = "192.168.72.62"
-PORT = 42069
+import typer
+from src.loops import MainLoop, CalibLoop
+from src.enums import Hosts
 
-ws = WebSocketClient(HOST, PORT)
+app = typer.Typer(no_args_is_help=True)
 
-response = ControllerResponse(0, 0)
-while True:
-    message = write_controller_response(response)
-    ws.send(message)
-    result =  ws.recv()
-    rpr = read_raspberry_pi_response(result)
-    print("Received '%s'" % result)
+@app.command(name="run", no_args_is_help=True)
+def main(
+        host: Hosts, 
+        verbose: bool = False
+    ):
+    loop = MainLoop(host,is_verbose=verbose)
+    loop.run()
+
+@app.command(name="calib", no_args_is_help=True)
+def calib(
+        host: Hosts
+    ):
+    loop = CalibLoop(host)
+    print(loop.line_follower_cfg)
+    loop.run()
+
+if __name__ == "__main__":
+    app()

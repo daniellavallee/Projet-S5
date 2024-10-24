@@ -1,0 +1,3 @@
+RPI_HOST = "192.168.72.62"
+GODOT_HOST = "localhost"
+PORT = 42069
