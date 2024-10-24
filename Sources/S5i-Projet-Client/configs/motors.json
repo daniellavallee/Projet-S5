@@ -5,5 +5,6 @@
     "maxAngularAcc": 45,
     "maxLeftAngle" : 45,
     "maxRightAngle" : 135,
-    "speedInMeterPerSecondPerUnit": 0.5
+    "maxSpeedInMeterPerSecond": 0.305,
+    "speedInMeterPerSecondPerUnit": 0.00305
 }
