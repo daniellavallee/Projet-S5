@@ -1,5 +1,5 @@
 import typer
-from src.loops import MainLoop, CalibLoop
+from src.loops import MainLoop, CalibLoop, TestLoop
 from src.enums import Hosts
 
 app = typer.Typer(no_args_is_help=True)
@@ -18,6 +18,11 @@ def calib(
     ):
     loop = CalibLoop(host)
     print(loop.line_follower_cfg)
+    loop.run()
+
+@app.command(name="test", no_args_is_help=True)
+def test(host: Hosts):
+    loop = TestLoop(host)
     loop.run()
 
 if __name__ == "__main__":
