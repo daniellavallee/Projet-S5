@@ -341,7 +341,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24173, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [connection signal="area_entered" from="Vehicule/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_entered"]
+[connection signal="area_exited" from="Vehicule/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_exited"]
 [connection signal="area_entered" from="Vehicule/CapteurLigne2" to="AreaLigneBlanche" method="_on_capteur_ligne_2_area_entered"]
+[connection signal="area_exited" from="Vehicule/CapteurLigne2" to="AreaLigneBlanche" method="_on_capteur_ligne_2_area_exited"]
 [connection signal="area_entered" from="Vehicule/CapteurLigne3" to="AreaLigneBlanche" method="_on_capteur_ligne_3_area_entered"]
+[connection signal="area_exited" from="Vehicule/CapteurLigne3" to="AreaLigneBlanche" method="_on_capteur_ligne_3_area_exited"]
 [connection signal="area_entered" from="Vehicule/CapteurLigne4" to="AreaLigneBlanche" method="_on_capteur_ligne_4_area_entered"]
+[connection signal="area_exited" from="Vehicule/CapteurLigne4" to="AreaLigneBlanche" method="_on_capteur_ligne_4_area_exited"]
 [connection signal="area_entered" from="Vehicule/CapteurLigne5" to="AreaLigneBlanche" method="_on_capteur_ligne_5_area_entered"]
+[connection signal="area_exited" from="Vehicule/CapteurLigne5" to="AreaLigneBlanche" method="_on_capteur_ligne_5_area_exited"]
