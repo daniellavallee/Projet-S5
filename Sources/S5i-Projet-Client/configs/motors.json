@@ -1,9 +1,12 @@
 {
-    "maxSpeed": 70,
-    "minSpeed": -70,
-    "maxAcceleration": 3,
-    "maxAngularAcc": 3,
+    "maxSpeed": 100,
+    "minSpeed": -100,
+    "maxAcceleration": 50,
+    "maxAngularAcc": 45,
     "maxLeftAngle" : 45,
     "maxRightAngle" : 135,
-    "speedInMeterPerSecondPerUnit": 0.5
+    "maxSpeedInMeterPerSecond": 0.305,
+    "speedInMeterPerSecondPerUnit": 0.00305,
+    "maxZeroZone": 20,
+    "minZeroZone": -20
 }

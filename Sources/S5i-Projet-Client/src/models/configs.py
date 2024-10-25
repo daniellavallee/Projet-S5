@@ -20,3 +20,6 @@ class MotorsConfig:
     maxLeftAngle : int
     maxRightAngle : int
     speedInMeterPerSecondPerUnit : float
+    maxSpeedInMeterPerSecond : float
+    maxZeroZone: int
+    minZeroZone: int

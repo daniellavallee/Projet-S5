@@ -17,7 +17,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-	
-func find_color() -> Array:
-	return []
+	if Input.is_action_pressed("camera1"):
+		$VehicleBody3D/Camera3D.current = true
+	if Input.is_action_pressed("camera2"):
+		$Camera3D.current = true
