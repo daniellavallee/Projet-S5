@@ -8,5 +8,6 @@
     "maxSpeedInMeterPerSecond": 0.305,
     "speedInMeterPerSecondPerUnit": 0.00437,
     "maxZeroZone": 20,
-    "minZeroZone": -20
+    "minZeroZone": -20,
+    "rayon_courbure": 0.12
 }

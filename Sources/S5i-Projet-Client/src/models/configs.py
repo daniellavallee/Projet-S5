@@ -23,3 +23,8 @@ class MotorsConfig:
     maxSpeedInMeterPerSecond : float
     maxZeroZone: int
     minZeroZone: int
+    rayon_courbure: float
+
+@dataclass
+class ObstacleAvoidanceConfig:
+    pass

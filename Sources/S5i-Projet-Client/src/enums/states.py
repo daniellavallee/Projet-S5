@@ -14,5 +14,11 @@ class MoveForwardState(Enum):
     MOVING_DECC = 4
     STOP = 5
     
+class TurnState(Enum):
+    STARTING = 1
+    TURNING_WHEEL = 2
+    MOVING_FORWARD = 3
+    RETOUR_ANGLE = 4
+    STOP = 5
 
     

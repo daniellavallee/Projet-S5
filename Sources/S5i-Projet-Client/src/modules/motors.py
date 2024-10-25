@@ -1,6 +1,6 @@
-from src.models import MotorsConfig
+from src.models import MotorsConfig, ObstacleAvoidanceConfig
 from .time import Time
-from src.enums import MoveForwardState
+from src.enums import MoveForwardState, TurnState, Direction
 
 class Motors():
     """
@@ -15,6 +15,9 @@ class Motors():
         self.distance_parcourue = 0.0
         self.distance_acceleration = 0.0
         self.move_forward_state: MoveForwardState = MoveForwardState.STARTING
+        self.turn_to_angle_state: TurnState = TurnState.STARTING
+        self.longueur_arc = 0.0
+        self.rayon_courbure = self.config.rayon_courbure
     def is_in_zero_range(self, speed:float) -> bool:
         return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
     def add_to_current_value(self, current_value:float, wanted_value:int, offset:float) -> float:
@@ -139,15 +142,56 @@ class Motors():
 
         return False
 
-    def turn_to_angle(self, direction:int, angle:int=0):
+    def turn_to_angle(self, direction:Direction, angle:int=0):
         """
         Description:
          Parameters:
             direction:    (int) 0 for left, 1 for right.
-            angle:        (int)
+            angle:        (int) Angle en degré.
         Return: void.
         """
+        
+        self.longueur_arc = angle / 360 * 2 * 3.1416 * self.rayon_courbure
 
+        # État initial
+        if self.turn_to_angle_state == TurnState.STARTING:
+            self.turn_to_angle_state = TurnState.TURNING_WHEEL
+            
+            print("État initial")
+        
+        # État de rotation
+        elif self.turn_to_angle_state == TurnState.TURNING_WHEEL:
+            if direction == Direction.LEFT_DIRECTION:
+                if self.get_angle() == self.config.maxLeftAngle:
+                    self.turn_to_angle_state = TurnState.MOVING_FORWARD
+                else:
+                    self.set_angle(self.config.maxLeftAngle)
+            elif direction == Direction.RIGHT_DIRECTION:
+                if self.get_angle() == self.config.maxRightAngle:
+                    self.turn_to_angle_state = TurnState.MOVING_FORWARD
+                else:
+                    self.set_angle(self.config.maxRightAngle)
+            print("État de rotation")
+        
+        # État de mouvement
+        elif self.turn_to_angle_state == TurnState.MOVING_FORWARD:
+            if self.move_forward(self.longueur_arc):
+                self.turn_to_angle_state = TurnState.RETOUR_ANGLE
+            print("État de mouvement")
+        
+        # État retour angle
+        elif self.turn_to_angle_state == TurnState.RETOUR_ANGLE:
+            if self.get_angle() == 90:
+                self.turn_to_angle_state = TurnState.STOP
+            else:
+                self.set_angle(90)
+            print("État retour angle")
+
+        # État d'arrêt
+        elif self.turn_to_angle_state == TurnState.STOP:
+            self.turn_to_angle_state = TurnState.STARTING
+            print("État d'arrêt")
+            return True
 
          
         

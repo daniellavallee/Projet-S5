@@ -1,7 +1,14 @@
 import json
 from .json_encoder import EnhancedJSONEncoder
-from src.models import ControllerResponse, RaspberryPiResponse, LineFollowerConfig, SonarConfig, MotorsConfig
-from src.constants import LINE_FOLLOWER_CONFIG, SONAR_CONFIG, MOTOR_CONFIG
+from src.models import (
+    ControllerResponse,
+    RaspberryPiResponse,
+    LineFollowerConfig,
+    SonarConfig,
+    MotorsConfig,
+    ObstacleAvoidanceConfig
+    )
+from src.constants import LINE_FOLLOWER_CONFIG, SONAR_CONFIG, MOTOR_CONFIG, OBSTACLE_AVOIDANCE_CONFIG
 
 def read_raspberry_pi_response(input:str) -> RaspberryPiResponse:
     data = json.loads(input)
@@ -10,7 +17,7 @@ def read_raspberry_pi_response(input:str) -> RaspberryPiResponse:
 def write_controller_response(response:ControllerResponse) -> str:
     return json.dumps(response, cls=EnhancedJSONEncoder)
 
-def read_configs()-> tuple[LineFollowerConfig, SonarConfig, MotorsConfig]:
+def read_configs()-> tuple[LineFollowerConfig, SonarConfig, MotorsConfig, ObstacleAvoidanceConfig]:
     with LINE_FOLLOWER_CONFIG.open("r") as f:
         data = json.load(f)
         line_follower = LineFollowerConfig(**data)
@@ -20,4 +27,7 @@ def read_configs()-> tuple[LineFollowerConfig, SonarConfig, MotorsConfig]:
     with MOTOR_CONFIG.open("r") as f:
         data = json.load(f)
         motors = MotorsConfig(**data)
-    return line_follower, sonar, motors
+    with OBSTACLE_AVOIDANCE_CONFIG.open("r") as f:
+        data = json.load(f)
+        obstacle_avoidance = ObstacleAvoidanceConfig(**data)
+    return line_follower, sonar, motors, obstacle_avoidance

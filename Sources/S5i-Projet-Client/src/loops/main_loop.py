@@ -1,6 +1,6 @@
 from .base_loop import BaseLoop
 from src.models import ControllerResponse, RaspberryPiResponse
-from src.enums import Hosts, RunStates
+from src.enums import Hosts, RunStates, Direction
 
 class MainLoop(BaseLoop):
     def __init__(self, host: Hosts, *, is_verbose: bool = True) -> None:
@@ -14,5 +14,5 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.FINDING_LINE:
             self.current_state = self.line_follower_module.run_finder(rpi_response)
         if self.current_state == RunStates.OBSTACLE_AVOIDANCE:
-            if self.motors_module.move_forward(1):
+            if self.motors_module.turn_to_angle(Direction.LEFT_DIRECTION, 90):
                 self.current_state = RunStates.STOP

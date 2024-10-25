@@ -21,7 +21,7 @@ class BaseLoop(ABC):
     def control(self, rpi_response:RaspberryPiResponse):
         pass
     def read_configs(self):
-        self.line_follower_cfg, self.sonar_cfg, self.motors_cfg = read_configs()
+        self.line_follower_cfg, self.sonar_cfg, self.motors_cfg, self.obstacle_cfg = read_configs()
     def run(self):
         ws = WebSocketClient(self.host, PORT)
         while True:
