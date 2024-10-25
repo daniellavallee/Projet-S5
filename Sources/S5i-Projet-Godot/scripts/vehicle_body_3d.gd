@@ -16,7 +16,6 @@ func _process(delta: float) -> void:
 		var radian = (90 - GlobalData.wheel_angle) * PI / 180
 		steering = move_toward(steering, radian  * MAX_STEER, delta * 10)
 		# Avance ou recule
-		print(GlobalData.bw_speed / 100 * ENGINE_POWER)
 		engine_force = GlobalData.bw_speed / 100 * ENGINE_POWER
 	else :
 		steering = move_toward(steering, Input.get_axis("right","left") * MAX_STEER, delta * 10)
