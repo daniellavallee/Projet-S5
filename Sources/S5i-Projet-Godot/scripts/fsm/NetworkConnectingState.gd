@@ -71,7 +71,8 @@ func _get_line_follower():
 func _get_sonar():
 	return GlobalData.distance
 func _control(wheel_angle, bw_speed):
-	pass
+	GlobalData.wheel_angle = wheel_angle
+	GlobalData.bw_speed = bw_speed
 func _on_data(id,message):
 	# Print the received packet, you MUST always use get_peer(id).get_packet to receive data,
 	# and not get_packet directly when not using the MultiplayerAPI.
