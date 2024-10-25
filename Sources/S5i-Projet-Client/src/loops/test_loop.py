@@ -1,9 +1,9 @@
+import keyboard
 import sys
 
 from .base_loop import BaseLoop
 from src.models import ControllerResponse, RaspberryPiResponse
 from src.enums import Hosts
-import keyboard
 
 class TestLoop(BaseLoop):
     def __init__(self, host: Hosts = False) -> None:
