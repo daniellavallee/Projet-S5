@@ -30,7 +30,6 @@ enabled=PackedStringArray("res://addons/finite_state_machine/plugin.cfg")
 
 [filesystem]
 
-import/blender/enabled=false
 import/fbx/enabled=false
 
 [input]
