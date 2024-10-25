@@ -6,7 +6,7 @@ class MainLoop(BaseLoop):
     def __init__(self, host: Hosts, *, is_verbose: bool = True) -> None:
         super().__init__(host, is_verbose=is_verbose)
         self.current_state : RunStates = RunStates.STARTING
-    def control(self, rpi_response: RaspberryPiResponse) -> ControllerResponse:
+    def control(self, rpi_response: RaspberryPiResponse):
         if self.current_state == RunStates.STARTING:
             self.current_state = RunStates.OBSTACLE_AVOIDANCE
         if self.current_state == RunStates.LINE_FOLLOWING:

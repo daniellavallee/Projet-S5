@@ -10,11 +10,11 @@ class Motors():
         self.config = config
         self.verbose = verbose
         self.speed : float  = 0.0
-        self.angle : float = 90.0
+        self.angle : float = 98
         self.time_module = time_module
         self.distance_parcourue = 0.0
         self.distance_acceleration = 0.0
-        self.move_forward_state: MoveForwardState = MoveForwardState.STOP
+        self.move_forward_state: MoveForwardState = MoveForwardState.STARTING
     def is_in_zero_range(self, speed:float) -> bool:
         return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
     def add_to_current_value(self, current_value:float, wanted_value:int, offset:float) -> float:
@@ -86,34 +86,36 @@ class Motors():
             distance:     distance in meters to move forward to.
         Return:           void.
         """
+        new_distance = self.get_speed()*self.config.speedInMeterPerSecondPerUnit * self.time_module.get_dt_in_seconds()
 
         # État initiale
         if self.move_forward_state == MoveForwardState.STARTING:
             self.move_forward_state = MoveForwardState.MOVING_ACC
             self.distance_parcourue = 0.0
             self.distance_acceleration = 0.0
-            self.set_speed(self.config.maxSpeed)
 
             print("État initial")
 
         # État d'accélération
         elif self.move_forward_state == MoveForwardState.MOVING_ACC:
+            self.set_speed(self.config.maxSpeed)
             if self.get_speed() == self.config.maxSpeed:
-                self.distance_acceleration += self.get_speed() * self.time_module.get_dt_in_seconds()
-                self.set_speed(self.config.maxSpeed)
+                self.distance_parcourue += new_distance
+                self.distance_acceleration += new_distance
                 self.move_forward_state = MoveForwardState.MOVING_FORWARD
             elif self.distance_acceleration * 2 >= distance:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-            
+                
             print("État d'accélération")
+            
 
         # État de mouvement
         elif self.move_forward_state == MoveForwardState.MOVING_FORWARD:
             if self.distance_parcourue + self.distance_acceleration < distance:
-                self.distance_parcourue += self.get_speed() * self.time_module.get_dt_in_seconds()
+                self.distance_parcourue += new_distance
                 self.set_speed(self.config.maxSpeed)
             else:
-                Motors.set_speed(0)
+                self.set_speed(0)
                 self.move_forward_state = MoveForwardState.MOVING_DECC
         
             print("État de mouvement")
@@ -125,7 +127,6 @@ class Motors():
             else:
                 self.set_speed(0)
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-            self.move_forward_state = MoveForwardState.STOP
             
             print("État de décélération")
 
@@ -133,6 +134,7 @@ class Motors():
         elif self.move_forward_state == MoveForwardState.STOP:
             self.distance_parcourue = 0.0
             self.distance_accelerationo = 0.0
+            self.move_forward_state = MoveForwardState.STARTING
             return True
 
         return False
