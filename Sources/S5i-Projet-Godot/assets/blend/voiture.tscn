@@ -1,4 +1,7 @@
-[gd_scene load_steps=64 format=4 uid="uid://ddlgglk6lvtqa"]
+[gd_scene load_steps=65 format=4 uid="uid://ddlgglk6lvtqa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_02v3v"]
+albedo_color = Color(0.0476764, 0.504531, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_thwuv"]
 resource_name = "Material_0.003"
@@ -1049,155 +1052,186 @@ transform = Transform3D(4.17362, 0, 0, 0, 4.08274, 0, 0, 0, 4.11197, 0, 0, 0)
 
 [node name="capteurUltrason-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1.19209e-07, 0, 1, 0, 1, 0, -1, 0, -1.19209e-07, -0.0430383, 0.0250787, -0.116789)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_ektgk")
 skeleton = NodePath("")
 
 [node name="Copie de voiture_plaque_principal^voiture_3D-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0703433, 0.0232087, -0.00311419)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_6rqi6")
 skeleton = NodePath("")
 
 [node name="SuiveurDeLigne-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -3.57628e-07, 1, 0, -1, -3.57628e-07, -0.0834054, -0.00341609, -0.0728621)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_sexa6")
 skeleton = NodePath("")
 
 [node name="support_soucoupe-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 0, -6.98296e-15, 0, 1, 0, 6.98296e-15, 0, -1, -0.0453433, 0.0441087, -0.103009)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_3mj1h")
 skeleton = NodePath("")
 
 [node name="support_suiveur_ligne-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0704935, -0.00553133, -0.102952)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_t2gt6")
 skeleton = NodePath("")
 
 [node name="vis-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.100334, -0.00142609, -0.126102)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_cm42w")
 skeleton = NodePath("")
 
 [node name="vis-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0417335, -0.00142609, -0.126102)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_q7f8u")
 skeleton = NodePath("")
 
 [node name="vis_6-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0815383, 0.0289001, -0.0986392)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_75oel")
 skeleton = NodePath("")
 
 [node name="vis_6-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0591483, 0.0288187, -0.0986392)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_m6cfh")
 skeleton = NodePath("")
 
 [node name="voiture_batterie-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0707573, 0.00177867, 0.0180085)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_ohppl")
 skeleton = NodePath("")
 
 [node name="voiture_controleur_controleur-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.107937, 0.0250787, 0.0621746)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_aatdx")
 skeleton = NodePath("")
 
 [node name="voiture_controleur_moteurs-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0930046, 0.0250787, 0.0989658)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_x5c6r")
 skeleton = NodePath("")
 
 [node name="voiture_moteur_droit-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109593, -0.00313799, 0.115076)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_8f48g")
 skeleton = NodePath("")
 
 [node name="voiture_moteur_gauche-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0502433, -0.00313799, 0.115076)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_4ru1x")
 skeleton = NodePath("")
 
 [node name="voiture_plaque_dessous_avant-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0900583, -0.00366133, -0.0336392)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_owsgp")
 skeleton = NodePath("")
 
 [node name="voiture_plaque_dessous_moteur-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109593, -0.00500799, 0.102124)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_erduo")
 skeleton = NodePath("")
 
 [node name="voiture_plaque_route_avant-3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0324783, -0.00179133, -0.0686392)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_jjtyi")
 skeleton = NodePath("")
 
 [node name="voiture_plaque_route_avant-4" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 0, -6.98296e-15, 0, 1, 0, 6.98296e-15, 0, -1, -0.108208, -0.00179133, -0.0823592)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_3fen2")
 skeleton = NodePath("")
 
 [node name="voiture_raspberry-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.112743, 0.0500317, 0.0250146)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_mq43f")
 skeleton = NodePath("")
 
 [node name="voiture_vise-1" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.97994, 0, -0.199293, 0, 1, 0, 0.199293, 0, 0.97994, -0.10504, 0.0250787, 0.0147708)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_a0hwx")
 skeleton = NodePath("")
 
 [node name="voiture_vise-10" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0599406, -0.00119801, 0.0907109)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_ob4yf")
 skeleton = NodePath("")
 
 [node name="voiture_vise-11" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0460725, -0.00169917, 0.0400508)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_hwrmb")
 skeleton = NodePath("")
 
 [node name="voiture_vise-12" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0992925, -0.00169917, 0.0400508)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_c5mof")
 skeleton = NodePath("")
 
 [node name="voiture_vise-2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.800744, 0, -0.599006, 0, 1, 0, 0.599006, 0, 0.800744, -0.0403225, 0.0250787, 0.0147708)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_x2xw5")
 skeleton = NodePath("")
 
 [node name="voiture_vise-3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.983633, 0, -0.180183, 0, 1, 0, 0.180183, 0, 0.983633, -0.0403239, 0.0250787, -0.0209992)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_e71ih")
 skeleton = NodePath("")
 
 [node name="voiture_vise-4" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.99991, 0, -0.0134033, 0, 1, 0, 0.0134033, 0, 0.99991, -0.10504, 0.0250787, -0.0209992)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_ls3bk")
 skeleton = NodePath("")
 
 [node name="voiture_vise-5" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0991615, -0.00179133, -0.0754992)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_sokok")
 skeleton = NodePath("")
 
 [node name="voiture_vise-6" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0420225, -0.00179133, -0.0754992)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_7buc1")
 skeleton = NodePath("")
 
 [node name="voiture_vise-7" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0818768, -0.00179133, -0.0401901)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_yqo6m")
 skeleton = NodePath("")
 
 [node name="voiture_vise-8" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0582514, -0.00179133, -0.0401901)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_xareu")
 skeleton = NodePath("")
 
 [node name="voiture_vise-9" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0834142, -0.00185371, 0.091238)
+material_override = SubResource("StandardMaterial3D_02v3v")
 mesh = SubResource("ArrayMesh_p6pew")
 skeleton = NodePath("")
