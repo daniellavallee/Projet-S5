@@ -69,9 +69,10 @@ func _create_godot_response(line_follower,sonar):
 func _get_line_follower():
 	return [0,0,0,0,0]
 func _get_sonar():
-	return 0
+	return GlobalData.distance
 func _control(wheel_angle, bw_speed):
-	pass
+	GlobalData.wheel_angle = wheel_angle
+	GlobalData.bw_speed = bw_speed
 func _on_data(id,message):
 	# Print the received packet, you MUST always use get_peer(id).get_packet to receive data,
 	# and not get_packet directly when not using the MultiplayerAPI.

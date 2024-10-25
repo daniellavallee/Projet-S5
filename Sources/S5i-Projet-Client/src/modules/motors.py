@@ -15,8 +15,10 @@ class Motors():
         self.distance_parcourue = 0.0
         self.distance_acceleration = 0.0
         self.move_forward_state: MoveForwardState = MoveForwardState.STOP
+    def is_in_zero_range(self, speed:float) -> bool:
+        return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
     def add_to_current_value(self, current_value:float, wanted_value:int, offset:float) -> float:
-        new_value = current_value + offset
+        new_value = current_value + offset  
         if current_value > wanted_value:
             if new_value < wanted_value:
                 new_value = wanted_value
@@ -60,11 +62,21 @@ class Motors():
         if wanted_speed > self.config.maxSpeed:
             wanted_speed = self.config.maxSpeed
         
+        # if the speed is in the zero zone, we need to set it to the limits of the zero zone
+        if self.is_in_zero_range(self.speed):
+            if wanted_speed > 0:
+                self.speed = self.config.maxZeroZone + 0.01
+            else:
+                self.speed = self.config.minZeroZone - 0.01
+        
         # if the new speed is greater than the current speed
         if wanted_speed > self.speed :
             self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(self.config.maxAcceleration))
         else:
             self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-self.config.maxAcceleration))
+
+        if (self.is_in_zero_range(self.speed)):
+            self.speed = 0
         
     
     def move_forward(self, distance:float) -> bool:
