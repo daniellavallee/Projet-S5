@@ -4,7 +4,7 @@ from src.enums import Hosts
 from src.models import ControllerResponse, RaspberryPiResponse
 from src.ws.client import WebSocketClient
 from src.json import read_raspberry_pi_response, write_controller_response, read_configs
-from src.modules import Motors, LineFollower, Time
+from src.modules import Motors, LineFollower, Time, ObstacleManager
 class BaseLoop(ABC):
     def __init__(self, host: Hosts, *, is_verbose:bool = True) -> None:
         if (host.value == Hosts.RaspberryPi.value):
@@ -16,6 +16,7 @@ class BaseLoop(ABC):
         self.time_module = Time()
         self.motors_module = Motors(self.motors_cfg, self.time_module, verbose=self.is_verbose)
         self.line_follower_module = LineFollower(self.line_follower_cfg, self.motors_module, verbose=self.is_verbose)
+        self.obstacle_manager = ObstacleManager()
     @abstractmethod
     def control(self, rpi_response:RaspberryPiResponse):
         pass
