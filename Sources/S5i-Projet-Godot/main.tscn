@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://scripts/vehicle_body_3d.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
-[ext_resource type="Script" path="res://area_ligne_bleu.gd" id="10_wg3ll"]
+[ext_resource type="Script" path="res://scripts/area_ligne_bleu.gd" id="10_wg3ll"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_o7qtj"]
 radius = 0.1
