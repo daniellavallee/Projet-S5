@@ -3,7 +3,7 @@ class_name Vehicule
 
 @export var MAX_STEER = 1
 @export var ENGINE_POWER = 150
-const USE_WEBSOCKET = false 
+const USE_WEBSOCKET = true 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,6 +21,3 @@ func _process(delta: float) -> void:
 	else :
 		steering = move_toward(steering, Input.get_axis("right","left") * MAX_STEER, delta * 10)
 		engine_force = Input.get_axis("down","up") * ENGINE_POWER
-	
-	
-	
