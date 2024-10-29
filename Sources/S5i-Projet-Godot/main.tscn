@@ -211,6 +211,7 @@ skeleton = NodePath("../..")
 
 [node name="VehiculeBody3D" type="VehicleBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
+gravity_scale = 4.0
 script = ExtResource("8_d48fy")
 
 [node name="Camera3D" type="Camera3D" parent="VehiculeBody3D"]
@@ -250,8 +251,12 @@ shape = SubResource("ConcavePolygonShape3D_hrfud")
 [node name="ArriereDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, -1.658)
 use_as_traction = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.1
+suspension_travel = 0.15
+suspension_stiffness = 80.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereDroit"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -261,8 +266,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="AvantDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, 1.21027)
 use_as_steering = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.4
+suspension_travel = 0.15
+suspension_stiffness = 120.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantDroit"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -272,8 +281,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="AvantGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.23338, -0.211, 1.23427)
 use_as_steering = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.4
+suspension_travel = 0.15
+suspension_stiffness = 120.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantGauche"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -283,8 +296,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="ArriereGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.233, -0.211, -1.66992)
 use_as_traction = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.1
+suspension_travel = 0.15
+suspension_stiffness = 80.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereGauche"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
