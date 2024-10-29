@@ -1,7 +1,7 @@
-extends Area3D
+extends RayCast3D
 
-const erreurCapteur = 4.2
-var enterArea = false
+var distance_null = -1
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -9,17 +9,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if is_colliding():
+		GlobalData.distance = round(global_transform.origin.distance_to(get_collision_point())*100)
+	else:
+		GlobalData.distance = distance_null
+	#print(GlobalData.distance)
+
 	
-
-func _on_body_entered(body: Node3D) -> void:
-	enterArea = true
-	while body.name == "Obstacle" and enterArea:
-		GlobalData.distance = int((get_parent_node_3d().global_position.distance_to(body.global_position) - erreurCapteur) * 100)
-		#print(GlobalData.distance)
-		await get_tree().create_timer(0.5).timeout
-
-
-func _on_body_exited(body: Node3D) -> void:
-	enterArea = false
-	GlobalData.distance = -1

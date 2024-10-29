@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=36 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -37,6 +37,7 @@ background_mode = 2
 sky = SubResource("Sky_nfout")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0gs1o"]
+size = Vector3(0.115, 0.075, 0.065)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dfhfx"]
 albedo_color = Color(0.381978, 0.000368104, 0.461117, 1)
@@ -55,9 +56,6 @@ size = Vector3(0.155823, 4.11133, 59.5499)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7p45q"]
 size = Vector3(0.116, 1, 100)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_03wvy"]
-size = Vector3(1, 1, 9)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7aslw"]
 albedo_color = Color(0.698039, 0, 0, 1)
@@ -169,10 +167,11 @@ transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, -46.8815)
 [node name="Obstacle" type="CSGBox3D" parent="."]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.319845, 5.65817, 14.3585)
 use_collision = true
+collision_layer = 3
+collision_mask = 3
 size = Vector3(0.115, 0.075, 0.065)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="Obstacle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Obstacle/RigidBody3D"]
 shape = SubResource("BoxShape3D_0gs1o")
@@ -221,12 +220,10 @@ transform = Transform3D(-1, -1.77636e-14, -8.74228e-08, -4.9202e-08, 0.82659, 0.
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0782998, 0.574109, 2.03526)
 size = Vector3(0.1, 0.1, 0.01)
 
-[node name="Area3D" type="Area3D" parent="VehiculeBody3D/Ultrason"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.55121)
+[node name="RayCast3D" type="RayCast3D" parent="VehiculeBody3D/Ultrason"]
+target_position = Vector3(0, 0, 5)
+collision_mask = 2
 script = ExtResource("10_bqm1h")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/Ultrason/Area3D"]
-shape = SubResource("BoxShape3D_03wvy")
 
 [node name="voiture_3D" parent="VehiculeBody3D" instance=ExtResource("9_p6v8i")]
 transform = Transform3D(-20, 0, -2.97492e-06, 0, 19.564, 0, 3.01992e-06, 0, -19.702, -1.47401, -0.351459, -0.285655)
@@ -349,8 +346,6 @@ shape = SubResource("BoxShape3D_2nw26")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
 
-[connection signal="body_entered" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_entered"]
-[connection signal="body_exited" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_exited"]
 [connection signal="area_entered" from="VehiculeBody3D/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_entered"]
 [connection signal="area_exited" from="VehiculeBody3D/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_exited"]
 [connection signal="area_entered" from="VehiculeBody3D/CapteurLigne2" to="AreaLigneBlanche" method="_on_capteur_ligne_2_area_entered"]
