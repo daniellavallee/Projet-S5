@@ -9,8 +9,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if is_colliding():
-		if get_collider() == ligne:
-			GlobalData.line[1] = 0
-		else: if get_collider() == plancher:
-			GlobalData.line[1] = 255
+	if is_colliding() and get_collider() == ligne:
+		GlobalData.line[1] = 0
+	else:
+		GlobalData.line[1] = 255
