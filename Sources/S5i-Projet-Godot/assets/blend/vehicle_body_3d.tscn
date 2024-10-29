@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=4 uid="uid://bg186ylyaftsq"]
 
-[ext_resource type="Script" path="res://scripts/vehicle_body_3d.gd" id="1_ppevi"]
+[ext_resource type="Script" path="res://scripts/vehicule.gd" id="1_ppevi"]
 [ext_resource type="PackedScene" uid="uid://cpca8xbtwgndv" path="res://assets/blend/voiture3D.blend" id="2_5yuyl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kkpe2"]
