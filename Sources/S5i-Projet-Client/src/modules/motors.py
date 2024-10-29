@@ -22,7 +22,12 @@ class Motors():
             if new_value > wanted_value:
                 new_value = wanted_value
         return new_value
-    def get_speed(self) -> int:
+    def get_speed(self, *, in_meters_per_second : bool = False) -> int | float:
+        if in_meters_per_second:
+            get_speed_ratio = 0
+            if self.speed > 0:
+                get_speed_ratio = (self.speed - self.config.maxZeroZone) / (self.config.maxSpeed - self.config.maxZeroZone)
+            return get_speed_ratio * self.config.speedInMeterPerSecondPerUnit
         return int(self.speed)
     def get_angle(self) -> int:
         return int(self.angle)
