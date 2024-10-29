@@ -7,13 +7,13 @@
 [ext_resource type="Script" path="res://scripts/fsm/NetworkConnectingState.gd" id="5_itktg"]
 [ext_resource type="Script" path="res://scripts/fsm/NetworkProcessState.gd" id="6_017ts"]
 [ext_resource type="PackedScene" uid="uid://drn06gighqsxr" path="res://assets/blend/parcours.glb" id="7_48u5u"]
-[ext_resource type="Script" path="res://scripts/vehicle_body_3d.gd" id="8_d48fy"]
+[ext_resource type="Script" path="res://scripts/vehicule.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
 [ext_resource type="Script" path="res://scripts/area_ligne_bleu.gd" id="10_wg3ll"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_o7qtj"]
-radius = 0.1
+radius = 0.161
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dr6ip"]
 albedo_color = Color(0.203922, 0.105882, 0.909804, 1)
@@ -133,7 +133,7 @@ collision_mask = 3
 shape = SubResource("SphereShape3D_o7qtj")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Bille"]
-radius = 0.1
+radius = 0.161
 material = SubResource("StandardMaterial3D_dr6ip")
 
 [node name="NetworkFSM" type="Node" parent="." node_paths=PackedStringArray("current_state")]
@@ -214,8 +214,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
 script = ExtResource("8_d48fy")
 
 [node name="Camera3D" type="Camera3D" parent="VehiculeBody3D"]
-transform = Transform3D(-1, -1.77636e-14, -8.74228e-08, -4.9202e-08, 0.82659, 0.562805, 7.22628e-08, 0.562805, -0.82659, 0.11511, 2.20412, -4.87142)
-visible = false
+transform = Transform3D(-1, -1.77636e-14, -8.74228e-08, -4.9202e-08, 0.82659, 0.562805, 7.22628e-08, 0.562805, -0.82659, 0.11511, 3.34327, -0.861319)
 
 [node name="Ultrason" type="CSGBox3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0782998, 0.574109, 2.03526)
@@ -229,7 +228,7 @@ script = ExtResource("10_bqm1h")
 shape = SubResource("BoxShape3D_03wvy")
 
 [node name="voiture_3D" parent="VehiculeBody3D" instance=ExtResource("9_p6v8i")]
-transform = Transform3D(-20, 0, -1.7224e-06, 0, 19.564, 0, 1.74846e-06, 0, -19.702, -1.47401, -0.351459, -0.285655)
+transform = Transform3D(-20, 0, -2.97492e-06, 0, 19.564, 0, 3.01992e-06, 0, -19.702, -1.47401, -0.351459, -0.285655)
 
 [node name="soucoupe" type="StaticBody3D" parent="VehiculeBody3D"]
 transform = Transform3D(-20.5, 0, -1.79217e-06, 0, 20.5, 0, 1.79217e-06, 0, -20.5, -0.479205, 0.540728, 1.25254)
@@ -249,18 +248,20 @@ transform = Transform3D(-0.97561, 0, 8.52907e-08, 0, 0.97561, 0, -8.52907e-08, 0
 shape = SubResource("ConcavePolygonShape3D_hrfud")
 
 [node name="ArriereDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11521, -0.211499, -1.74221)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, -1.658)
 use_as_traction = true
+wheel_roll_influence = -0.5
 wheel_radius = 0.75
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereDroit"]
-transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0.0853496)
+transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
 mesh = SubResource("CylinderMesh_o11rn")
 surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 
 [node name="AvantDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, 1.21027)
 use_as_steering = true
+wheel_roll_influence = -0.5
 wheel_radius = 0.75
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantDroit"]
@@ -269,8 +270,9 @@ mesh = SubResource("CylinderMesh_o11rn")
 surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 
 [node name="AvantGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.33, -0.211, 1.23427)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.23338, -0.211, 1.23427)
 use_as_steering = true
+wheel_roll_influence = -0.5
 wheel_radius = 0.75
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantGauche"]
@@ -279,12 +281,13 @@ mesh = SubResource("CylinderMesh_o11rn")
 surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 
 [node name="ArriereGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3295, -0.211, -1.742)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.233, -0.211, -1.66992)
 use_as_traction = true
+wheel_roll_influence = -0.5
 wheel_radius = 0.75
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereGauche"]
-transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0.0853496)
+transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
 mesh = SubResource("CylinderMesh_o11rn")
 surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 
@@ -327,7 +330,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12427, 0.0324419, -0.01605
 shape = SubResource("BoxShape3D_2nw26")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 2.03914, -0.100428)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
 
 [connection signal="body_entered" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_entered"]
 [connection signal="body_exited" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_exited"]
