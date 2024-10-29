@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=40 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -10,7 +10,6 @@
 [ext_resource type="Script" path="res://scripts/vehicule.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
-[ext_resource type="Script" path="res://scripts/area_ligne_blanche.gd" id="10_wg3ll"]
 [ext_resource type="Script" path="res://capteur_ligne_1.gd" id="12_si6y4"]
 [ext_resource type="Script" path="res://capteur_ligne_2.gd" id="13_b71kb"]
 [ext_resource type="Script" path="res://capteur_ligne_3.gd" id="14_7q8ni"]
@@ -199,7 +198,6 @@ shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="AreaLigneBlanche" type="Area3D" parent="."]
 transform = Transform3D(-0.0286893, 0, 0.999588, 0, 1, 0, -0.999588, 0, -0.0286893, -0.802377, 1.52822, -0.00151849)
-script = ExtResource("10_wg3ll")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00336652, 0.392692, 0.84211)
