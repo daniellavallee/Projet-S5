@@ -71,12 +71,14 @@ class LineFollower():
         
         self.off_track_count += 1
         center_angle = self.motors_module.config.maxRightAngle - self.motors_module.config.maxLeftAngle
-        if self.off_track_count > self.config.max_off_track_count or True:
-            self.motors_module.set_angle(45)
-            self.motors_module.set_speed(100)
-        else:
-            self.motors_module.set_angle(center_angle)
-            self.motors_module.set_speed(0)
+        #if self.off_track_count > self.config.max_off_track_count or True:
+        #    self.motors_module.set_angle(45)
+        #    self.motors_module.set_speed(100)
+        #else:
+        #    self.motors_module.set_angle(center_angle)
+        #    self.motors_module.set_speed(0)
         print("Finder | Off track count : ",self.off_track_count)
+        self.motors_module.set_angle(center_angle)
+        self.motors_module.set_speed(0)
         return self.found_line(values)
             
