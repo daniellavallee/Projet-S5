@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=39 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -10,7 +10,11 @@
 [ext_resource type="Script" path="res://scripts/vehicule.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
-[ext_resource type="Script" path="res://scripts/area_ligne_bleu.gd" id="10_wg3ll"]
+[ext_resource type="Script" path="res://capteur_ligne_1.gd" id="12_si6y4"]
+[ext_resource type="Script" path="res://capteur_ligne_2.gd" id="13_b71kb"]
+[ext_resource type="Script" path="res://capteur_ligne_3.gd" id="14_7q8ni"]
+[ext_resource type="Script" path="res://capteur_ligne_4.gd" id="15_oc3e7"]
+[ext_resource type="Script" path="res://capteur_ligne_5.gd" id="16_i2qhx"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_o7qtj"]
 radius = 0.161
@@ -37,6 +41,7 @@ background_mode = 2
 sky = SubResource("Sky_nfout")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0gs1o"]
+size = Vector3(0.115, 0.075, 0.065)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dfhfx"]
 albedo_color = Color(0.381978, 0.000368104, 0.461117, 1)
@@ -46,18 +51,15 @@ material = SubResource("StandardMaterial3D_dfhfx")
 size = Vector3(60, 2, 60)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j8e2q"]
-size = Vector3(60, 2, 60)
+size = Vector3(60.3107, 1.51579, 60)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1f3xd"]
-size = Vector3(0.155823, 4.11133, 59.5499)
+size = Vector3(0.495319, 0.226782, 59.5499)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6d0wa"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_7p45q"]
-size = Vector3(0.116, 1, 100)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_03wvy"]
-size = Vector3(1, 1, 9)
+size = Vector3(0.5, 1, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7aslw"]
 albedo_color = Color(0.698039, 0, 0, 1)
@@ -114,11 +116,8 @@ albedo_color = Color(0.135012, 0.135012, 0.135012, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ggs0t"]
 size = Vector3(1, 0.592199, 4.0249)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_kh8id"]
-size = Vector3(0.116, 0.139, 0.192)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_2nw26"]
-size = Vector3(1.81168, 0.857178, 4.48853)
+size = Vector3(1.81168, 0.857178, 4.27499)
 
 [node name="Main" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.0135775)
@@ -169,38 +168,38 @@ transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, -46.8815)
 [node name="Obstacle" type="CSGBox3D" parent="."]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.319845, 5.65817, 14.3585)
 use_collision = true
+collision_layer = 3
+collision_mask = 3
 size = Vector3(0.115, 0.075, 0.065)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="Obstacle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.077, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Obstacle/RigidBody3D"]
 shape = SubResource("BoxShape3D_0gs1o")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="AreaPlancher" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0632973, -3.72529e-09, 3.27508)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AreaPlancher"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791205, 0.0853496)
 mesh = SubResource("BoxMesh_q7l7c")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24173, -0.727375)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaPlancher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.906836, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Area3D"]
+[node name="Plancher" type="StaticBody3D" parent="AreaPlancher"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24173, -0.727375)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaPlancher/Plancher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="AreaLigneBlanche" type="Area3D" parent="."]
 transform = Transform3D(-0.0286893, 0, 0.999588, 0, 1, 0, -0.999588, 0, -0.0286893, -0.802377, 1.52822, -0.00151849)
-script = ExtResource("10_wg3ll")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0237732, 1.55566, 0.84211)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00336652, 0.392692, 0.84211)
 shape = SubResource("BoxShape3D_1f3xd")
 
 [node name="LigneBlanche" type="MeshInstance3D" parent="AreaLigneBlanche"]
@@ -209,8 +208,15 @@ material_override = SubResource("StandardMaterial3D_6d0wa")
 mesh = SubResource("BoxMesh_7p45q")
 skeleton = NodePath("../..")
 
+[node name="Ligne" type="StaticBody3D" parent="AreaLigneBlanche"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche/Ligne"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.33909e-05, 0.394478, 0.84211)
+shape = SubResource("BoxShape3D_1f3xd")
+
 [node name="VehiculeBody3D" type="VehicleBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
+gravity_scale = 4.0
 script = ExtResource("8_d48fy")
 
 [node name="Camera3D" type="Camera3D" parent="VehiculeBody3D"]
@@ -220,12 +226,10 @@ transform = Transform3D(-1, -1.77636e-14, -8.74228e-08, -4.9202e-08, 0.82659, 0.
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0782998, 0.574109, 2.03526)
 size = Vector3(0.1, 0.1, 0.01)
 
-[node name="Area3D" type="Area3D" parent="VehiculeBody3D/Ultrason"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.55121)
+[node name="RayCast3D" type="RayCast3D" parent="VehiculeBody3D/Ultrason"]
+target_position = Vector3(0, 0, 5)
+collision_mask = 2
 script = ExtResource("10_bqm1h")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/Ultrason/Area3D"]
-shape = SubResource("BoxShape3D_03wvy")
 
 [node name="voiture_3D" parent="VehiculeBody3D" instance=ExtResource("9_p6v8i")]
 transform = Transform3D(-20, 0, -2.97492e-06, 0, 19.564, 0, 3.01992e-06, 0, -19.702, -1.47401, -0.351459, -0.285655)
@@ -250,8 +254,12 @@ shape = SubResource("ConcavePolygonShape3D_hrfud")
 [node name="ArriereDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, -1.658)
 use_as_traction = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.1
+suspension_travel = 0.15
+suspension_stiffness = 80.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereDroit"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -261,8 +269,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="AvantDroit" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, -0.211, 1.21027)
 use_as_steering = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.4
+suspension_travel = 0.15
+suspension_stiffness = 120.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantDroit"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -272,8 +284,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="AvantGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.23338, -0.211, 1.23427)
 use_as_steering = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.4
+suspension_travel = 0.15
+suspension_stiffness = 120.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/AvantGauche"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -283,8 +299,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 [node name="ArriereGauche" type="VehicleWheel3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.233, -0.211, -1.66992)
 use_as_traction = true
-wheel_roll_influence = -0.5
+wheel_roll_influence = 0.01
 wheel_radius = 0.75
+wheel_rest_length = 0.2
+wheel_friction_slip = 1.1
+suspension_travel = 0.15
+suspension_stiffness = 80.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VehiculeBody3D/ArriereGauche"]
 transform = Transform3D(-0.00513127, -0.999956, 0.00790617, 0, -0.00790628, -0.999969, 0.999987, -0.00513111, 4.05692e-05, 0, 0, 0)
@@ -295,52 +315,29 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ktynk")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00132489, -0.0808594, 0.0089733)
 shape = SubResource("BoxShape3D_ggs0t")
 
-[node name="CapteurLigne1" type="Area3D" parent="VehiculeBody3D"]
+[node name="CapteurLigne1" type="RayCast3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.789885, -0.48067, 2.53203)
+script = ExtResource("12_si6y4")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/CapteurLigne1"]
-shape = SubResource("BoxShape3D_kh8id")
-
-[node name="CapteurLigne2" type="Area3D" parent="VehiculeBody3D"]
+[node name="CapteurLigne2" type="RayCast3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.425609, -0.48169, 2.53208)
+script = ExtResource("13_b71kb")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/CapteurLigne2"]
-shape = SubResource("BoxShape3D_kh8id")
-
-[node name="CapteurLigne3" type="Area3D" parent="VehiculeBody3D"]
+[node name="CapteurLigne3" type="RayCast3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0513657, -0.478287, 2.52894)
+script = ExtResource("14_7q8ni")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/CapteurLigne3"]
-shape = SubResource("BoxShape3D_kh8id")
-
-[node name="CapteurLigne4" type="Area3D" parent="VehiculeBody3D"]
+[node name="CapteurLigne4" type="RayCast3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.320732, -0.484976, 2.53297)
+script = ExtResource("15_oc3e7")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/CapteurLigne4"]
-shape = SubResource("BoxShape3D_kh8id")
-
-[node name="CapteurLigne5" type="Area3D" parent="VehiculeBody3D"]
+[node name="CapteurLigne5" type="RayCast3D" parent="VehiculeBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.686599, -0.485805, 2.53)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VehiculeBody3D/CapteurLigne5"]
-shape = SubResource("BoxShape3D_kh8id")
+script = ExtResource("16_i2qhx")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="VehiculeBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12427, 0.0324419, -0.016051)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12427, 0.0324419, -0.122819)
 shape = SubResource("BoxShape3D_2nw26")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
-
-[connection signal="body_entered" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_entered"]
-[connection signal="body_exited" from="VehiculeBody3D/Ultrason/Area3D" to="VehiculeBody3D/Ultrason/Area3D" method="_on_body_exited"]
-[connection signal="area_entered" from="VehiculeBody3D/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_entered"]
-[connection signal="area_exited" from="VehiculeBody3D/CapteurLigne1" to="AreaLigneBlanche" method="_on_capteur_ligne_1_area_exited"]
-[connection signal="area_entered" from="VehiculeBody3D/CapteurLigne2" to="AreaLigneBlanche" method="_on_capteur_ligne_2_area_entered"]
-[connection signal="area_exited" from="VehiculeBody3D/CapteurLigne2" to="AreaLigneBlanche" method="_on_capteur_ligne_2_area_exited"]
-[connection signal="area_entered" from="VehiculeBody3D/CapteurLigne3" to="AreaLigneBlanche" method="_on_capteur_ligne_3_area_entered"]
-[connection signal="area_exited" from="VehiculeBody3D/CapteurLigne3" to="AreaLigneBlanche" method="_on_capteur_ligne_3_area_exited"]
-[connection signal="area_entered" from="VehiculeBody3D/CapteurLigne4" to="AreaLigneBlanche" method="_on_capteur_ligne_4_area_entered"]
-[connection signal="area_exited" from="VehiculeBody3D/CapteurLigne4" to="AreaLigneBlanche" method="_on_capteur_ligne_4_area_exited"]
-[connection signal="area_entered" from="VehiculeBody3D/CapteurLigne5" to="AreaLigneBlanche" method="_on_capteur_ligne_5_area_entered"]
-[connection signal="area_exited" from="VehiculeBody3D/CapteurLigne5" to="AreaLigneBlanche" method="_on_capteur_ligne_5_area_exited"]

@@ -1,7 +1,7 @@
 extends RayCast3D
 
-var distance_null = -1
-
+@onready var ligne: StaticBody3D = $"../../AreaLigneBlanche/Ligne"
+@onready var plancher: StaticBody3D = $"../../AreaPlancher/Plancher"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -9,10 +9,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if is_colliding():
-		GlobalData.distance = round(global_transform.origin.distance_to(get_collision_point())*100)
+	if is_colliding() and get_collider() == ligne:
+		GlobalData.line[2] = 0
 	else:
-		GlobalData.distance = distance_null
-	#print(GlobalData.distance)
-
-	
+		GlobalData.line[2] = 255
