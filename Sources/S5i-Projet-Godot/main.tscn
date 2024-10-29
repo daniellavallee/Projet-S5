@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=39 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -117,7 +117,7 @@ albedo_color = Color(0.135012, 0.135012, 0.135012, 1)
 size = Vector3(1, 0.592199, 4.0249)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2nw26"]
-size = Vector3(1.81168, 0.857178, 4.48853)
+size = Vector3(1.81168, 0.857178, 4.27499)
 
 [node name="Main" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.0135775)
@@ -336,9 +336,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.686599, -0.485805, 2.53)
 script = ExtResource("16_i2qhx")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="VehiculeBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12427, 0.0324419, -0.016051)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12427, 0.0324419, -0.122819)
 shape = SubResource("BoxShape3D_2nw26")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
-
