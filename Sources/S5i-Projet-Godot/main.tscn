@@ -124,7 +124,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_eka3w")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0657911, 3.99017, 1.24773)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38813, 3.99017, -0.083912)
 collision_layer = 3
 collision_mask = 3
 
@@ -155,8 +155,8 @@ script = ExtResource("6_017ts")
 script = SubResource("GDScript_d2gei")
 
 [node name="Floor" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0529957, -0.250006, -46.9085)
-size = Vector3(5, 0.5, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.53503, -0.34042, -47.2547)
+size = Vector3(28.502, 0.5, 32.1628)
 material = SubResource("StandardMaterial3D_y2p80")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -196,7 +196,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="AreaLigneBlanche" type="Area3D" parent="."]
-transform = Transform3D(-0.0286893, 0, 0.999588, 0, 1, 0, -0.999588, 0, -0.0286893, -0.802377, 1.52822, -0.00151849)
+transform = Transform3D(-0.0286893, 0, 0.999588, 0, 1, 0, -0.999588, 0, -0.0286893, -0.696964, 1.32533, -0.117899)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00336652, 0.392692, 0.84211)
@@ -215,8 +215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.33909e-05, 0.394478, 0.8421
 shape = SubResource("BoxShape3D_1f3xd")
 
 [node name="VehiculeBody3D" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00902, 0)
-gravity_scale = 4.0
+transform = Transform3D(0.142335, 0, -0.989819, 0, 1, 0, 0.989819, 0, 0.142335, 3.52704, 3.00902, 0)
 script = ExtResource("8_d48fy")
 
 [node name="Camera3D" type="Camera3D" parent="VehiculeBody3D"]
