@@ -18,6 +18,6 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Input.is_action_pressed("camera1"):
-		$VehicleBody3D/Camera3D.current = true
+		$VehiculeBody3D/Camera3D.current = true
 	if Input.is_action_pressed("camera2"):
 		$Camera3D.current = true
