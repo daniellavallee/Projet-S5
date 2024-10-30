@@ -14,5 +14,7 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.FINDING_LINE:
             self.current_state = self.line_follower_module.run_finder(rpi_response)
         if self.current_state == RunStates.OBSTACLE_AVOIDANCE:
-            if self.motors_module.turn_to_angle(Direction.LEFT_DIRECTION, 90):
-                self.current_state = RunStates.STOP
+            self.current_state = self.obstacle_manager.run(rpi_response)
+        else:
+            if self.obstacle_manager.is_obstacle_detected(rpi_response):
+                self.current_state = RunStates.OBSTACLE_AVOIDANCE
