@@ -14,7 +14,7 @@ class Motors():
     def is_in_zero_range(self, speed:float) -> bool:
         return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
     def add_to_current_value(self, current_value:float, wanted_value:int, offset:float) -> float:
-        new_value = current_value + offset  
+        new_value = current_value + offset
         if current_value > wanted_value:
             if new_value < wanted_value:
                 new_value = wanted_value

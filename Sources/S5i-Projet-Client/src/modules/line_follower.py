@@ -55,8 +55,7 @@ class LineFollower():
             self.turning_angle = int(90 + step)
         elif values == [0, 0, 0, 0, 0]:
             self.off_track_count += 1
-            if self.off_track_count > 10:
-                return RunStates.FINDING_LINE
+            return RunStates.FINDING_LINE
         else:
             self.off_track_count = 0
 
@@ -71,18 +70,17 @@ class LineFollower():
         return RunStates.LINE_FOLLOWING
 
     def run_finder(self, rpi_response: RaspberryPiResponse) -> RunStates:
-
         values = self.read(rpi_response)
+        step = 45 
+
+        if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
+            self.turning_angle = int(90 - step) 
+ 
+        if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]: 
+            self.turning_angle = int(90 + step) 
+        if self.lastValue == [0, 0, 1, 0, 0]: 
+            return RunStates.STOP
+        self.motors_module.set_angle(self.turning_angle) 
+        self.motors_module.set_speed(-self.config.finders_speed) 
         
-        self.off_track_count += 1
-        center_angle = self.motors_module.config.maxRightAngle - self.motors_module.config.maxLeftAngle
-        #if self.off_track_count > self.config.max_off_track_count or True:
-        #    self.motors_module.set_angle(45)
-        #    self.motors_module.set_speed(100)
-        #else:
-        #    self.motors_module.set_angle(center_angle)
-        #    self.motors_module.set_speed(0)
-        print("Finder | Off track count : ",self.off_track_count)
-        self.motors_module.set_angle(center_angle)
-        self.motors_module.set_speed(0)
         return self.found_line(values)

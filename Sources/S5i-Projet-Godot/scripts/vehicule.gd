@@ -2,7 +2,7 @@ extends VehicleBody3D
 class_name Vehicule
 
 @export var MAX_STEER = 0.6
-@export var ENGINE_POWER = 50
+@export var ENGINE_POWER = 100
 const USE_WEBSOCKET = true
 
 # Called when the node enters the scene tree for the first time.
