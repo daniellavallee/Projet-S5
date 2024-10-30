@@ -8,5 +8,7 @@
     "maxSpeedInMeterPerSecond": 0.305,
     "speedInMeterPerSecondPerUnit": 0.00305,
     "maxZeroZone": 20,
-    "minZeroZone": -20
+    "minZeroZone": -20,
+    "wheelDistance": 0.08,
+    "centerAngle": 90
 }

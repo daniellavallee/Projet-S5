@@ -13,13 +13,15 @@ class SonarConfig:
     
 @dataclass
 class MotorsConfig:
-    maxSpeed: int
-    minSpeed: int
-    maxAcceleration: int
-    maxAngularAcc: int
+    maxSpeed : int
+    minSpeed : int
+    maxAcceleration : int
+    maxAngularAcc : int
     maxLeftAngle : int
     maxRightAngle : int
     speedInMeterPerSecondPerUnit : float
     maxSpeedInMeterPerSecond : float
-    maxZeroZone: int
-    minZeroZone: int
+    maxZeroZone : int
+    minZeroZone : int
+    wheelDistance : float
+    centerAngle : int

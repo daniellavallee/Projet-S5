@@ -1,4 +1,5 @@
 from src.models import MotorsConfig
+import numpy as np
 from .time import Time
 
 class Motors():
@@ -9,7 +10,7 @@ class Motors():
         self.config = config
         self.verbose = verbose
         self.speed : float  = 0.0
-        self.angle : float = 90.0
+        self.angle : float = self.config.centerAngle
         self.time_module = time_module
     def is_in_zero_range(self, speed:float) -> bool:
         return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
@@ -29,6 +30,12 @@ class Motors():
                 get_speed_ratio = (self.speed - self.config.maxZeroZone) / (self.config.maxSpeed - self.config.maxZeroZone)
             return get_speed_ratio * self.config.speedInMeterPerSecondPerUnit
         return int(self.speed)
+    def get_curvature(self) -> float:
+        angle = self.get_angle() - self.config.centerAngle
+        angle_rad : float = np.deg2rad(angle)
+        return angle_rad / self.config.wheelDistance
+    def get_centrifugal_acceleration(self) -> float:
+        return self.get_speed(in_meters_per_second=True) ** 2 * self.get_curvature()
     def get_angle(self) -> int:
         return int(self.angle)
     def get_offset(self, per_seconds_value:int) -> float:
