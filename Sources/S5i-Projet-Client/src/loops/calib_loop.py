@@ -1,7 +1,7 @@
 import sys
 
 from .base_loop import BaseLoop
-from src.models import ControllerResponse, RaspberryPiResponse
+from src.models import RaspberryPiResponse
 from src.enums import Hosts
 from src.constants import SAMPLES_PATH
 import keyboard
@@ -14,7 +14,7 @@ class CalibLoop(BaseLoop):
         self.max_num_samples = 30
         if not SAMPLES_PATH.exists():
             with SAMPLES_PATH.open('w') as f:
-                title = "Sample Name,Delta time,"
+                title = "Sample Name,dt,"
                 for i in range(self.max_num_samples):
                     title += f"Sample {i},"
                 title = title[:-1]
