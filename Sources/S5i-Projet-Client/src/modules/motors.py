@@ -43,7 +43,11 @@ class Motors():
         angle_rad : float = np.deg2rad(np.abs(angle))
 
         print(self.config.wheelDistance) 
-        return self.config.wheelDistance / np.tan(angle_rad)
+        rayon_roue_exterieur = self.config.wheelDistance / np.tan(angle_rad)
+        rayon_roue_interieur = self.config.wheelDistance / np.tan(angle_rad)
+        rayon_centre = (rayon_roue_exterieur + rayon_roue_interieur) / 2
+        
+        return rayon_centre
     
     
     def get_centrifugal_acceleration(self) -> float:
