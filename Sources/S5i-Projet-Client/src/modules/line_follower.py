@@ -56,6 +56,8 @@ class LineFollower():
         elif values == [0, 0, 0, 0, 0]:
             self.off_track_count += 1
             return RunStates.FINDING_LINE
+        elif values == [1, 1, 1, 1, 1]:
+            return RunStates.STOP
         else:
             self.off_track_count = 0
 
