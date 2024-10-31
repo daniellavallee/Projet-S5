@@ -1,0 +1,508 @@
+---
+title: "Filtre tes connaissances"
+subtitle: "Conception de filtres pour le réduction du bruit du capteur de distance"
+author:
+- "Daniel Lavallée"
+- "Mathieu Sévégny"
+- "Tristan Lafontaine"
+- "Émile Bois"
+- "Vincent Kilaknowvski"
+date: "2024-10-31"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    highlight: tango
+    code_folding: show
+  pdf_document:
+    toc: true
+---
+
+# Configuration de l'environnement
+
+## Lecture des données
+
+```{r loadPackage, message=FALSE, warning=FALSE}
+## Fonction qui vérifie si un packet est installé et qui l'installe avant 
+## de le charger au besoin.
+loadPackage <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, quiet = TRUE)
+    library(package, character.only = TRUE, quietly = TRUE)
+  }
+  else library(package, character.only = TRUE, quietly = TRUE)
+}
+```
+
+```{r libraries, message=FALSE, warning=FALSE}
+loadPackage("tidyverse")
+loadPackage("ggplot2")
+loadPackage("readxl")
+loadPackage("Metrics")
+loadPackage("signal")
+loadPackage("TTR")
+loadPackage("caret")
+
+```
+
+Lecture des données du capteur de distance (données réelle vs données bruitées).
+```{r readData}
+## Chemin vers les données
+path_donnees_obstacle <- "../data/donnees_detecteur_obstacle.xlsx"
+
+## Lecture des données
+donnees_detecteur_obstacle <- read_xlsx(path_donnees_obstacle)
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>% 
+  set_names(c("real_distance_cm", "measured_distance_cm"))
+
+```
+
+# Conception d'un filtre Butterworth
+
+```{r butterworth}
+fe <- 100000               # Fréquence d'échantillonnage
+fc <- 40000                # Fréquence de coupure
+order_butter <- 2                 # Ordre du filtre
+cutoff <- fc/(fe/2)        # Fréquence de coupure normalisée
+
+# Conception du filtre Butterworth
+butter_filter <- butter(order_butter, cutoff, type = "low")
+
+# Calcul de la réponse en fréquence
+freq_response <- freqz(butter_filter, Fs = 2)  # Fs = 2 pour des fréquences normalisées (entre 0 et 1)
+
+## Affichage des coefficients du filtre Butterworth
+print(paste("Le numérateur du filtre Butterworth est : ", butter_filter$b))
+print(paste("Le dénominateur du filtre Butterworth est : ", butter_filter$a))
+
+## Création d'un data frame pour la réponse en fréquence
+# Fréquence normalisée
+freq_response_butter <- data.frame(f = freq_response$f,
+                h = abs(freq_response$h))
+# Fréquence en Hz
+freq_response_butter_hz <- data.frame(f = freq_response$f * (fe/2),
+                h = abs(freq_response$h))
+
+## Tracer la réponse en fréquence (normalisée)
+ggplot(freq_response_butter, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (normalisée") +
+  ylab("Amplitude (dB)") +
+  ggtitle("Réponse en fréquence du filtre Butterworth") +
+  theme_minimal()
+
+## Tracer la réponse en fréquence (en Hz)
+ggplot(freq_response_butter_hz, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (Hz)") +
+  ylab("Amplitude (dB)") +
+  ggtitle("Réponse en fréquence du filtre Butterworth") +
+  theme_minimal()
+
+```
+
+L'équation du **filtre de Butterworth** est alors donnée par :
+
+$$
+h(s) = \frac{`r butter_filter$b[1]` s^2 + `r butter_filter$b[2]` s + `r butter_filter$b[3]`}{s^2 + `r butter_filter$a[2]` s + `r butter_filter$a[3]`}
+$$
+
+Appliquons le filtrage sur les données bruitées.
+
+```{r filtrageButterworth}
+# Filtrage des données bruitées
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(measured_distance_cm_butter = signal::filter(butter_filter, measured_distance_cm))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = measured_distance_cm_butter, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un filtre Butterworth",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  theme_minimal()
+
+```
+
+# Conception d'un filtre Chebyshev de type 1
+
+```{r chebyshev1}
+
+order_chebyshev1 <- 2                # Ordre du filtre Chebyshev de type 1
+ripple <- 0.5                        # Ondulation maximale en dB
+
+# Conception du filtre Chebyshev de type 1
+chebyshev1_filter <- cheby1(order_chebyshev1, ripple, cutoff, type = "low")
+
+# Affichage des coefficients du filtre Chebyshev de type 1
+print(paste("Le numérateur du filtre Chebyshev de type 1 est : ", chebyshev1_filter$b))
+print(paste("Le dénominateur du filtre Chebyshev de type 1 est : ", chebyshev1_filter$a))
+
+# Réponse en fréquence
+freq_response_chebyshev1 <- freqz(chebyshev1_filter, Fs = 2)
+freq_response_chebyshev1 <- data.frame(f = freq_response_chebyshev1$f,
+                h = abs(freq_response_chebyshev1$h))
+freq_response_chebyshev1_hz <- data.frame(f = freq_response_chebyshev1$f * (fe/2),
+                h = abs(freq_response_chebyshev1$h))
+
+## Tracer la réponse en fréquence (normalisée)
+ggplot(freq_response_chebyshev1, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (normalisée") +
+  ylab("Amplitude") +
+  ggtitle("Réponse en fréquence du filtre Chebyshev de type 1") +
+  theme_minimal()
+
+## Tracer la réponse en fréquence (en Hz)
+ggplot(freq_response_chebyshev1_hz, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (Hz)") +
+  ylab("Amplitude (dB)") +
+  ggtitle("Réponse en fréquence du filtre Chebyshev de type 1") +
+  theme_minimal()
+
+```
+
+L'équation du **filtre de Chebyshev de type 1** est alors donnée par :
+
+$$
+h(s) = \frac{`r chebyshev1_filter$b[1]` s^2 + `r chebyshev1_filter$b[2]` s + `r chebyshev1_filter$b[3]`}{s^2 + `r chebyshev1_filter$a[2]` s + `r chebyshev1_filter$a[3]`}
+$$
+
+Appliquons maintenant le filtre de Chebyshev de type 1 sur les données bruitées.
+
+```{r filtrageChebyshev1}
+# Filtrage des données bruitées
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(measured_distance_cm_chebyshev1 = signal::filter(chebyshev1_filter, measured_distance_cm))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = measured_distance_cm_chebyshev1, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un filtre Chebyshev de type 1",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  theme_minimal()
+
+```
+
+# Conception d'un filtre Chebyshev de type 2
+
+```{r chebyshev2}
+
+order_chebyshev2 <- 2                # Ordre du filtre Chebyshev de type 2
+stopband_attenuation <- 30           # Atténuation du bande d'arrêt en dB
+
+# Conception du filtre Chebyshev de type 2
+chebyshev2_filter <- cheby2(order_chebyshev2, stopband_attenuation, cutoff, type = "low")
+
+# Affichage des coefficients du filtre Chebyshev de type 2
+print(paste("Le numérateur du filtre Chebyshev de type 2 est : ", chebyshev2_filter$b))
+print(paste("Le dénominateur du filtre Chebyshev de type 2 est : ", chebyshev2_filter$a))
+
+# Réponse en fréquence
+freq_response_chebyshev2 <- freqz(chebyshev2_filter, Fs = 2)
+freq_response_chebyshev2 <- data.frame(f = freq_response_chebyshev2$f,
+                h = abs(freq_response_chebyshev2$h))
+freq_response_chebyshev2_hz <- data.frame(f = freq_response_chebyshev2$f * (fe/2),
+                h = abs(freq_response_chebyshev2$h))
+
+## Tracer la réponse en fréquence (normalisée)
+ggplot(freq_response_chebyshev2, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (normalisée") +
+  ylab("Amplitude (dB)") +
+  ggtitle("Réponse en fréquence du filtre Chebyshev de type 2") +
+  theme_minimal()
+
+## Tracer la réponse en fréquence (en Hz)
+ggplot(freq_response_chebyshev2_hz, aes(x = f, y = 20 * log10(h))) +
+  geom_line() +
+  xlab("Fréquence (Hz)") +
+  ylab("Amplitude (dB)") +
+  ggtitle("Réponse en fréquence du filtre Chebyshev de type 2") +
+  theme_minimal()
+
+
+```
+
+
+L'équation du **filtre de Chebyshev de type 2** est alors donnée par :
+
+$$
+h(s) = \frac{`r chebyshev2_filter$b[1]` s^2 + `r chebyshev2_filter$b[2]` s + `r chebyshev2_filter$b[3]`}{s^2 + `r chebyshev2_filter$a[2]` s + `r chebyshev2_filter$a[3]`}
+$$
+
+Appliquons maintenant le filtre de Chebyshev de type 2 sur les données bruitées.
+
+```{r filtrageChebyshev2}
+# Filtrage des données bruitées
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(measured_distance_cm_chebyshev2 = signal::filter(chebyshev2_filter, measured_distance_cm))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = measured_distance_cm_chebyshev2, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un filtre Chebyshev de type 2",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  theme_minimal()
+
+```
+
+# Conception d'un filtre elliptique
+
+```{r elliptique}
+
+order_elliptique <- 2                # Ordre du filtre elliptique
+ripple_passband <- 0.5               # Ondulation maximale en dB dans la bande de passage
+stopband_attenuation_elliptique <- 40 # Atténuation du bande d'arrêt en dB
+
+# Conception du filtre elliptique
+elliptic_filter <- ellip(order_elliptique, ripple_passband, stopband_attenuation_elliptique, cutoff, type = "low")
+
+# Affichage des coefficients du filtre elliptique
+print(paste("Le numérateur du filtre elliptique est : ", elliptic_filter$b))
+print(paste("Le dénominateur du filtre elliptique est : ", elliptic_filter$a))
+
+# Réponse en fréquence
+freq_response_elliptic <- freqz(elliptic_filter, Fs = 2)
+freq_response_elliptic <- data.frame(f = freq_response_elliptic$f,
+                h = abs(freq_response_elliptic$h))
+freq_response_elliptic_hz <- data.frame(f = freq_response_elliptic$f * (fe/2),
+                h = abs(freq_response_elliptic$h))
+
+## Tracer la réponse en fréquence (normalisée)
+ggplot(freq_response_elliptic, aes(x = f, y = h)) +
+  geom_line() +
+  xlab("Fréquence (normalisée") +
+  ylab("Amplitude") +
+  ggtitle("Réponse en fréquence du filtre elliptique") +
+  theme_minimal()
+
+## Tracer la réponse en fréquence (en Hz)
+ggplot(freq_response_elliptic_hz, aes(x = f, y = h)) +
+  geom_line() +
+  xlab("Fréquence (Hz)") +
+  ylab("Amplitude") +
+  ggtitle("Réponse en fréquence du filtre elliptique") +
+  theme_minimal()
+
+```
+
+L'équation du **filtre elliptique** est alors donnée par :
+
+$$
+h(s) = \frac{`r elliptic_filter$b[1]` s^2 + `r elliptic_filter$b[2]` s + `r elliptic_filter$b[3]`}{s^2 + `r elliptic_filter$a[2]` s + `r elliptic_filter$a[3]`}
+$$
+
+Appliquons maintenant le filtre elliptique sur les données bruitées.
+
+```{r filtrageElliptique}
+# Filtrage des données bruitées
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(measured_distance_cm_elliptic = signal::filter(elliptic_filter, measured_distance_cm))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = measured_distance_cm_elliptic, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un filtre elliptique",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  theme_minimal()
+
+```
+
+# Création d'un modèle de régression linéaire
+
+```{r regressionLineaire, message=FALSE, warning=FALSE}
+modele_regression_lineaire <- lm(measured_distance_cm ~ real_distance_cm, data = donnees_detecteur_obstacle)
+
+modele_regression_lineaire$coefficients
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r modele_regression_lineaire$coefficients[1]` + `r modele_regression_lineaire$coefficients[2]` x
+$$
+
+Appliquons maintenant le modèle de régression linéaire sur les données bruitées.
+
+```{r predictionRegressionLineaire}
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(modele_regression_lineaire = predict(modele_regression_lineaire))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = modele_regression_lineaire, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  theme_minimal()
+
+```
+
+# Création d'un modèle de régression polynomiale
+
+```{r regressionPolynomiale}
+
+
+```
+
+# Création d'un modèle de moyenne mobile simple d'order 3
+
+```{r moyenneMobileSimple3, message=FALSE, warning=FALSE}
+modele_moyenne_mobile_simple_3 <- SMA(donnees_detecteur_obstacle$measured_distance_cm, n = 3)
+
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(modele_moyenne_mobile_simple_3 = modele_moyenne_mobile_simple_3)
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = modele_moyenne_mobile_simple_3, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 3",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  theme_minimal()
+
+```
+
+# Création d'un modèle de moyenne mobile simple d'ordre 5
+```{r moyenneMobileSimple5, message=FALSE, warning=FALSE}
+modele_moyenne_mobile_simple_5 <- SMA(donnees_detecteur_obstacle$measured_distance_cm, n = 5)
+
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(modele_moyenne_mobile_simple_5 = modele_moyenne_mobile_simple_5)
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = modele_moyenne_mobile_simple_5, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 10",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  theme_minimal()
+
+```
+
+# Création d'un modèle Knn
+
+```{r knn}
+## Pratitionnement des données en train et test
+set.seed(123)
+train_indices <- createDataPartition(donnees_detecteur_obstacle$real_distance_cm, p = 0.8, list = FALSE)
+
+data_knn_test <- donnees_detecteur_obstacle[-train_indices,] %>%
+  select(real_distance_cm, measured_distance_cm)
+data_knn_train <- donnees_detecteur_obstacle[train_indices,] %>%
+  select(real_distance_cm, measured_distance_cm)
+
+control <- trainControl(method = "cv", number = 10)
+
+file_model_knn = "../data/model_knn.rds"
+
+if (file.exists(file_model_knn)) {
+  model_knn <- readRDS(file_model_knn)
+} else {
+  tune_grid_knn <- expand.grid(k = 1:10)
+  
+  ## Entrainement du modèle Knn
+  model_knn <- train(real_distance_cm ~ measured_distance_cm, data = data_knn_train, method = "knn", trControl = control)
+  saveRDS(model_knn, file_model_knn)
+}
+
+## Création du modèle Knn
+model_knn <- train(real_distance_cm ~ measured_distance_cm, data = data_knn_train, method = "knn", trControl = control)
+
+## Prédiction avec le modèle Knn
+predictions_knn <- predict(model_knn, data_knn_test)
+
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  mutate(modele_knn = ifelse(is.na(real_distance_cm), NA, predict(model_knn, .)))
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
+  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(y = modele_knn, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle Knn",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  theme_minimal()
+
+```
+
+# Comparaison des modèles
+
+```{r comparaisonModeles}
+
+## Erreur sur le filtre Butterworth
+RMSE_butter <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_butter)
+MAE_butter <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_butter)
+
+## Erreur sur le filtre Chebyshev de type 1
+RMSE_chebyshev1 <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev1)
+MAE_chebyshev1 <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev1)
+
+## Erreur sur le filtre Chebyshev de type 2
+RMSE_chebyshev2 <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev2)
+MAE_chebyshev2 <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev2)
+
+## Erreur sur le filtre elliptique
+RMSE_elliptic <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_elliptic)
+MAE_elliptic <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_elliptic)
+
+## Erreur sur le modèle de régression linéaire
+RMSE_regression_lineaire <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_regression_lineaire)
+MAE_regression_lineaire <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_regression_lineaire)
+
+## Erreur sur le modèle de moyenne mobile simple d'ordre 3
+valid <- moyenne_mobile_simple_3 <- !is.na(donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3)
+RMSE_moyenne_mobile_simple_3 <- rmse(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3[valid])
+MAE_moyenne_mobile_simple_3 <- mae(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3[valid])
+
+## Erreur sur le modèle de moyenne mobile simple d'ordre 5
+valid <- moyenne_mobile_simple_5 <- !is.na(donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5)
+RMSE_moyenne_mobile_simple_5 <- rmse(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5[valid])
+MAE_moyenne_mobile_simple_5 <- mae(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5[valid])
+
+## Error on the Knn model
+RMSE_knn <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_knn)
+MAE_knn <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_knn)
+
+## Création d'un data frame pour les erreurs
+erreurs <- data.frame(modele = c("Butterworth", "Chebyshev de type 1", "Chebyshev de type 2", "Elliptique", "Régression linéaire", "Moyenne mobile simple d'ordre 3", "Moyenne mobile simple d'ordre 5", "Knn"),
+                      RMSE = c(RMSE_butter, RMSE_chebyshev1, RMSE_chebyshev2, RMSE_elliptic, RMSE_regression_lineaire, RMSE_moyenne_mobile_simple_3, RMSE_moyenne_mobile_simple_5, RMSE_knn),
+                      MAE = c(MAE_butter, MAE_chebyshev1, MAE_chebyshev2, MAE_elliptic, MAE_regression_lineaire, MAE_moyenne_mobile_simple_3, MAE_moyenne_mobile_simple_5, MAE_knn))
+
+print(erreurs)
+
+```

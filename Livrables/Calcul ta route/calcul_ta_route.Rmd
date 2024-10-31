@@ -1,0 +1,116 @@
+---
+title: "Calcule ta route"
+author:
+- Daniel Lavallée
+- Mathieu Sévégny
+- Tristan Lafontaine
+- Émile Bois
+- Vincent Kilaknowvski
+date: "2024-10-31"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    highlight: tango
+    code_folding: show
+  pdf_document:
+    toc: true
+---
+\newpage
+# Analyse des données réelles vs. les données mesurées par le capteur de distance
+
+## Lecture des données
+
+```{r loadPackage, message=FALSE, warning=FALSE}
+## Fonction qui vérifie si un packet est installé et qui l'installe avant 
+## de le charger au besoin.
+loadPackage <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, quiet = TRUE)
+    library(package, character.only = TRUE, quietly = TRUE)
+  }
+  else library(package, character.only = TRUE, quietly = TRUE)
+}
+```
+
+```{r libraries, message=FALSE, warning=FALSE}
+loadPackage("tidyverse")
+loadPackage("ggplot2")
+loadPackage("readxl")
+loadPackage("Metrics")
+
+```
+
+Lecture des données lues par le capteur de distance par rapport à la distance réelle.
+
+```{r readData}
+## Chemin vers les données
+path_donnees_obstacle <- "../data/donnees_detecteur_obstacle.xlsx"
+
+## Lecture des données
+donnees_detecteur_obstacle <- read_excel(path_donnees_obstacle)
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>% 
+  set_names(c("real_distance_cm", "measured_distance_cm"))
+
+## Apperçu des données
+head(donnees_detecteur_obstacle, 3)
+
+```
+
+\newpage
+## Analyse des données
+
+```{r analyse}
+## Jeu de données contenant les données mesurées.
+donnees_mesurees <- tibble(
+  real_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
+  measured_distance_cm = donnees_detecteur_obstacle$measured_distance_cm,
+  Modèle = "mesure"
+)
+
+## Jeu de données contenant les données idéales.
+donnees_ideales <- tibble(
+  real_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
+  measured_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
+  Modèle = "ideale"
+)
+
+## Fusion des deux jeux de données
+all_data <- donnees_mesurees %>% bind_rows(donnees_ideales)
+
+## Affichage des données
+ggplot(all_data,
+       aes(x = real_distance_cm,
+           y = measured_distance_cm,
+           color = Modèle)) +
+  geom_point() +
+  geom_point(aes(x = real_distance_cm, y = measured_distance_cm)) +
+  labs(title = "Distance mesurée par le capteur vs distance réelle",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)") +
+  theme_minimal()
+
+```
+
+\newpage
+## Erreurs de mesure et coefficient de détermination
+
+```{r erreur_mesure}
+## Calcul de l'erreur de mesure (RMSE et MAE)
+RMSE_mesure <- rmse(donnees_detecteur_obstacle$real_distance_cm,
+                    donnees_detecteur_obstacle$measured_distance_cm)
+MAE_mesure <- mae(donnees_detecteur_obstacle$real_distance_cm,
+           donnees_detecteur_obstacle$measured_distance_cm)
+
+## Coefficient de détermination
+R2_mesure <- cor(donnees_detecteur_obstacle$real_distance_cm,
+                 donnees_detecteur_obstacle$measured_distance_cm)^2
+
+## Affichage des résultats
+print(paste("La RMSE est de: ", RMSE_mesure))
+print(paste("La MAE est de: ", MAE_mesure))
+print(paste("Le coefficient de détermination est de: ", R2_mesure))
+
+```
