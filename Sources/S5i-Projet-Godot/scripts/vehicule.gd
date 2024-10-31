@@ -1,10 +1,7 @@
 extends CharacterBody3D
 
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var speed_multiplier = 0.1
-@export var angle_multiplier = 0.1
-
-
+@export var angle_multiplier = 0.3
 
 @export var USE_WEBSOCKET = true
 
@@ -15,7 +12,7 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func physic(controle_angle:float,controle_moteur:float):
-	var angle_roues = deg_to_rad(45) * controle_angle * angle_multiplier
+	var angle_roues = controle_angle * angle_multiplier
 	var up = Vector3(0,1,0)
 	if controle_moteur < 0:
 		up *= -1
@@ -34,8 +31,8 @@ func _process(delta: float):
 	var controle_angle = 0
 	var controle_moteur = 0
 	if USE_WEBSOCKET :
-		controle_angle = -(GlobalData.wheel_angle - 90)/45
-		controle_moteur = GlobalData.bw_speed / 100
+		controle_angle = 1.5 * -(GlobalData.wheel_angle - 90)/45
+		controle_moteur = 0.5 * GlobalData.bw_speed / 100
 	else :
 		controle_angle = Input.get_axis("right","left")
 		controle_moteur = Input.get_axis("down", "up")
