@@ -13,8 +13,8 @@ class LineFollower():
         self.config = config
         self.verbose = verbose
         self.off_track_count = 0
-        self.turning_angle = 90
         self.motors_module = motors_module
+        self.turning_angle = self.motors_module.config.centerAngle
 
     def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
@@ -44,15 +44,15 @@ class LineFollower():
         # Direction calculate
         if values == [0, 0, 1, 0, 0]:
             self.off_track_count = 0
-            self.turning_angle = 90
+            self.turning_angle = self.motors_module.config.centerAngle
         # turn right
         elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]):
             self.off_track_count = 0
-            self.turning_angle = int(90 - step)
+            self.turning_angle = int(self.motors_module.config.centerAngle - step)
         # turn left
         elif values in ([0, 0, 1, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 1], [0, 0, 0, 0, 1]):
             self.off_track_count = 0
-            self.turning_angle = int(90 + step)
+            self.turning_angle = int(self.motors_module.config.centerAngle + step)
         elif values == [0, 0, 0, 0, 0]:
             self.off_track_count += 1
             return RunStates.FINDING_LINE
@@ -74,10 +74,10 @@ class LineFollower():
         step = 45 
 
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
-            self.turning_angle = int(90 - step) 
+            self.turning_angle = int(self.motors_module.config.centerAngle - step) 
  
         if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]: 
-            self.turning_angle = int(90 + step) 
+            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
         if self.lastValue == [0, 0, 1, 0, 0]: 
             return RunStates.STOP
         self.motors_module.set_angle(self.turning_angle) 

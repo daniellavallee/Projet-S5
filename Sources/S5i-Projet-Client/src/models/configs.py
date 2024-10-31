@@ -26,6 +26,7 @@ class MotorsConfig:
     minZeroZone : int
     wheelDistance : float
     centerAngle : int
+
+@dataclass
 class ObstacleAvoidanceConfig:
     pass
-@dataclass

@@ -36,7 +36,7 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1):
-            if self.motor_module.move_forward(src.constants.STRAIGHT_DISTANCE_1):
+            if self.motor_module.move(src.constants.STRAIGHT_DISTANCE_1):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2):
@@ -44,7 +44,7 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2):
-            if self.motor_module.move_forward(src.constants.STRAIGHT_DISTANCE_2):
+            if self.motor_module.move(src.constants.STRAIGHT_DISTANCE_2):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3):
@@ -52,7 +52,7 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
-            if self.motor_module.move_forward(src.constants.STRAIGHT_DISTANCE_3):
+            if self.motor_module.move(src.constants.STRAIGHT_DISTANCE_3):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOP):
