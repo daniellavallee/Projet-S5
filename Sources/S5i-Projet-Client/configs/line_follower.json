@@ -1,6 +1,6 @@
 {
     "min_white" : 200,
     "max_off_track_count":5000,
-    "cruising_speed": 70,
+    "cruising_speed": 50,
     "finders_speed": 50
 }
