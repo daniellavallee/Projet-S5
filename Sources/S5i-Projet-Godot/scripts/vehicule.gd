@@ -31,12 +31,12 @@ func physic(controle_angle:float,controle_moteur:float):
 func _process(delta: float):
 	if Input.is_action_pressed("reset"):
 		get_parent().get_tree().reload_current_scene()
+	var controle_angle = 0
+	var controle_moteur = 0
 	if USE_WEBSOCKET :
-		pass
+		controle_angle = -(GlobalData.wheel_angle - 90)/45
+		controle_moteur = GlobalData.bw_speed / 100
 	else :
-		var controle_angle = Input.get_axis("right","left")
-		var controle_moteur = Input.get_axis("down", "up")
-		physic(controle_angle,controle_moteur)
-		
-		
-	
+		controle_angle = Input.get_axis("right","left")
+		controle_moteur = Input.get_axis("down", "up")
+	physic(controle_angle,controle_moteur)
