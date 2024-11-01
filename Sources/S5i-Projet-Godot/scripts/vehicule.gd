@@ -1,28 +1,38 @@
 extends CharacterBody3D
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-@export var speed_multiplier = 0.015
-@export var angle_multiplier = 0.1
-
+@export var speed_multiplier = 2.68
+var angle_multiplier = 60
 @export var USE_WEBSOCKET = true
-
+var L = 0.14 * 10
 @onready var roueAvantDroit = $"AvantDroit"
 @onready var roueAvantGauche = $"AvantGauche"
+var multiplier = speed_multiplier
+var multiplerX = 0.7 * multiplier
+var multiplerY = 0.7 * multiplier
 
 func _ready() -> void:
 	pass # Replace with function body.
 
-func physic(controle_angle:float,controle_moteur:float):
-	var angle_roues = controle_angle * angle_multiplier
+func physic(controle_angle:float,controle_moteur:float, delta:float):
 	var up = Vector3(0,1,0)
 	if controle_moteur < 0:
 		up *= -1
-	var forward = Vector3(0,0,1)
-	var new_forward = Vector3(sin(angle_roues),0,cos(angle_roues)) * forward
-	var magn = controle_moteur * speed_multiplier
-	var vel = new_forward * magn
+	var angle_roues = deg_to_rad(controle_angle * 45)
+	var radius = 0
+	if angle_roues != 0:
+		radius = L / tan(angle_roues)
+	var magn = controle_moteur * speed_multiplier * delta
+	var theta = angle_roues*angle_multiplier * delta * magn
+	var vel = Vector3(0,0,1)
+	if controle_angle == 0:
+		vel = vel * magn
+	else:
+		var deltaX = radius - radius * cos(theta)
+		var deltaY = radius * sin(theta)
+		vel = Vector3(multiplerX*deltaX,0,multiplerY*deltaY)
 	translate(vel)
-	rotate(up,angle_roues*magn)
+	rotate(up,theta)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float):
@@ -36,4 +46,4 @@ func _process(delta: float):
 	else :
 		controle_angle = Input.get_axis("right","left")
 		controle_moteur = Input.get_axis("down", "up")
-	physic(controle_angle,controle_moteur)
+	physic(controle_angle,controle_moteur,delta)

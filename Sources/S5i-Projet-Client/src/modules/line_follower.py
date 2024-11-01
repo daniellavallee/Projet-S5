@@ -1,7 +1,7 @@
 from src.models import LineFollowerConfig, RaspberryPiResponse, ControllerResponse
 from src.enums import RunStates
 from .motors import Motors
-
+import numpy as np
 
 class LineFollower():
     lastValue = [0, 0, 0, 0, 0]
@@ -15,6 +15,8 @@ class LineFollower():
         self.off_track_count = 0
         self.motors_module = motors_module
         self.turning_angle = self.motors_module.config.centerAngle
+        self.sampleBuffer = []
+        self.maxSamples = 100
 
     def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
@@ -24,9 +26,34 @@ class LineFollower():
             print("==============================")
         return digital_values
 
+    def get_speed(self, values: list[bool]) -> float:
+        current_value = self.get_current_value(values)
+        if len(self.sampleBuffer) >= self.maxSamples:
+            self.sampleBuffer.pop(0)
+        self.sampleBuffer.append(current_value)
+        # Calculate the standard deviation of the sample buffer
+        factor_decc = np.std(self.sampleBuffer)
+        
+        return self.config.cruising_speed - factor_decc * self.config.finders_speed
+    
+    def get_current_value(self, values: list[bool]) -> float:
+        if values == [0,0,0,0,0]:
+            if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]:
+                return 1
+            if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]:
+                return -1
+        indexes  = []
+        for i,value in enumerate(values):
+            if value:
+                indexes.append(i)
+        center_index = sum(indexes) / len(indexes) / 4
+        center_index = -(center_index * 2 - 1)
+    
+        return center_index
+    
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
-        a_step = 3
+        a_step = 10
         b_step = 25
         c_step = 45
         d_step = 45
@@ -53,16 +80,16 @@ class LineFollower():
         elif values in ([0, 0, 1, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 1], [0, 0, 0, 0, 1]):
             self.off_track_count = 0
             self.turning_angle = int(self.motors_module.config.centerAngle + step)
+        elif values == [1, 1, 1, 1, 1] and self.lastValue == [0, 0, 1, 0, 0]:
+            return RunStates.STOP
         elif values == [0, 0, 0, 0, 0]:
             self.off_track_count += 1
             return RunStates.FINDING_LINE
-        elif values == [1, 1, 1, 1, 1]:
-            return RunStates.STOP
         else:
             self.off_track_count = 0
 
         self.motors_module.set_angle(self.turning_angle)
-        self.motors_module.set_speed(self.config.cruising_speed)
+        self.motors_module.set_speed(self.get_speed(values))
         self.lastValue = values
         return RunStates.LINE_FOLLOWING
 
@@ -76,13 +103,13 @@ class LineFollower():
         step = 45 
 
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
-            self.turning_angle = int(self.motors_module.config.centerAngle - step) 
+            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
  
         if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]: 
-            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
+            self.turning_angle = int(self.motors_module.config.centerAngle - step) 
         if self.lastValue == [0, 0, 1, 0, 0]: 
             return RunStates.STOP
         self.motors_module.set_angle(self.turning_angle) 
-        self.motors_module.set_speed(-self.config.finders_speed) 
+        self.motors_module.set_speed(self.config.finders_speed) 
         
         return self.found_line(values)
