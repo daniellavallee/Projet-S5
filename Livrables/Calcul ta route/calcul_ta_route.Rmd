@@ -47,15 +47,33 @@ Lecture des données lues par le capteur de distance par rapport à la distance 
 
 ```{r readData}
 ## Chemin vers les données
-path_donnees_obstacle <- "../data/donnees_detecteur_obstacle.xlsx"
+path_donnees_obstacle <- "../data/donnees_detecteur_obstacle(more).csv"
 
 ## Lecture des données
-donnees_detecteur_obstacle <- read_excel(path_donnees_obstacle)
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>% 
-  set_names(c("real_distance_cm", "measured_distance_cm"))
+donnees_detecteur_obstacle <- read_csv(path_donnees_obstacle)
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  rename(real_distance_cm = `Sample Name`)
+
+## dt moyen
+dt_moyen <- mean(donnees_detecteur_obstacle$dt)
 
 ## Apperçu des données
 head(donnees_detecteur_obstacle, 3)
+
+```
+
+# Nettoyage des données
+
+```{r cleanData}
+## Suppression des colonnes inutiles et transformation des données
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  pivot_longer(cols = starts_with("Sample"), names_to = "Sample_No", values_to = "measured_distance_cm") %>%
+  select(., -dt, -Sample_No)
+
+## Aggrégation des données par la moyenne des distances mesurées
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle %>%
+  group_by(real_distance_cm) %>%
+  summarise(measured_distance_cm = mean(measured_distance_cm, na.rm = TRUE))
 
 ```
 
@@ -65,15 +83,15 @@ head(donnees_detecteur_obstacle, 3)
 ```{r analyse}
 ## Jeu de données contenant les données mesurées.
 donnees_mesurees <- tibble(
-  real_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
-  measured_distance_cm = donnees_detecteur_obstacle$measured_distance_cm,
+  real_distance_cm = donnees_detecteur_obstacle_aggregated$real_distance_cm,
+  measured_distance_cm = donnees_detecteur_obstacle_aggregated$measured_distance_cm,
   Modèle = "mesure"
 )
 
 ## Jeu de données contenant les données idéales.
 donnees_ideales <- tibble(
-  real_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
-  measured_distance_cm = donnees_detecteur_obstacle$real_distance_cm,
+  real_distance_cm = donnees_detecteur_obstacle_aggregated$real_distance_cm,
+  measured_distance_cm = donnees_detecteur_obstacle_aggregated$real_distance_cm,
   Modèle = "ideale"
 )
 
@@ -82,14 +100,14 @@ all_data <- donnees_mesurees %>% bind_rows(donnees_ideales)
 
 ## Affichage des données
 ggplot(all_data,
-       aes(x = real_distance_cm,
-           y = measured_distance_cm,
+       aes(x = measured_distance_cm,
+           y = real_distance_cm,
            color = Modèle)) +
   geom_point() +
-  geom_point(aes(x = real_distance_cm, y = measured_distance_cm)) +
+  geom_point(aes(x = measured_distance_cm, y = real_distance_cm)) +
   labs(title = "Distance mesurée par le capteur vs distance réelle",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)") +
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)") +
   theme_minimal()
 
 ```
@@ -99,14 +117,14 @@ ggplot(all_data,
 
 ```{r erreur_mesure}
 ## Calcul de l'erreur de mesure (RMSE et MAE)
-RMSE_mesure <- rmse(donnees_detecteur_obstacle$real_distance_cm,
-                    donnees_detecteur_obstacle$measured_distance_cm)
-MAE_mesure <- mae(donnees_detecteur_obstacle$real_distance_cm,
-           donnees_detecteur_obstacle$measured_distance_cm)
+RMSE_mesure <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm,
+                    donnees_detecteur_obstacle_aggregated$measured_distance_cm)
+MAE_mesure <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm,
+           donnees_detecteur_obstacle_aggregated$measured_distance_cm)
 
 ## Coefficient de détermination
-R2_mesure <- cor(donnees_detecteur_obstacle$real_distance_cm,
-                 donnees_detecteur_obstacle$measured_distance_cm)^2
+R2_mesure <- cor(donnees_detecteur_obstacle_aggregated$real_distance_cm,
+                 donnees_detecteur_obstacle_aggregated$measured_distance_cm)^2
 
 ## Affichage des résultats
 print(paste("La RMSE est de: ", RMSE_mesure))
