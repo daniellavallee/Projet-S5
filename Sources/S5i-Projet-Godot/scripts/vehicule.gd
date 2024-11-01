@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-@export var speed_multiplier = 0.1
+@export var speed_multiplier = 0.015
 @export var angle_multiplier = 0.1
 
 
