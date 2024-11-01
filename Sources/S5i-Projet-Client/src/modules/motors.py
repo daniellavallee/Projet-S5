@@ -41,8 +41,8 @@ class Motors():
     def get_curvature(self, angle_in_degrees:float) -> float:
         angle = angle_in_degrees - self.config.centerAngle
         angle_rad : float = np.deg2rad(np.abs(angle))
-
-        print(self.config.wheelDistance) 
+        if (angle_rad == 0):
+            return 0
         rayon_roue_exterieur = self.config.wheelDistance / np.tan(angle_rad)
         rayon_roue_interieur = self.config.wheelDistance / np.tan(angle_rad)
         rayon_centre = (rayon_roue_exterieur + rayon_roue_interieur) / 2
@@ -108,10 +108,10 @@ class Motors():
         Description:      Move the car forward of x meters.
         Parameters:
             distance:     distance in meters to move forward to.
-        Return:           void.
+        Return:           bool when finished.
         """
         new_distance = self.get_speed(in_meters_per_second=True) * self.time_module.get_dt_in_seconds()
-
+        self.distance_parcourue += new_distance
         if backward:
             m = -1
         else:
@@ -122,50 +122,37 @@ class Motors():
             self.distance_parcourue = 0.0
             self.distance_acceleration = 0.0
 
-            print("État initial")
-
+        new_speed = m*self.config.maxSpeed
         # État d'accélération
-        elif self.move_forward_state == MoveForwardState.MOVING_ACC:
-            self.set_speed(m*self.config.maxSpeed)
+        if self.move_forward_state == MoveForwardState.MOVING_ACC:
+            self.distance_acceleration += new_distance
             if self.get_speed() == m*self.config.maxSpeed:
-                self.distance_parcourue += new_distance
-                self.distance_acceleration += new_distance
                 self.move_forward_state = MoveForwardState.MOVING_FORWARD
             elif self.distance_acceleration * 2 >= distance:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-                
-            print("État d'accélération")
-            
 
         # État de mouvement
-        elif self.move_forward_state == MoveForwardState.MOVING_FORWARD:
-            if self.distance_parcourue + self.distance_acceleration < distance:
-                self.distance_parcourue += new_distance
-                print("Distance parcourue: ", self.distance_parcourue)
-                self.set_speed(m*self.config.maxSpeed)
-            else:
-                self.set_speed(0)
+        if self.move_forward_state == MoveForwardState.MOVING_FORWARD:
+            if self.distance_parcourue + self.distance_acceleration >= distance:
+                new_speed = 0
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-        
-            print("État de mouvement")
 
         # État de décélération
-        elif self.move_forward_state == MoveForwardState.MOVING_DECC:
+        if self.move_forward_state == MoveForwardState.MOVING_DECC:
+            new_speed = 0
             if self.get_speed() == 0:
                 self.move_forward_state = MoveForwardState.STOP
             else:
-                self.set_speed(0)
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-            
-            print("État de décélération")
 
         # État d'arrêt
-        elif self.move_forward_state == MoveForwardState.STOP:
+        if self.move_forward_state == MoveForwardState.STOP:
             self.distance_parcourue = 0.0
-            self.distance_accelerationo = 0.0
+            self.distance_acceleration = 0.0
             self.move_forward_state = MoveForwardState.STARTING
             return True
-
+        
+        self.set_speed(new_speed)
         return False
 
     def turn_to_angle(self, direction:Direction, angle:int=0, backward:bool=False):
@@ -178,12 +165,9 @@ class Motors():
         """
         
         self.longueur_arc = np.deg2rad(angle) * self.get_curvature(self.get_angle())
-        print("rayon: ", self.get_curvature(self.get_angle()))
         # État initial
         if self.turn_to_angle_state == TurnState.STARTING:
             self.turn_to_angle_state = TurnState.TURNING_WHEEL
-            
-            print("État initial")
         
         # État de rotation
         elif self.turn_to_angle_state == TurnState.TURNING_WHEEL:
@@ -197,14 +181,11 @@ class Motors():
                     self.turn_to_angle_state = TurnState.MOVING_FORWARD
                 else:
                     self.set_angle(self.config.maxRightAngle)
-            print("État de rotation")
         
         # État de mouvement
         elif self.turn_to_angle_state == TurnState.MOVING_FORWARD:
-            print("Longueur arc: ", self.longueur_arc)
             if self.move(self.longueur_arc, backward):
                 self.turn_to_angle_state = TurnState.RETOUR_ANGLE
-            # print("État de mouvement")
         
         # État retour angle
         elif self.turn_to_angle_state == TurnState.RETOUR_ANGLE:
@@ -212,12 +193,10 @@ class Motors():
                 self.turn_to_angle_state = TurnState.STOP
             else:
                 self.set_angle(90)
-            print("État retour angle")
 
         # État d'arrêt
         elif self.turn_to_angle_state == TurnState.STOP:
             self.turn_to_angle_state = TurnState.STARTING
-            print("État d'arrêt")
             return True
 
          

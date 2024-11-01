@@ -19,7 +19,6 @@ class MotorsConfig:
     maxAngularAcc : int
     maxLeftAngle : int
     maxRightAngle : int
-    speedInMeterPerSecondPerUnit : float
     maxSpeedInMeterPerSecond : float
     rayon_courbure: float
     maxZeroZone : int
