@@ -19,9 +19,13 @@ class MotorsConfig:
     maxAngularAcc : int
     maxLeftAngle : int
     maxRightAngle : int
-    speedInMeterPerSecondPerUnit : float
     maxSpeedInMeterPerSecond : float
+    rayon_courbure: float
     maxZeroZone : int
     minZeroZone : int
     wheelDistance : float
     centerAngle : int
+
+@dataclass
+class ObstacleAvoidanceConfig:
+    pass

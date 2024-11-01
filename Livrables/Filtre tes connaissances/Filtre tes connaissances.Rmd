@@ -1,14 +1,17 @@
 ---
 title: "Filtre tes connaissances"
-subtitle: "Conception de filtres pour le réduction du bruit du capteur de distance"
 author:
-- "Daniel Lavallée"
-- "Mathieu Sévégny"
-- "Tristan Lafontaine"
-- "Émile Bois"
-- "Vincent Kilaknowvski"
+- Daniel Lavallée
+- Mathieu Sévégny
+- Tristan Lafontaine
+- Émile Bois
+- Vincent Kilaknowvski
 date: "2024-10-31"
 output:
+  word_document:
+    toc: true
+  pdf_document:
+    toc: true
   html_document:
     toc: true
     toc_float: true
@@ -16,8 +19,7 @@ output:
     theme: cosmo
     highlight: tango
     code_folding: show
-  pdf_document:
-    toc: true
+subtitle: Conception de filtres pour le réduction du bruit du capteur de distance
 ---
 
 # Configuration de l'environnement
@@ -48,24 +50,73 @@ loadPackage("caret")
 ```
 
 Lecture des données du capteur de distance (données réelle vs données bruitées).
-```{r readData}
+```{r readData, message=FALSE, warning=FALSE}
 ## Chemin vers les données
-path_donnees_obstacle <- "../data/donnees_detecteur_obstacle.xlsx"
+path_donnees_obstacle <- "../data/donnees_detecteur_obstacle(more).csv"
 
 ## Lecture des données
-donnees_detecteur_obstacle <- read_xlsx(path_donnees_obstacle)
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>% 
-  set_names(c("real_distance_cm", "measured_distance_cm"))
+donnees_detecteur_obstacle <- read_csv(path_donnees_obstacle)
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  rename(real_distance_cm = `Sample Name`)
+
+## dt moyen
+dt_moyen <- mean(donnees_detecteur_obstacle$dt)
+
+```
+
+
+
+# Nettoyage des données
+
+```{r cleanData}
+## Suppression des colonnes inutiles et transformation des données
+donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+  pivot_longer(cols = starts_with("Sample"), names_to = "Sample_No", values_to = "measured_distance_cm") %>%
+  select(., -dt, -Sample_No)
+
+## Aggrégation des données par la moyenne des distances mesurées
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle %>%
+  group_by(real_distance_cm) %>%
+  summarise(measured_distance_cm = mean(measured_distance_cm, na.rm = TRUE))
+
+```
+
+# Visualisation des données
+
+Distruibution des données bruitées.
+
+```{r visualisationDonnees, message=FALSE, warning=FALSE}
+## Distribution des données
+ggplot(donnees_detecteur_obstacle, aes(x = factor(real_distance_cm), y = measured_distance_cm)) +
+  geom_boxplot(outlier.shape = NA) +
+  labs(title = "Distribution des distances réelles mesurées",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)") +
+  scale_x_discrete(breaks = seq(0, 400, by = 4)) +
+  theme_minimal()
+
+```
+
+Données agrégées par la moyenne des distances mesurées.
+
+```{r visualisationDonneesAggregated, message=FALSE, warning=FALSE}
+## Distribution des données agrégées
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = real_distance_cm, y = measured_distance_cm)) +
+  geom_point() +
+  labs(title = "Distribution des distances réelles mesurées",
+       x = "Distance réelle (cm)",
+       y = "Distance mesurée (cm)") +
+  theme_minimal()
 
 ```
 
 # Conception d'un filtre Butterworth
 
 ```{r butterworth}
-fe <- 100000               # Fréquence d'échantillonnage
-fc <- 40000                # Fréquence de coupure
-order_butter <- 2                 # Ordre du filtre
-cutoff <- fc/(fe/2)        # Fréquence de coupure normalisée
+fe <- 1/dt_moyen          # Fréquence d'échantillonnage
+fc <- fe/3                # Fréquence de coupure
+order_butter <- 2         # Ordre du filtre
+cutoff <- fc/(fe/2)       # Fréquence de coupure normalisée
 
 # Conception du filtre Butterworth
 butter_filter <- butter(order_butter, cutoff, type = "low")
@@ -113,21 +164,55 @@ Appliquons le filtrage sur les données bruitées.
 
 ```{r filtrageButterworth}
 # Filtrage des données bruitées
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(measured_distance_cm_butter = signal::filter(butter_filter, measured_distance_cm))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = measured_distance_cm_butter, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = measured_distance_cm_butter, y = real_distance_cm, col = "Données filtrées")) +
   labs(title = "Données bruitées vs données filtrées avec un filtre Butterworth",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
   theme_minimal()
 
 ```
+
+```{r regressionLineaireButter}
+## Création du modèle de régression linéaire
+modele_butter <- lm(real_distance_cm ~ measured_distance_cm_butter, data = donnees_detecteur_obstacle_aggregated)
+
+## Prédiction des valeur réelles avec le filtre de Butterworth
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_butter = predict(modele_butter))
+
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r coef(modele_butter)[1]` + `r coef(modele_butter)[2]` x
+$$
+
+Voici le modèle de prévision pour la régression linéaire avec le filtre Butterworth.
+
+```{r plotRegressionLineaireButter}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_butter, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
+  theme_minimal()
+```
+
+
 
 # Conception d'un filtre Chebyshev de type 1
 
@@ -178,18 +263,51 @@ Appliquons maintenant le filtre de Chebyshev de type 1 sur les données bruitée
 
 ```{r filtrageChebyshev1}
 # Filtrage des données bruitées
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(measured_distance_cm_chebyshev1 = signal::filter(chebyshev1_filter, measured_distance_cm))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = measured_distance_cm_chebyshev1, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = measured_distance_cm_chebyshev1, y = real_distance_cm, col = "Données filtrées")) +
   labs(title = "Données bruitées vs données filtrées avec un filtre Chebyshev de type 1",
        x = "Distance réelle (cm)",
        y = "Distance mesurée (cm)",
        color = "Légende") +
+  theme_minimal()
+
+```
+
+```{r regressionLineaireChebyshev1}
+## Création du modèle de régression linéaire avec le filtre de Chebyshev de type 1
+modele_chebyshev1 <- lm(real_distance_cm ~ measured_distance_cm_chebyshev1, data = donnees_detecteur_obstacle_aggregated)
+
+## Prédiction des valeur réelles avec le filtre de Chebyshev de type 1
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_chebyshev1 = predict(modele_chebyshev1))
+
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r coef(modele_chebyshev1)[1]` + `r coef(modele_chebyshev1)[2]` x
+$$
+
+Voici le modèle de prévision pour la régression linéaire avec le filtre Chebyshev de type 1.
+
+```{r plotRegressionLineaireChebyshev1}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_chebyshev1, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
   theme_minimal()
 
 ```
@@ -245,18 +363,51 @@ Appliquons maintenant le filtre de Chebyshev de type 2 sur les données bruitée
 
 ```{r filtrageChebyshev2}
 # Filtrage des données bruitées
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(measured_distance_cm_chebyshev2 = signal::filter(chebyshev2_filter, measured_distance_cm))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = measured_distance_cm_chebyshev2, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = measured_distance_cm_chebyshev2, y = real_distance_cm, col = "Données filtrées")) +
   labs(title = "Données bruitées vs données filtrées avec un filtre Chebyshev de type 2",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
+  theme_minimal()
+
+```
+
+```{r regressionLineaireChebyshev2}
+## Création du modèle de régression linéaire avec le filtre de Chebyshev de type 2
+modele_chebyshev2 <- lm(real_distance_cm ~ measured_distance_cm_chebyshev2, data = donnees_detecteur_obstacle_aggregated)
+
+## Prédiction des valeur réelles avec le filtre de Chebyshev de type 2
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_chebyshev2 = predict(modele_chebyshev2))
+
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r coef(modele_chebyshev2)[1]` + `r coef(modele_chebyshev2)[2]` x
+$$
+
+Voici le modèle de prévision pour la régression linéaire avec le filtre Chebyshev de type 2.
+
+```{r plotRegressionLineaireChebyshev2}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_chebyshev2, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
   theme_minimal()
 
 ```
@@ -311,26 +462,59 @@ Appliquons maintenant le filtre elliptique sur les données bruitées.
 
 ```{r filtrageElliptique}
 # Filtrage des données bruitées
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(measured_distance_cm_elliptic = signal::filter(elliptic_filter, measured_distance_cm))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = measured_distance_cm_elliptic, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = measured_distance_cm_elliptic, y = real_distance_cm, col = "Données filtrées")) +
   labs(title = "Données bruitées vs données filtrées avec un filtre elliptique",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
   theme_minimal()
 
 ```
 
-# Création d'un modèle de régression linéaire
+```{r regressionLineaireElliptique}
+## Création du modèle de régression linéaire avec le filtre elliptique
+modele_elliptic <- lm(real_distance_cm ~ measured_distance_cm_elliptic, data = donnees_detecteur_obstacle_aggregated)
+
+## Prédiction des valeur réelles avec le filtre elliptique
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_elliptic = predict(modele_elliptic))
+
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r coef(modele_elliptic)[1]` + `r coef(modele_elliptic)[2]` x
+$$
+
+Voici le modèle de prévision pour la régression linéaire avec le filtre elliptique.
+
+```{r plotRegressionLineaireElliptique}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_elliptic, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
+  theme_minimal()
+
+```
+
+# Création d'un modèle de régression linéaire sans filtre
 
 ```{r regressionLineaire, message=FALSE, warning=FALSE}
-modele_regression_lineaire <- lm(measured_distance_cm ~ real_distance_cm, data = donnees_detecteur_obstacle)
+modele_regression_lineaire <- lm(measured_distance_cm ~ real_distance_cm, data = donnees_detecteur_obstacle_aggregated)
 
 modele_regression_lineaire$coefficients
 ```
@@ -344,69 +528,135 @@ $$
 Appliquons maintenant le modèle de régression linéaire sur les données bruitées.
 
 ```{r predictionRegressionLineaire}
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(modele_regression_lineaire = predict(modele_regression_lineaire))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = modele_regression_lineaire, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_regression_lineaire, y = real_distance_cm, col = "Données prédites")) +
   labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
+  theme_minimal()
+
+```
+
+
+
+# Création d'un modèle de moyenne mobile simple d'order 3
+
+```{r moyenneMobileSimple3, message=FALSE, warning=FALSE}
+modele_moyenne_mobile_simple_3 <- SMA(donnees_detecteur_obstacle_aggregated$measured_distance_cm, n = 3)
+
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_moyenne_mobile_simple_3 = modele_moyenne_mobile_simple_3)
+
+## Tracer les données bruitées vs les données filtrées
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_moyenne_mobile_simple_3, y = real_distance_cm, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 3",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
   scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
   theme_minimal()
 
 ```
 
-# Création d'un modèle de régression polynomiale
+Appliquons maintenant un modèle de régression linéaire sur la moyenne mobile simple d'ordre 3.
 
-```{r regressionPolynomiale}
+```{r regressionLineaireMoyenneMobileSimple3}
+## Création du modèle de régression linéaire avec la moyenne mobile simple d'ordre 3
+modele_moyenne_mobile_simple_3_predict <- lm(real_distance_cm ~ modele_moyenne_mobile_simple_3, data = donnees_detecteur_obstacle_aggregated, na.action = na.omit)
+coef(modele_moyenne_mobile_simple_3_predict)
 
+## Prédiction des valeur réelles avec la moyenne mobile simple d'ordre 3
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_moyenne_mobile_simple_3_predict = ifelse(is.na(modele_moyenne_mobile_simple_3), NA, predict(modele_moyenne_mobile_simple_3_predict)))
 
 ```
 
-# Création d'un modèle de moyenne mobile simple d'order 3
+L'équation du **modèle de régression linéaire** est alors donnée par :
 
-```{r moyenneMobileSimple3, message=FALSE, warning=FALSE}
-modele_moyenne_mobile_simple_3 <- SMA(donnees_detecteur_obstacle$measured_distance_cm, n = 3)
+$$
+y = `r coef(modele_moyenne_mobile_simple_3_predict)[1]` + `r coef(modele_moyenne_mobile_simple_3_predict)[2]` x
+$$
 
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
-  mutate(modele_moyenne_mobile_simple_3 = modele_moyenne_mobile_simple_3)
+Voici le modèle de prévision pour la régression linéaire avec la moyenne mobile simple d'ordre 3.
 
-## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = modele_moyenne_mobile_simple_3, col = "Données filtrées")) +
-  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 3",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+```{r plotRegressionLineaireMoyenneMobileSimple3, message=FALSE, warning=FALSE}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_moyenne_mobile_simple_3_predict, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
-  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
   theme_minimal()
 
 ```
 
 # Création d'un modèle de moyenne mobile simple d'ordre 5
 ```{r moyenneMobileSimple5, message=FALSE, warning=FALSE}
-modele_moyenne_mobile_simple_5 <- SMA(donnees_detecteur_obstacle$measured_distance_cm, n = 5)
+modele_moyenne_mobile_simple_5 <- SMA(donnees_detecteur_obstacle_aggregated$measured_distance_cm, n = 5)
 
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
   mutate(modele_moyenne_mobile_simple_5 = modele_moyenne_mobile_simple_5)
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = modele_moyenne_mobile_simple_5, col = "Données filtrées")) +
-  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 10",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_moyenne_mobile_simple_5, y = real_distance_cm, col = "Données filtrées")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de moyenne mobile\nsimple d'ordre 5",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
   scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  theme_minimal()
+
+```
+
+Appliquons maintenant un modèle de régression linéaire sur la moyenne mobile simple d'ordre 5.
+
+```{r regressionLineaireMoyenneMobileSimple5}
+## Création du modèle de régression linéaire avec la moyenne mobile simple d'ordre 5
+modele_moyenne_mobile_simple_5_predict <- lm(real_distance_cm ~ modele_moyenne_mobile_simple_5, data = donnees_detecteur_obstacle_aggregated, na.action = na.omit)
+
+## Prédiction des valeur réelles avec la moyenne mobile simple d'ordre 5
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_moyenne_mobile_simple_5_predict = ifelse(is.na(modele_moyenne_mobile_simple_5), NA, predict(modele_moyenne_mobile_simple_5_predict)))
+
+```
+
+L'équation du **modèle de régression linéaire** est alors donnée par :
+
+$$
+y = `r coef(modele_moyenne_mobile_simple_5_predict)[1]` + `r coef(modele_moyenne_mobile_simple_5_predict)[2]` x
+$$
+
+Voici le modèle de prévision pour la régression linéaire avec la moyenne mobile simple d'ordre 5.
+
+```{r plotRegressionLineaireMoyenneMobileSimple5, message=FALSE, warning=FALSE}
+## Tracer les données bruitées vs les données prédites par le modèle de régression linéaire
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_moyenne_mobile_simple_5_predict, y = real_distance_cm, col = "Données prédites")) +
+  labs(title = "Données bruitées vs données filtrées avec un modèle de régression linéaire",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
+       color = "Légende") +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
   theme_minimal()
 
 ```
@@ -416,11 +666,11 @@ ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
 ```{r knn}
 ## Pratitionnement des données en train et test
 set.seed(123)
-train_indices <- createDataPartition(donnees_detecteur_obstacle$real_distance_cm, p = 0.8, list = FALSE)
+train_indices <- createDataPartition(donnees_detecteur_obstacle_aggregated$real_distance_cm, p = 0.8, list = FALSE)
 
-data_knn_test <- donnees_detecteur_obstacle[-train_indices,] %>%
+data_knn_test <- donnees_detecteur_obstacle_aggregated[-train_indices,] %>%
   select(real_distance_cm, measured_distance_cm)
-data_knn_train <- donnees_detecteur_obstacle[train_indices,] %>%
+data_knn_train <- donnees_detecteur_obstacle_aggregated[train_indices,] %>%
   select(real_distance_cm, measured_distance_cm)
 
 control <- trainControl(method = "cv", number = 10)
@@ -437,25 +687,22 @@ if (file.exists(file_model_knn)) {
   saveRDS(model_knn, file_model_knn)
 }
 
-## Création du modèle Knn
-model_knn <- train(real_distance_cm ~ measured_distance_cm, data = data_knn_train, method = "knn", trControl = control)
-
 ## Prédiction avec le modèle Knn
 predictions_knn <- predict(model_knn, data_knn_test)
 
-donnees_detecteur_obstacle <- donnees_detecteur_obstacle %>%
-  mutate(modele_knn = ifelse(is.na(real_distance_cm), NA, predict(model_knn, .)))
+donnees_detecteur_obstacle_aggregated <- donnees_detecteur_obstacle_aggregated %>%
+  mutate(modele_knn = ifelse(is.na(measured_distance_cm), NA, predict(model_knn, .)))
 
 ## Tracer les données bruitées vs les données filtrées
-ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
-  geom_line(aes(y = real_distance_cm, col = "Données idéales")) +
-  geom_line(aes(y = measured_distance_cm, col = "Données bruitées")) +
-  geom_line(aes(y = modele_knn, col = "Données filtrées")) +
+ggplot(donnees_detecteur_obstacle_aggregated, aes(x = measured_distance_cm)) +
+  geom_line(aes(x = real_distance_cm, y = real_distance_cm, col = "Données idéales")) +
+  geom_line(aes(x = measured_distance_cm, y = real_distance_cm, col = "Données bruitées")) +
+  geom_line(aes(x = modele_knn, y = real_distance_cm, col = "Données prédites")) +
   labs(title = "Données bruitées vs données filtrées avec un modèle Knn",
-       x = "Distance réelle (cm)",
-       y = "Distance mesurée (cm)",
+       x = "Distance mesurée (cm)",
+       y = "Distance réelle (cm)",
        color = "Légende") +
-  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données filtrées" = "blue")) +
+  scale_color_manual(values = c("Données idéales" = "black", "Données bruitées" = "red", "Données prédites" = "blue")) +
   theme_minimal()
 
 ```
@@ -465,38 +712,38 @@ ggplot(donnees_detecteur_obstacle, aes(x = real_distance_cm)) +
 ```{r comparaisonModeles}
 
 ## Erreur sur le filtre Butterworth
-RMSE_butter <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_butter)
-MAE_butter <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_butter)
+RMSE_butter <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_butter)
+MAE_butter <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_butter)
 
 ## Erreur sur le filtre Chebyshev de type 1
-RMSE_chebyshev1 <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev1)
-MAE_chebyshev1 <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev1)
+RMSE_chebyshev1 <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_chebyshev1)
+MAE_chebyshev1 <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_chebyshev1)
 
 ## Erreur sur le filtre Chebyshev de type 2
-RMSE_chebyshev2 <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev2)
-MAE_chebyshev2 <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_chebyshev2)
+RMSE_chebyshev2 <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_chebyshev2)
+MAE_chebyshev2 <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_chebyshev2)
 
 ## Erreur sur le filtre elliptique
-RMSE_elliptic <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_elliptic)
-MAE_elliptic <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$measured_distance_cm_elliptic)
+RMSE_elliptic <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_elliptic)
+MAE_elliptic <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$measured_distance_cm_elliptic)
 
 ## Erreur sur le modèle de régression linéaire
-RMSE_regression_lineaire <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_regression_lineaire)
-MAE_regression_lineaire <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_regression_lineaire)
+RMSE_regression_lineaire <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$modele_regression_lineaire)
+MAE_regression_lineaire <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$modele_regression_lineaire)
 
 ## Erreur sur le modèle de moyenne mobile simple d'ordre 3
-valid <- moyenne_mobile_simple_3 <- !is.na(donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3)
-RMSE_moyenne_mobile_simple_3 <- rmse(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3[valid])
-MAE_moyenne_mobile_simple_3 <- mae(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_3[valid])
+valid <- moyenne_mobile_simple_3 <- !is.na(donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_3)
+RMSE_moyenne_mobile_simple_3 <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm[valid], donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_3[valid])
+MAE_moyenne_mobile_simple_3 <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm[valid], donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_3[valid])
 
 ## Erreur sur le modèle de moyenne mobile simple d'ordre 5
-valid <- moyenne_mobile_simple_5 <- !is.na(donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5)
-RMSE_moyenne_mobile_simple_5 <- rmse(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5[valid])
-MAE_moyenne_mobile_simple_5 <- mae(donnees_detecteur_obstacle$real_distance_cm[valid], donnees_detecteur_obstacle$modele_moyenne_mobile_simple_5[valid])
+valid <- moyenne_mobile_simple_5 <- !is.na(donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_5)
+RMSE_moyenne_mobile_simple_5 <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm[valid], donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_5[valid])
+MAE_moyenne_mobile_simple_5 <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm[valid], donnees_detecteur_obstacle_aggregated$modele_moyenne_mobile_simple_5[valid])
 
 ## Error on the Knn model
-RMSE_knn <- rmse(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_knn)
-MAE_knn <- mae(donnees_detecteur_obstacle$real_distance_cm, donnees_detecteur_obstacle$modele_knn)
+RMSE_knn <- rmse(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$modele_knn)
+MAE_knn <- mae(donnees_detecteur_obstacle_aggregated$real_distance_cm, donnees_detecteur_obstacle_aggregated$modele_knn)
 
 ## Création d'un data frame pour les erreurs
 erreurs <- data.frame(modele = c("Butterworth", "Chebyshev de type 1", "Chebyshev de type 2", "Elliptique", "Régression linéaire", "Moyenne mobile simple d'ordre 3", "Moyenne mobile simple d'ordre 5", "Knn"),

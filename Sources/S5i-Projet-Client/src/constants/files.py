@@ -9,5 +9,6 @@ OUTPUTS_PATH.mkdir(parents=True, exist_ok=True)
 LINE_FOLLOWER_CONFIG = CONFIGS_PATH / 'line_follower.json'
 SONAR_CONFIG = CONFIGS_PATH / 'sonar.json'
 MOTOR_CONFIG = CONFIGS_PATH / 'motors.json'
+OBSTACLE_AVOIDANCE_CONFIG = CONFIGS_PATH / 'obstacle_avoidance.json'
 
 SAMPLES_PATH = OUTPUTS_PATH / f'samples-{datetime.now().timestamp()}.csv'
