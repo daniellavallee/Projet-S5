@@ -1,2 +1,2 @@
 from .responses import ControllerResponse, RaspberryPiResponse
-from .configs import LineFollowerConfig, SonarConfig, MotorsConfig
+from .configs import LineFollowerConfig, SonarConfig, MotorsConfig, ObstacleAvoidanceConfig
