@@ -18,9 +18,8 @@ func physic(controle_angle:float,controle_moteur:float):
 		up *= -1
 	var forward = Vector3(0,0,1)
 	var new_forward = Vector3(sin(angle_roues),0,cos(angle_roues)) * forward
-	print(new_forward)
-	var vel = new_forward * controle_moteur * speed_multiplier
-	var magn = vel.length()
+	var magn = controle_moteur * speed_multiplier
+	var vel = new_forward * magn
 	translate(vel)
 	rotate(up,angle_roues*magn)
 
