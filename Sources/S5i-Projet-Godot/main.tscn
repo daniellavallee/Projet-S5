@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=41 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://boac146sfqyj2" path="res://ligne.tscn" id="11_ug5gh"]
 [ext_resource type="Script" path="res://capteur_ligne.gd" id="11_xacyk"]
 [ext_resource type="PackedScene" uid="uid://cc4ydflkp1gwq" path="res://metre.tscn" id="12_50xni"]
+[ext_resource type="PackedScene" uid="uid://bs30lbq1c3u3l" path="res://ligne_test.tscn" id="12_qhidj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bm61v"]
 friction = 20.0
@@ -140,7 +141,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_eka3w")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0657911, 3.99017, 1.24773)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66474, 4.51096, 17.5569)
 collision_layer = 3
 collision_mask = 3
 mass = 0.1
@@ -213,7 +214,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="Vehicule" type="CharacterBody3D" parent="."]
-transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -5.25327, 2.77287, 16.782)
+transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -1.98638, 2.98823, 17.4612)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("8_d48fy")
@@ -329,7 +330,10 @@ script = ExtResource("11_xacyk")
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
 
 [node name="Ligne" parent="." instance=ExtResource("11_ug5gh")]
-transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 16.2247, -0.67179, 20.4851)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 16.2247, -0.143785, 20.4851)
+
+[node name="LigneTest" parent="." instance=ExtResource("12_qhidj")]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -7.39728, 1.63938, 0.405667)
 
 [node name="Metre" parent="." instance=ExtResource("12_50xni")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0236, 1.8072, 12.5892)

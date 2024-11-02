@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://bs30lbq1c3u3l"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_3kxac"]
+inner_radius = 1.2
+outer_radius = 1.6
+
+[node name="LigneTest" type="Area3D"]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 16.2247, -0.67179, 20.4851)
+
+[node name="LigneTest" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(-0.143164, 0.986814, -0.0754634, -9.15875e-10, 0.0762488, 0.997085, 0.989695, 0.142747, -0.0109161, -3.16166, -0.22869, 5.73957)
+polygon = PackedVector2Array(-5.35338, 1.03311, -5.54862, 1.4913, -6.44231, 1.37604, -6.98534, 1.75551, -7.37957, 1.44772, -6.56875, 0.806631)
+
+[node name="LigneTest2" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_3kxac")
+
+[node name="LigneTest3" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(-0.973677, 0.227878, -0.00416111, 0.000927933, 0.0222206, 0.999748, 0.227914, 0.973432, -0.0218472, -6.61233, -0.0915803, -0.757502)
+polygon = PackedVector2Array(-6.06566, 0.592173, -6.03192, 1.37227, -6.71605, 1.44618, -7.04445, 1.85827, -7.58567, 1.75643, -7.03017, 0.872486)
+
+[node name="LigneTest4" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(-0.53192, -0.828386, -0.17558, -0.0283433, -0.189813, 0.981406, -0.846314, 0.527008, 0.0774869, -1.21943, -0.120927, -6.44154)
+polygon = PackedVector2Array(-6.05489, 0.852803, -6.03192, 1.37227, -6.71605, 1.44618, -7.04445, 1.85827, -7.58567, 1.75643, -7.03017, 0.872486)
+
+[node name="LigneTest5" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(0.981548, 0.189593, -0.0246179, 0.0157088, 0.0483507, 0.998701, 0.190539, -0.980665, 0.0444805, 5.67575, -0.0120113, 3.54943)
+polygon = PackedVector2Array(-6.06555, 0.923227, -6.03192, 1.37227, -6.71605, 1.44618, -7.04445, 1.85827, -7.61893, 1.74552, -6.95117, 1.02752)
+
+[node name="LigneTest6" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(0.643466, -0.763238, 0.0583838, -1.02118e-05, 0.0762631, 0.997083, -0.765468, -0.641593, 0.0490651, 5.80319, -0.314111, -3.17238)
+polygon = PackedVector2Array(-6.06566, 0.592173, -6.03192, 1.37227, -6.71605, 1.44618, -7.04445, 1.85827, -7.58567, 1.75643, -7.03017, 0.872486)
