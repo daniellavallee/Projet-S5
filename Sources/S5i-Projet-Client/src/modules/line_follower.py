@@ -90,7 +90,6 @@ class LineFollower():
 
         self.motors_module.set_angle(self.turning_angle)
         self.motors_module.set_speed(self.get_speed(values))
-        print(self.get_speed(values))
         self.lastValue = values
         return RunStates.LINE_FOLLOWING
 
