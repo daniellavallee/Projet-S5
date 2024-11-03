@@ -348,3 +348,6 @@ transform = Transform3D(0.12, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -19.501, 1.8072, 29.73
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9019, 3.46903, 24.1695)
 mesh = SubResource("CylinderMesh_ks2ai")
+
+[node name="3cm" parent="." instance=ExtResource("12_50xni")]
+transform = Transform3D(-1.31134e-09, 0, 0.1, 0, 0.1, 0, -0.03, 0, -4.37114e-09, 16.6888, 1.8072, 9.76944)
