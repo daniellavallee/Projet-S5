@@ -51,11 +51,21 @@ class Motors():
     
     
     def get_centrifugal_acceleration(self) -> float:
-        return self.get_speed(in_meters_per_second=True) ** 2 * self.get_curvature(self.get_angle())
+        speed = self.get_speed(in_meters_per_second=True) / self.config.maxSpeedInMeterPerSecond
+        acc = speed ** 2 * self.get_curvature(self.get_angle())
+        return acc
     def get_angle(self) -> int:
         return int(self.angle)
     def get_offset(self, per_seconds_value:int) -> float:
         return per_seconds_value * self.time_module.get_dt_in_seconds()
+    def get_available_acceleration(self) -> float:
+        value = self.config.maxAcceleration**2 - self.get_centrifugal_acceleration()**2
+        # if the value is negative, it means that the car is in a curve and the acceleration is limited by the centrifugal acceleration
+        # so we return -1 to indicate that the acceleration is limited
+        if value < 0:
+            return -1
+        available_acceleration = np.sqrt(value)
+        return available_acceleration
     def set_angle(self, wanted_angle:int):
         """
         Set the angle of the wheels (handling angular acceleration/deceleration)
@@ -77,7 +87,11 @@ class Motors():
         """
         Set the speed of the motors (handling acceleration/deceleration)
         """
-        if self.speed == wanted_speed:
+        current_max_acceleration = self.get_available_acceleration()
+        
+        if current_max_acceleration == -1:
+            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-current_max_acceleration))
+        elif self.speed == wanted_speed:
             return
         
         #Clip the speed to the borders speed
@@ -92,12 +106,11 @@ class Motors():
                 self.speed = self.config.maxZeroZone + 0.01
             else:
                 self.speed = self.config.minZeroZone - 0.01
-        
         # if the new speed is greater than the current speed
-        if wanted_speed > self.speed :
-            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(self.config.maxAcceleration))
+        if wanted_speed > self.speed or current_max_acceleration == -1:
+            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(current_max_acceleration))
         else:
-            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-self.config.maxAcceleration))
+            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-current_max_acceleration))
 
         if (self.is_in_zero_range(self.speed)):
             self.speed = 0
