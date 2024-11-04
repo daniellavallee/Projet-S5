@@ -108,6 +108,11 @@ class LineFollower():
         if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]: 
             self.turning_angle = int(self.motors_module.config.centerAngle - step) 
         self.motors_module.set_angle(self.turning_angle) 
-        self.motors_module.set_speed(self.config.finders_speed) 
+        self.motors_module.set_speed(self.config.finders_speed)
         
         return self.found_line(values)
+
+    def run_stop(self) -> RunStates:
+        self.motors_module.set_speed(0)
+        self.motors_module.set_angle(90)
+        return RunStates.STOP
