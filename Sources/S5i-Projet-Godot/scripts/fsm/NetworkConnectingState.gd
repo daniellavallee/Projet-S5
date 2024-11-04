@@ -74,8 +74,6 @@ func _control(wheel_angle, bw_speed):
 	GlobalData.wheel_angle = wheel_angle
 	GlobalData.bw_speed = bw_speed
 func _on_data(id,message):
-	# Print the received packet, you MUST always use get_peer(id).get_packet to receive data,
-	# and not get_packet directly when not using the MultiplayerAPI.
 	var json = JSON.new()
 	var error = json.parse(message)
 	if error == OK:
