@@ -155,6 +155,7 @@ class Motors():
                 self.move_forward_state = MoveForwardState.STOP
             else:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
+            
 
         # État d'arrêt
         if self.move_forward_state == MoveForwardState.STOP:

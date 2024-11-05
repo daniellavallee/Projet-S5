@@ -5,8 +5,11 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var roueAvantDroit = $"AvantDroit"
 @onready var roueAvantGauche = $"AvantGauche"
 var L = 0.14 * 10
-var angle_multiplier = 60
+var angle_multiplier = 45
 var speed_multiplier = 2.68
+var multiplier = speed_multiplier
+var multiplerX = 0.7 * multiplier
+var multiplerY = 0.7 * multiplier
 
 func _ready() -> void:
 	pass # Replace with function body.
@@ -27,7 +30,7 @@ func physic(controle_angle:float,controle_moteur:float, delta:float):
 	else:
 		var deltaX = radius - radius * cos(theta)
 		var deltaY = radius * sin(theta)
-		vel = Vector3(deltaX,0,deltaY)
+		vel = Vector3(multiplerX*deltaX,0,multiplerY*deltaY)
 	translate(vel)
 	rotate(up,theta)
 

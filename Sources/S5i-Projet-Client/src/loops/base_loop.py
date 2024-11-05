@@ -16,7 +16,7 @@ class BaseLoop(ABC):
         self.time_module = Time()
         self.motors_module = Motors(self.motors_cfg, self.time_module, verbose=self.is_verbose)
         self.line_follower_module = LineFollower(self.line_follower_cfg, self.motors_module, verbose=self.is_verbose)
-        self.obstacle_manager = ObstacleManager(self.motors_module)
+        self.obstacle_manager = ObstacleManager(self.obstacle_cfg,self.motors_module)
     @abstractmethod
     def control(self, rpi_response:RaspberryPiResponse):
         pass
