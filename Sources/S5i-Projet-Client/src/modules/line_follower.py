@@ -30,7 +30,7 @@ class LineFollower():
         current_value = self.get_current_value(values)
         if len(self.sampleBuffer) >= self.maxSamples:
             self.sampleBuffer.pop(0)
-        self.sampleBuffer.append(4*current_value)
+        self.sampleBuffer.append(current_value)
         # Calculate the standard deviation of the sample buffer
         factor_decc = np.std(self.sampleBuffer)
         
