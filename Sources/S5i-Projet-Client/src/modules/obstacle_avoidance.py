@@ -64,6 +64,10 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
             if self.motor_module.move(self.config.straightDistance3):
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4
+                
+        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4):
+            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle4):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOP):
