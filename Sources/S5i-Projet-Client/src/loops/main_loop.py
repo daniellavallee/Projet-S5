@@ -2,7 +2,7 @@ from .base_loop import BaseLoop
 from src.models import ControllerResponse, RaspberryPiResponse
 from src.enums import Hosts, RunStates, Direction
 from datetime import datetime
-from src.constants import BACKWARD_DISTANCE
+from src.constants import BACKWARD_DISTANCE, OBSTACLE_DETECTED_DISTANCE
 
 class MainLoop(BaseLoop):
     def __init__(self, host: Hosts, *, is_verbose: bool = True) -> None:
@@ -35,5 +35,5 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.STOP:
             self.motors_module.set_speed(0)
             self.motors_module.set_angle(self.motors_cfg.centerAngle)
-        elif rpi_response.sonar <= 10 and rpi_response.sonar >= 0:
+        elif rpi_response.sonar <= OBSTACLE_DETECTED_DISTANCE and rpi_response.sonar != -1:
             self.current_state = RunStates.OBSTACLE_AVOIDANCE
