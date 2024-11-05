@@ -5,7 +5,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var roueAvantDroit = $"AvantDroit"
 @onready var roueAvantGauche = $"AvantGauche"
 var L = 0.14 * 10
-var angle_multiplier = 60
+var angle_multiplier = 45
 var speed_multiplier = 2.68
 
 func _ready() -> void:

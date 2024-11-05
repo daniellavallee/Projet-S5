@@ -92,4 +92,4 @@ reset={
 [physics]
 
 common/physics_ticks_per_second=240
-common/physics_interpolation=true
+common/max_physics_steps_per_frame=24

@@ -57,10 +57,10 @@ class LineFollower():
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
         
-        a_step = 10
-        b_step = 15
-        c_step = 30
-        d_step = 35
+        a_step = 5
+        b_step = 20
+        c_step = 35
+        d_step = 45
         # Angle calculate
         if values == [0, 0, 1, 0, 0]:
             step = 0
