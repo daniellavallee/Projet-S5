@@ -141,7 +141,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_eka3w")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.32076, 3.8387, 17.5101)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8572, 3.8387, 15.0435)
 collision_layer = 3
 collision_mask = 3
 mass = 0.1
@@ -157,7 +157,7 @@ radius = 0.161
 material = SubResource("StandardMaterial3D_dr6ip")
 
 [node name="Obstacle" type="RigidBody3D" parent="."]
-transform = Transform3D(-0.0369228, 0, -0.999318, 0, 1, 0, 0.999318, 0, -0.0369228, 7.83011, 2.83458, 17.437)
+transform = Transform3D(-0.0369228, 0, -0.999318, 0, 1, 0, 0.999318, 0, -0.0369228, 7.83011, 2.83458, 15.0695)
 collision_layer = 3
 collision_mask = 3
 
@@ -215,7 +215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="Vehicule" type="CharacterBody3D" parent="."]
-transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -2.62584, 2.98823, 17.4612)
+transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -13.0621, 2.98823, 14.9032)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("8_d48fy")
@@ -331,13 +331,13 @@ script = ExtResource("11_xacyk")
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
 
 [node name="Ligne" parent="." instance=ExtResource("11_ug5gh")]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 16.2247, -0.143785, 20.4851)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 16.2247, -1.83736, 20.4851)
 
 [node name="LigneTest" parent="." instance=ExtResource("12_qhidj")]
-transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -7.39728, 1.63938, 0.405667)
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -7.39728, 1.63938, -9.90526)
 
 [node name="Metre" parent="." instance=ExtResource("12_50xni")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.42318, 3.3615, 21.8682)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.42318, 1.33595, 21.8682)
 
 [node name="Metre2" parent="." instance=ExtResource("12_50xni")]
 transform = Transform3D(-3.27835e-09, 0, 0.1, 0, 0.1, 0, -0.075, 0, -4.37114e-09, -18.3086, 1.8072, 29.0186)
@@ -349,11 +349,8 @@ transform = Transform3D(0.12, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -19.501, 1.8072, 29.73
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9019, 3.46903, 24.1695)
 mesh = SubResource("CylinderMesh_ks2ai")
 
-[node name="3cm" parent="." instance=ExtResource("12_50xni")]
-transform = Transform3D(-1.31134e-09, 0, 0.1, 0, 0.1, 0, -0.03, 0, -4.37114e-09, 16.6888, 1.8072, 9.76944)
-
 [node name="Obstacle2" type="RigidBody3D" parent="."]
-transform = Transform3D(0.0794509, 0, 0.996839, 0, 1, 0, -0.996839, 0, 0.0794509, 8.84307, 2.77689, 13.8011)
+transform = Transform3D(0.00544546, 0, 0.999985, 0, 1, 0, -0.999985, 0, 0.00544546, 6.45082, 2.77689, 8.4121)
 collision_layer = 3
 collision_mask = 3
 

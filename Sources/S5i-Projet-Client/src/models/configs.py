@@ -28,4 +28,11 @@ class MotorsConfig:
 
 @dataclass
 class ObstacleAvoidanceConfig:
-    pass
+    obstacleDetectedDistance : int
+    turnAngle1 : int
+    turnAngle2 : int
+    turnAngle3 : int
+    straightDistance1 : int
+    straightDistance2 : int
+    straightDistance3 : int
+    backwardDistance : int

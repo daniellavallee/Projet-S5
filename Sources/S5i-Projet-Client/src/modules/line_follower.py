@@ -1,7 +1,6 @@
 from src.models import LineFollowerConfig, RaspberryPiResponse, ControllerResponse
 from src.enums import RunStates
 from .motors import Motors
-from src.constants import OBSTACLE_DETECTED_DISTANCE
 import numpy as np
 
 class LineFollower():
@@ -57,7 +56,7 @@ class LineFollower():
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
         
-        a_step = 5
+        a_step = 10
         b_step = 20
         c_step = 35
         d_step = 45
@@ -80,7 +79,6 @@ class LineFollower():
         if values == [0, 0, 1, 0, 0]:
             self.turning_angle = self.motors_module.config.centerAngle
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
-            print("STOP suiveur de ligne")
             return RunStates.STOP
         # turn right
         elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]):
@@ -94,7 +92,6 @@ class LineFollower():
         self.motors_module.set_angle(self.turning_angle)
         self.motors_module.set_speed(self.get_speed(values))
         self.lastValue = values
-
         return RunStates.LINE_FOLLOWING
 
     def found_line(self, values: list[bool]) -> RunStates:
@@ -108,7 +105,7 @@ class LineFollower():
 
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
             self.turning_angle = int(self.motors_module.config.centerAngle + step) 
-        if self.lastValue == [0, 1, 0, 0, 0] or self.lastValue == [1, 0, 0, 0, 0]: 
+        else: 
             self.turning_angle = int(self.motors_module.config.centerAngle - step) 
         self.motors_module.set_angle(self.turning_angle) 
         self.motors_module.set_speed(self.config.finders_speed) 
