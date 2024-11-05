@@ -13,5 +13,3 @@ func _process(delta: float) -> void:
 		GlobalData.distance = round(global_transform.origin.distance_to(get_collision_point())*100 / 21.868)
 	else:
 		GlobalData.distance = distance_null
-
-	print(GlobalData.distance)
