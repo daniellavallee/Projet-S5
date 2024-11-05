@@ -12,6 +12,7 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.STARTING:
             self.current_state = RunStates.LINE_FOLLOWING
         elif self.current_state == RunStates.LINE_FOLLOWING:
+            print("Line following")
             self.current_state = self.line_follower_module.run_follower(rpi_response)
         elif self.current_state == RunStates.FINDING_LINE:
             self.current_state = self.line_follower_module.run_finder(rpi_response)
@@ -23,10 +24,6 @@ class MainLoop(BaseLoop):
         #elif self.current_state == RunStates.OBSTACLE_AVOIDANCE:
         #    if self.motors_module.turn_to_angle(Direction.LEFT_DIRECTION, 45, backward=False):
         #        self.current_state = RunStates.STOP
-        
-        elif self.current_state == RunStates.OBSTACLE_DETECTED:
-            if self.motors_module.move(BACKWARD_DISTANCE, backward=True):
-                self.current_state = RunStates.OBSTACLE_AVOIDANCE
 
         elif self.current_state == RunStates.OBSTACLE_AVOIDANCE:
             self.current_state = self.obstacle_manager.run(rpi_response)
@@ -35,8 +32,8 @@ class MainLoop(BaseLoop):
         #    if self.obstacle_manager.is_obstacle_detected(rpi_response):
         #        self.current_state = RunStates.OBSTACLE_AVOIDANCE
         
-        elif self.current_state == RunStates.STOP:
+        if self.current_state == RunStates.STOP:
             self.motors_module.set_speed(0)
             self.motors_module.set_angle(self.motors_cfg.centerAngle)
-            if self.obstacle_manager.is_obstacle_detected(rpi_response):
-                self.current_state = RunStates.OBSTACLE_DETECTED
+        elif rpi_response.sonar <= 10 and rpi_response.sonar >= 0:
+            self.current_state = RunStates.OBSTACLE_AVOIDANCE

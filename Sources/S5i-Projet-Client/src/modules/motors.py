@@ -157,6 +157,7 @@ class Motors():
                 self.move_forward_state = MoveForwardState.STOP
             else:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
+            
 
         # État d'arrêt
         if self.move_forward_state == MoveForwardState.STOP:
@@ -197,7 +198,7 @@ class Motors():
         
         # État de mouvement
         elif self.turn_to_angle_state == TurnState.MOVING_FORWARD:
-            if self.move(self.longueur_arc, backward):
+            if self.move(self.longueur_arc/100, backward):
                 self.turn_to_angle_state = TurnState.RETOUR_ANGLE
         
         # État retour angle

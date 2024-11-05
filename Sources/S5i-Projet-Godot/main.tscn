@@ -11,8 +11,8 @@
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
 [ext_resource type="PackedScene" uid="uid://boac146sfqyj2" path="res://ligne.tscn" id="11_ug5gh"]
 [ext_resource type="Script" path="res://capteur_ligne.gd" id="11_xacyk"]
-[ext_resource type="PackedScene" uid="uid://cc4ydflkp1gwq" path="res://metre.tscn" id="12_50xni"]
-[ext_resource type="PackedScene" uid="uid://bs30lbq1c3u3l" path="res://ligne_test.tscn" id="12_qhidj"]
+[ext_resource type="PackedScene" path="res://metre.tscn" id="12_50xni"]
+[ext_resource type="PackedScene" path="res://ligne_test.tscn" id="12_qhidj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bm61v"]
 friction = 20.0
@@ -157,7 +157,7 @@ radius = 0.161
 material = SubResource("StandardMaterial3D_dr6ip")
 
 [node name="Obstacle" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.223739, 2.83458, 28.9298)
+transform = Transform3D(-0.0369228, 0, -0.999318, 0, 1, 0, 0.999318, 0, -0.0369228, 3.66048, 2.83458, 17.437)
 collision_layer = 3
 collision_mask = 3
 
@@ -215,7 +215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="Vehicule" type="CharacterBody3D" parent="."]
-transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -1.98638, 2.98823, 17.4612)
+transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -2.62584, 2.98823, 17.4612)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("8_d48fy")
@@ -229,7 +229,7 @@ size = Vector3(0.1, 0.1, 0.01)
 
 [node name="RayCast3D" type="RayCast3D" parent="Vehicule/Ultrason"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0194702, 0)
-target_position = Vector3(0, 0, 5)
+target_position = Vector3(0, 0, 109.34)
 collision_mask = 2
 script = ExtResource("10_bqm1h")
 
@@ -337,7 +337,7 @@ transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 16.2247, -0.143785, 20.
 transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -7.39728, 1.63938, 0.405667)
 
 [node name="Metre" parent="." instance=ExtResource("12_50xni")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0236, 1.8072, 12.5892)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.42318, 3.3615, 21.8682)
 
 [node name="Metre2" parent="." instance=ExtResource("12_50xni")]
 transform = Transform3D(-3.27835e-09, 0, 0.1, 0, 0.1, 0, -0.075, 0, -4.37114e-09, -18.3086, 1.8072, 29.0186)

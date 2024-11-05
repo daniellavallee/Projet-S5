@@ -80,6 +80,7 @@ class LineFollower():
         if values == [0, 0, 1, 0, 0]:
             self.turning_angle = self.motors_module.config.centerAngle
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
+            print("STOP suiveur de ligne")
             return RunStates.STOP
         # turn right
         elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]):
@@ -94,10 +95,7 @@ class LineFollower():
         self.motors_module.set_speed(self.get_speed(values))
         self.lastValue = values
 
-        if self.raspberryPiResponse.sonar <= OBSTACLE_DETECTED_DISTANCE:
-            return RunStates.STOP
-        else:
-            return RunStates.LINE_FOLLOWING
+        return RunStates.LINE_FOLLOWING
 
     def found_line(self, values: list[bool]) -> RunStates:
         if any(values):
