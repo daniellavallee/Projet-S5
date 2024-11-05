@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=4 uid="uid://bk5l7umgip4v5"]
+[gd_scene load_steps=41 format=4 uid="uid://bk5l7umgip4v5"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_eka3w"]
 [ext_resource type="Script" path="res://addons/finite_state_machine/scripts/finite_state_machine.gd" id="2_wl1fq"]
@@ -6,11 +6,13 @@
 [ext_resource type="Script" path="res://scripts/fsm/NetworkWaitingState.gd" id="4_s7v0d"]
 [ext_resource type="Script" path="res://scripts/fsm/NetworkConnectingState.gd" id="5_itktg"]
 [ext_resource type="Script" path="res://scripts/fsm/NetworkProcessState.gd" id="6_017ts"]
-[ext_resource type="PackedScene" uid="uid://boac146sfqyj2" path="res://ligne.tscn" id="7_2bd2h"]
 [ext_resource type="Script" path="res://scripts/vehicule.gd" id="8_d48fy"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_p6v8i"]
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="10_bqm1h"]
-[ext_resource type="Script" path="res://capteur_ligne.gd" id="12_si6y4"]
+[ext_resource type="PackedScene" uid="uid://boac146sfqyj2" path="res://ligne.tscn" id="11_ug5gh"]
+[ext_resource type="Script" path="res://capteur_ligne.gd" id="11_xacyk"]
+[ext_resource type="PackedScene" uid="uid://cc4ydflkp1gwq" path="res://metre.tscn" id="12_50xni"]
+[ext_resource type="PackedScene" uid="uid://bs30lbq1c3u3l" path="res://ligne_test.tscn" id="12_qhidj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bm61v"]
 friction = 20.0
@@ -27,6 +29,9 @@ albedo_color = Color(0.203922, 0.105882, 0.909804, 1)
 size = Vector3(2.3, 2, 1.3)
 
 [sub_resource type="GDScript" id="GDScript_d2gei"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y2p80"]
+albedo_color = Color(1, 0, 1, 1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jv41d"]
 sky_top_color = Color(0.635294, 0.756863, 0.901961, 1)
@@ -55,14 +60,6 @@ size = Vector3(600, 1.516, 600)
 friction = 200.0
 rough = true
 absorbent = true
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_1f3xd"]
-size = Vector3(0.495319, 0.226782, 59.5499)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6d0wa"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_7p45q"]
-size = Vector3(0.5, 1, 100)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4vk5o"]
 rough = true
@@ -135,17 +132,22 @@ points = PackedVector3Array(-0.000146747, -0.25, -0.75, -0.073561, -0.25, -0.746
 [sub_resource type="BoxShape3D" id="BoxShape3D_ggs0t"]
 size = Vector3(1, 0.884602, 4.0249)
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_ks2ai"]
+top_radius = 2.445
+bottom_radius = 2.445
+
 [node name="Main" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.0135775)
 script = ExtResource("1_eka3w")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38813, 3.99017, -0.083912)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66474, 4.51096, 17.5569)
 collision_layer = 3
 collision_mask = 3
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_bm61v")
 gravity_scale = 20.0
+continuous_cd = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Bille"]
 shape = SubResource("SphereShape3D_o7qtj")
@@ -155,7 +157,7 @@ radius = 0.161
 material = SubResource("StandardMaterial3D_dr6ip")
 
 [node name="Obstacle" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.223739, 2.83458, 9.61395)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.223739, 2.83458, 28.9298)
 collision_layer = 3
 collision_mask = 3
 
@@ -184,14 +186,16 @@ script = ExtResource("6_017ts")
 [node name="NetworkDisconnectingState" type="Node" parent="NetworkFSM"]
 script = SubResource("GDScript_d2gei")
 
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0529957, -0.250006, -46.9085)
+size = Vector3(5, 0.5, 5)
+material = SubResource("StandardMaterial3D_y2p80")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_c8ocf")
 
-[node name="parcours" parent="." instance=ExtResource("7_48u5u")]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, -46.8815)
-
 [node name="AreaPlancher" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0632973, -3.7377, 3.27508)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0632973, -3.72529e-09, 3.27508)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AreaPlancher"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791205, 0.0853496)
@@ -210,33 +214,14 @@ physics_material_override = SubResource("PhysicsMaterial_i18g4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
-[node name="AreaLigneBlanche" type="Area3D" parent="."]
-transform = Transform3D(-0.0286893, 0, 0.999588, 0, 1, 0, -0.999588, 0, -0.0286893, -0.802377, 1.52822, -22.5157)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00336652, 0.392692, 0.84211)
-shape = SubResource("BoxShape3D_1f3xd")
-
-[node name="LigneBlanche" type="MeshInstance3D" parent="AreaLigneBlanche"]
-transform = Transform3D(0.999999, -0.000922917, -0.00130284, 0.000922058, 0.999999, -0.000661201, 0.00130344, 0.000660001, 0.999999, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_6d0wa")
-mesh = SubResource("BoxMesh_7p45q")
-skeleton = NodePath("../..")
-
-[node name="Ligne" type="StaticBody3D" parent="AreaLigneBlanche"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaLigneBlanche/Ligne"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.33909e-05, 0.394478, 0.84211)
-shape = SubResource("BoxShape3D_1f3xd")
-
 [node name="Vehicule" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75233, 0)
+transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -1.98638, 2.98823, 17.4612)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("8_d48fy")
 
 [node name="Camera3D" type="Camera3D" parent="Vehicule"]
-transform = Transform3D(-1, -1.77636e-14, -8.74228e-08, -4.9202e-08, 0.82659, 0.562805, 7.22628e-08, 0.562805, -0.82659, 0.11511, 3.34327, -0.861319)
+transform = Transform3D(-0.999983, -0.000714403, 0.00587757, 0.0031814, 0.772383, 0.635149, -0.00499349, 0.635157, -0.772367, -0.187105, 5.12217, -3.00891)
 
 [node name="Ultrason" type="CSGBox3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0782998, 0.574109, 2.03526)
@@ -315,24 +300,54 @@ shape = SubResource("BoxShape3D_ggs0t")
 
 [node name="CapteurLigne1" type="RayCast3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.789885, -0.48067, 2.53203)
-script = ExtResource("12_si6y4")
+collide_with_areas = true
+script = ExtResource("11_xacyk")
 line_index = 4
 
 [node name="CapteurLigne2" type="RayCast3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.425609, -0.48169, 2.53208)
-script = ExtResource("13_b71kb")
+collide_with_areas = true
+script = ExtResource("11_xacyk")
+line_index = 3
 
 [node name="CapteurLigne3" type="RayCast3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0513657, -0.478287, 2.52894)
-script = ExtResource("14_7q8ni")
+collide_with_areas = true
+script = ExtResource("11_xacyk")
+line_index = 2
 
 [node name="CapteurLigne4" type="RayCast3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.320732, -0.484976, 2.53297)
-script = ExtResource("15_oc3e7")
+collide_with_areas = true
+script = ExtResource("11_xacyk")
+line_index = 1
 
 [node name="CapteurLigne5" type="RayCast3D" parent="Vehicule"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.686599, -0.485805, 2.53)
-script = ExtResource("16_i2qhx")
+collide_with_areas = true
+script = ExtResource("11_xacyk")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
+
+[node name="Ligne" parent="." instance=ExtResource("11_ug5gh")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 16.2247, -0.143785, 20.4851)
+
+[node name="LigneTest" parent="." instance=ExtResource("12_qhidj")]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -7.39728, 1.63938, 0.405667)
+
+[node name="Metre" parent="." instance=ExtResource("12_50xni")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0236, 1.8072, 12.5892)
+
+[node name="Metre2" parent="." instance=ExtResource("12_50xni")]
+transform = Transform3D(-3.27835e-09, 0, 0.1, 0, 0.1, 0, -0.075, 0, -4.37114e-09, -18.3086, 1.8072, 29.0186)
+
+[node name="Metre3" parent="." instance=ExtResource("12_50xni")]
+transform = Transform3D(0.12, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -19.501, 1.8072, 29.7302)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9019, 3.46903, 24.1695)
+mesh = SubResource("CylinderMesh_ks2ai")
+
+[node name="3cm" parent="." instance=ExtResource("12_50xni")]
+transform = Transform3D(-1.31134e-09, 0, 0.1, 0, 0.1, 0, -0.03, 0, -4.37114e-09, 16.6888, 1.8072, 9.76944)

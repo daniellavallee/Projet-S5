@@ -10,7 +10,7 @@ class MainLoop(BaseLoop):
         self.current_state : RunStates = RunStates.STARTING
     def control(self, rpi_response: RaspberryPiResponse):
         if self.current_state == RunStates.STARTING:
-            self.current_state = RunStates.OBSTACLE_AVOIDANCE
+            self.current_state = RunStates.LINE_FOLLOWING
         elif self.current_state == RunStates.LINE_FOLLOWING:
             self.current_state = self.line_follower_module.run_follower(rpi_response)
         elif self.current_state == RunStates.FINDING_LINE:

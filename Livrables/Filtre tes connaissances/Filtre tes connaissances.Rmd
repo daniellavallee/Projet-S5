@@ -92,7 +92,7 @@ ggplot(donnees_detecteur_obstacle, aes(x = factor(real_distance_cm), y = measure
   labs(title = "Distribution des distances réelles mesurées",
        x = "Distance réelle (cm)",
        y = "Distance mesurée (cm)") +
-  scale_x_discrete(breaks = seq(0, 400, by = 4)) +
+  scale_x_discrete(breaks = seq(0, 400, by = 8)) +
   theme_minimal()
 
 ```
@@ -139,7 +139,7 @@ freq_response_butter_hz <- data.frame(f = freq_response$f * (fe/2),
 ## Tracer la réponse en fréquence (normalisée)
 ggplot(freq_response_butter, aes(x = f, y = 20 * log10(h))) +
   geom_line() +
-  xlab("Fréquence (normalisée") +
+  xlab("Fréquence (normalisée)") +
   ylab("Amplitude (dB)") +
   ggtitle("Réponse en fréquence du filtre Butterworth") +
   theme_minimal()
@@ -238,7 +238,7 @@ freq_response_chebyshev1_hz <- data.frame(f = freq_response_chebyshev1$f * (fe/2
 ## Tracer la réponse en fréquence (normalisée)
 ggplot(freq_response_chebyshev1, aes(x = f, y = 20 * log10(h))) +
   geom_line() +
-  xlab("Fréquence (normalisée") +
+  xlab("Fréquence (normalisée)") +
   ylab("Amplitude") +
   ggtitle("Réponse en fréquence du filtre Chebyshev de type 1") +
   theme_minimal()
@@ -336,7 +336,7 @@ freq_response_chebyshev2_hz <- data.frame(f = freq_response_chebyshev2$f * (fe/2
 ## Tracer la réponse en fréquence (normalisée)
 ggplot(freq_response_chebyshev2, aes(x = f, y = 20 * log10(h))) +
   geom_line() +
-  xlab("Fréquence (normalisée") +
+  xlab("Fréquence (normalisée)") +
   ylab("Amplitude (dB)") +
   ggtitle("Réponse en fréquence du filtre Chebyshev de type 2") +
   theme_minimal()
@@ -437,7 +437,7 @@ freq_response_elliptic_hz <- data.frame(f = freq_response_elliptic$f * (fe/2),
 ## Tracer la réponse en fréquence (normalisée)
 ggplot(freq_response_elliptic, aes(x = f, y = h)) +
   geom_line() +
-  xlab("Fréquence (normalisée") +
+  xlab("Fréquence (normalisée)") +
   ylab("Amplitude") +
   ggtitle("Réponse en fréquence du filtre elliptique") +
   theme_minimal()
