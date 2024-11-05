@@ -5,7 +5,8 @@ class RunStates(Enum):
     LINE_FOLLOWING = 2
     FINDING_LINE = 3
     OBSTACLE_AVOIDANCE = 4
-    STOP = 5
+    OBSTACLE_DETECTED = 5
+    STOP = 6
 
 class MoveForwardState(Enum):
     STARTING = 1

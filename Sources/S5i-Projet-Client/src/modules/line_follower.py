@@ -1,6 +1,7 @@
 from src.models import LineFollowerConfig, RaspberryPiResponse, ControllerResponse
 from src.enums import RunStates
 from .motors import Motors
+from src.constants import OBSTACLE_DETECTED_DISTANCE
 
 
 class LineFollower():
@@ -62,7 +63,11 @@ class LineFollower():
         self.motors_module.set_angle(self.turning_angle)
         self.motors_module.set_speed(self.config.cruising_speed)
         self.lastValue = values
-        return RunStates.LINE_FOLLOWING
+
+        if self.raspberryPiResponse.sonar <= OBSTACLE_DETECTED_DISTANCE:
+            return RunStates.STOP
+        else:
+            return RunStates.LINE_FOLLOWING
 
     def found_line(self, values: list[bool]) -> RunStates:
         if values == [0, 0, 0, 0, 0]:

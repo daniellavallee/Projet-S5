@@ -2,7 +2,7 @@ import src.constants
 from src.enums.states import RunStates
 from src.modules.motors import Motors
 from src.models import RaspberryPiResponse
-from src.enums import ObstacleAvoidanceState
+from src.enums import ObstacleAvoidanceState, Direction
 
 
 class ObstacleManager():
@@ -30,9 +30,11 @@ class ObstacleManager():
         """
         Description: This method is responsible for running the obstacle avoidance algorithm.
         """
-        
-        if (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1):
-            if self.motor_module.turn_to_angle(src.constants.TURN_ANGLE_1):
+        if (self.obstacle_avoidance_state == ObstacleAvoidanceState.STARTING):
+            self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1
+
+        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1):
+            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, src.constants.TURN_ANGLE_1):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1):
@@ -40,7 +42,7 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2):
-            if self.motor_module.turn_to_angle(src.constants.TURN_ANGLE_2):
+            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, src.constants.TURN_ANGLE_2):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2):
@@ -48,7 +50,7 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3):
-            if self.motor_module.turn_to_angle(src.constants.TURN_ANGLE_3):
+            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, src.constants.TURN_ANGLE_3):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
