@@ -63,7 +63,7 @@ class Motors():
         # if the value is negative, it means that the car is in a curve and the acceleration is limited by the centrifugal acceleration
         # so we return -1 to indicate that the acceleration is limited
         if value < 0:
-            return -1
+            return 0
         available_acceleration = np.sqrt(value)
         return available_acceleration
     def set_angle(self, wanted_angle:int):
@@ -89,9 +89,7 @@ class Motors():
         """
         current_max_acceleration = self.get_available_acceleration()
         
-        if current_max_acceleration == -1:
-            self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-current_max_acceleration))
-        elif self.speed == wanted_speed:
+        if self.speed == wanted_speed:
             return
         
         #Clip the speed to the borders speed
@@ -107,7 +105,7 @@ class Motors():
             else:
                 self.speed = self.config.minZeroZone - 0.01
         # if the new speed is greater than the current speed
-        if wanted_speed > self.speed or current_max_acceleration == -1:
+        if wanted_speed > self.speed:
             self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(current_max_acceleration))
         else:
             self.speed = self.add_to_current_value(self.speed,wanted_speed,self.get_offset(-current_max_acceleration))
