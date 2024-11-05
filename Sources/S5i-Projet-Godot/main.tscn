@@ -146,7 +146,7 @@ collision_layer = 3
 collision_mask = 3
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_bm61v")
-gravity_scale = 30.0
+gravity_scale = 20.0
 continuous_cd = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Bille"]
