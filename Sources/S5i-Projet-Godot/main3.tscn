@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://scripts/ultrason.gd" id="8_tdrnv"]
 [ext_resource type="PackedScene" uid="uid://ddlgglk6lvtqa" path="res://assets/blend/voiture.tscn" id="9_opcb6"]
 [ext_resource type="Script" path="res://capteur_ligne.gd" id="10_sbaue"]
-[ext_resource type="PackedScene" uid="uid://boac146sfqyj2" path="res://ligne.tscn" id="11_ojfew"]
+[ext_resource type="PackedScene" uid="uid://v30d7qtp7ip7" path="res://ligne2.tscn" id="11_uuu0a"]
 [ext_resource type="PackedScene" uid="uid://bs30lbq1c3u3l" path="res://ligne_test.tscn" id="12_4bbv1"]
 [ext_resource type="PackedScene" uid="uid://cc4ydflkp1gwq" path="res://metre.tscn" id="13_rh7aq"]
 
@@ -141,7 +141,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_6dknk")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1354, 3.8387, 15.0168)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.714, 4.29155, -11.3924)
 collision_layer = 3
 collision_mask = 3
 mass = 0.1
@@ -157,7 +157,7 @@ radius = 0.161
 material = SubResource("StandardMaterial3D_dr6ip")
 
 [node name="Obstacle" type="RigidBody3D" parent="."]
-transform = Transform3D(-0.0369228, 0, -0.999318, 0, 1, 0, 0.999318, 0, -0.0369228, 7.83011, 2.83458, 15.0695)
+transform = Transform3D(-0.0369228, 0, -0.999318, 0, 1, 0, 0.999318, 0, -0.0369228, 7.83011, 2.83458, 38.0668)
 collision_layer = 3
 collision_mask = 3
 
@@ -215,7 +215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155334, 1.0492, -0.727375)
 shape = SubResource("BoxShape3D_j8e2q")
 
 [node name="Vehicule" type="CharacterBody3D" parent="."]
-transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, -14.4112, 2.98823, 14.9691)
+transform = Transform3D(-0.00760958, 0, 0.999971, 0, 1, 0, -0.999971, 0, -0.00760958, 17.4035, 2.98823, -11.3094)
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("7_hyr31")
@@ -330,8 +330,8 @@ script = ExtResource("10_sbaue")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.10726, 4.18505, -0.100428)
 
-[node name="Ligne" parent="." instance=ExtResource("11_ojfew")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 16.2247, -1.83736, 20.4851)
+[node name="Ligne" parent="." instance=ExtResource("11_uuu0a")]
+transform = Transform3D(-0.0420675, 0, -0.999115, 0, 1, 0, 0.999115, 0, -0.0420675, 49.5674, 1.37914, -10.2369)
 
 [node name="LigneTest" parent="." instance=ExtResource("12_4bbv1")]
 transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 10.2908, 1.63938, 28.1038)
@@ -346,11 +346,11 @@ transform = Transform3D(-3.27835e-09, 0, 0.1, 0, 0.1, 0, -0.075, 0, -4.37114e-09
 transform = Transform3D(0.12, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -19.501, 1.8072, 29.7302)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9019, 3.46903, 24.1695)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9019, 3.46903, 45.0342)
 mesh = SubResource("CylinderMesh_ks2ai")
 
 [node name="Obstacle2" type="RigidBody3D" parent="."]
-transform = Transform3D(0.00544546, 0, 0.999985, 0, 1, 0, -0.999985, 0, 0.00544546, 6.45082, 2.77689, 8.4121)
+transform = Transform3D(-0.560017, 0, 0.828481, 0, 1, 0, -0.828481, 0, -0.560017, 42.9383, 2.77689, 2.82042)
 collision_layer = 3
 collision_mask = 3
 
