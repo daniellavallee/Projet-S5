@@ -114,7 +114,7 @@ class Motors():
             self.speed = 0
         
     
-    def move(self, distance:float, backward:bool=False) -> bool:
+    def move(self, distance:float, backward:bool=False, is_decc:bool=True) -> bool:
         """
         Description:      Move the car forward of x meters.
         Parameters:
@@ -144,7 +144,9 @@ class Motors():
 
         # État de mouvement
         if self.move_forward_state == MoveForwardState.MOVING_FORWARD:
-            if self.distance_parcourue + self.distance_acceleration >= distance:
+            if not is_decc and self.distance_parcourue >= distance:
+                self.move_forward_state = MoveForwardState.STOP
+            elif is_decc and self.distance_parcourue + self.distance_acceleration >= distance:
                 new_speed = 0
                 self.move_forward_state = MoveForwardState.MOVING_DECC
 
@@ -155,7 +157,6 @@ class Motors():
                 self.move_forward_state = MoveForwardState.STOP
             else:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-            
 
         # État d'arrêt
         if self.move_forward_state == MoveForwardState.STOP:
@@ -167,7 +168,7 @@ class Motors():
         self.set_speed(new_speed)
         return False
 
-    def turn_to_angle(self, direction:Direction, angle:int=0, backward:bool=False):
+    def turn_to_angle(self, direction:Direction, angle:int=0, backward:bool=False, is_decc:bool=True) -> bool:
         """
         Description:
          Parameters:
@@ -196,7 +197,7 @@ class Motors():
         
         # État de mouvement
         elif self.turn_to_angle_state == TurnState.MOVING_FORWARD:
-            if self.move(self.longueur_arc, backward):
+            if self.move(self.longueur_arc, backward, is_decc=is_decc):
                 self.turn_to_angle_state = TurnState.RETOUR_ANGLE
         
         # État retour angle

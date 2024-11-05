@@ -141,12 +141,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0100098, 0.0284071, -0.013
 script = ExtResource("1_eka3w")
 
 [node name="Bille" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1354, 3.8387, 15.0168)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1354, 3.7686, 15.0168)
 collision_layer = 3
 collision_mask = 3
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_bm61v")
-gravity_scale = 20.0
+gravity_scale = 30.0
 continuous_cd = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Bille"]
