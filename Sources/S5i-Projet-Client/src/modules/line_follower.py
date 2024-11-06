@@ -20,10 +20,6 @@ class LineFollower():
 
     def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
-        if self.verbose:
-            print("Line follower | Analog values : ", digital_values)
-            print("Line follower | Digital values : ", digital_values)
-            print("==============================")
         return digital_values
 
     def get_speed(self, values: list[bool]) -> float:

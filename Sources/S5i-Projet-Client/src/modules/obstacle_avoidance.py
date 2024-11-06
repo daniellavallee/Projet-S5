@@ -16,7 +16,7 @@ class ObstacleManager():
         self.config = config
         self.motor_module = motor_module
         self.verbose = verbose
-        
+        self.is_decc = False
         # Obstacle avoidance state
         self.obstacle_avoidance_state = ObstacleAvoidanceState.STARTING
 
@@ -40,34 +40,34 @@ class ObstacleManager():
                 self.motor_module.set_speed(0)
                 self.motor_module.set_angle(self.motor_module.config.centerAngle)
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.BACKWARD):
-            if self.motor_module.move(self.config.backwardDistance, backward=True):
+            if self.motor_module.move(self.config.backwardDistance, backward=True, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1):
-            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle1):
+            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle1, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1):
-            if self.motor_module.move(self.config.straightDistance1):
+            if self.motor_module.move(self.config.straightDistance1, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2):
-            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle2):
+            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle2, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2):
-            if self.motor_module.move(self.config.straightDistance2):
+            if self.motor_module.move(self.config.straightDistance2, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3):
-            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle3):
+            if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle3, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
-            if self.motor_module.move(self.config.straightDistance3):
+            if self.motor_module.move(self.config.straightDistance3, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4
                 
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4):
-            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle4):
+            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle4, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOP):
