@@ -2,6 +2,7 @@ from src.enums.states import RunStates
 from src.modules.motors import Motors
 from src.models import RaspberryPiResponse, ObstacleAvoidanceConfig
 from src.enums import ObstacleAvoidanceState, Direction
+from scipy import stats
 
 
 class ObstacleManager():
@@ -17,6 +18,8 @@ class ObstacleManager():
         self.motor_module = motor_module
         self.verbose = verbose
         self.is_decc = False
+        self.sonar_buffer = []
+        self.max_samples = 100
         # Obstacle avoidance state
         self.obstacle_avoidance_state = ObstacleAvoidanceState.STARTING
 
@@ -24,7 +27,19 @@ class ObstacleManager():
         """
         Description: This method is responsible for checking if an obstacle is detected.
         """
-        return RPi_response.sonar < self.config.obstacleDetectedDistance and RPi_response.sonar != -1
+        if len(self.sonar_buffer) >= self.max_samples:
+            self.sonar_buffer.pop(0)
+        self.sonar_buffer.append(RPi_response.sonar)
+        if len(self.sonar_buffer) < self.max_samples:
+            return False
+        t_stat, p_value = stats.ttest_1samp(self.sonar_buffer, self.config.obstacleDetectedDistance)
+        print("Le p-value est: ", p_value)
+        if p_value < 0.05:
+            return False
+
+        corrected_value = RPi_response.sonar * 0.9638523     # 0.9638523 is the correction factor from linear regression
+        print("Corected value: ", corrected_value)
+        return corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """

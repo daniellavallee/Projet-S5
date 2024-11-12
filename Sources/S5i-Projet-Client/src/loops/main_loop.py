@@ -20,5 +20,5 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.STOP:
             self.motors_module.set_speed(0)
             self.motors_module.set_angle(self.motors_cfg.centerAngle)
-        elif rpi_response.sonar <= self.obstacle_cfg.obstacleDetectedDistance and rpi_response.sonar != -1:
+        elif self.obstacle_manager.is_obstacle_detected(rpi_response):
             self.current_state = RunStates.OBSTACLE_AVOIDANCE

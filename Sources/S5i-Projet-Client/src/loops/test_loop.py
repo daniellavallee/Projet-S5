@@ -10,6 +10,7 @@ class TestLoop(BaseLoop):
         super().__init__(host, is_verbose=False)
     def control(self, rpi_response: RaspberryPiResponse) -> ControllerResponse:
         sys.stdout.flush()
+        self.obstacle_manager.is_obstacle_detected(rpi_response)
         if keyboard.is_pressed('up'):
             self.motors_module.set_speed(self.motors_cfg.maxSpeed)
         elif keyboard.is_pressed('down'):

@@ -26,6 +26,7 @@ class CalibLoop(BaseLoop):
         self.samples.append([self.time_module.dt,rpi_response.sonar])
         if len(self.samples) > self.max_num_samples:
             self.samples.pop(0)
+        print(f"Samples: {sum([sample[1] for sample in self.samples])/self.max_num_samples}", end='\r')
         if keyboard.is_pressed('space'):
             if len(self.samples) < self.max_num_samples:
                 print("Not enough samples")
