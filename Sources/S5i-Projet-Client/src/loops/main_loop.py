@@ -1,7 +1,6 @@
 from .base_loop import BaseLoop
-from src.models import ControllerResponse, RaspberryPiResponse
-from src.enums import Hosts, RunStates, Direction
-from datetime import datetime
+from src.models import  RaspberryPiResponse
+from src.enums import Hosts, RunStates
 
 class MainLoop(BaseLoop):
     def __init__(self, host: Hosts, *, is_verbose: bool = True) -> None:
