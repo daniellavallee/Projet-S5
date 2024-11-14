@@ -23,5 +23,4 @@ class TestLoop(BaseLoop):
         elif keyboard.is_pressed('right'):
             self.motors_module.set_angle(self.motors_cfg.maxRightAngle)
         else:
-            self.motors_module.set_angle(90)
-        sleep(0.1)
+            self.motors_module.set_angle(self.motors_cfg.centerAngle)

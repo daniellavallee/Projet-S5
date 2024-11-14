@@ -19,6 +19,7 @@ class LineFollower():
         self.maxSamples = 20
         self.is_in_straight_line = False
         self.missings_line_counter = 0
+        self.was_turning = True
 
     def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
@@ -93,7 +94,7 @@ class LineFollower():
         elif values == [0, 0, 0, 0, 0]:
             if self.was_turning:
                 self.missings_line_counter += self.time_module.get_dt_in_seconds()
-                if self.missings_line_counter > 1:
+                if self.missings_line_counter > 1.5:
                     self.missings_line_counter = 0
                     return RunStates.FINDING_LINE
                 else:
