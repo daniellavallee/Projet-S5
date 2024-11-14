@@ -4,7 +4,7 @@ import sys
 from .base_loop import BaseLoop
 from src.models import ControllerResponse, RaspberryPiResponse
 from src.enums import Hosts
-
+from time import sleep
 class TestLoop(BaseLoop):
     def __init__(self, host: Hosts = False) -> None:
         super().__init__(host, is_verbose=False)
@@ -24,3 +24,4 @@ class TestLoop(BaseLoop):
             self.motors_module.set_angle(self.motors_cfg.maxRightAngle)
         else:
             self.motors_module.set_angle(90)
+        sleep(0.1)

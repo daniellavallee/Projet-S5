@@ -1,0 +1,42 @@
+---
+title: "Teste ta confiance"
+author: "Daniel Lavallée"
+date: "2024-11-21"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+# Configuration de l'environnement
+
+Nous créons d'abord une fonction qui permet de charger les librairies nécessaires au traitement des données. La fonction `loadPackage()` permet de vérifier si la librairie demandée est déjà installée sur le système de l'utilisateur. Si elle l'est, on charge la librairie et, sinon, on l'installe d'abord.
+
+```{r Q1_Setup, message=FALSE, warning=FALSE}
+## Fonction qui vérifie si un packet est installé et qui l'installe avant 
+## de le charger au besoin.
+loadPackage <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, quiet = TRUE)
+    library(package, character.only = TRUE, quietly = TRUE)
+  }
+  else library(package, character.only = TRUE, quietly = TRUE)
+}
+
+```
+
+On charge ensuite les librairies nécessaires.
+
+```{r chargement_libraries, message=FALSE, warning=FALSE}
+## Chargement des librairies
+loadPackage("tidyverse")
+loadPackage("DescTools")
+loadPackage("ggplot2")
+loadPackage("pracma")
+
+```

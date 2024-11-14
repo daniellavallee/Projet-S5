@@ -1,6 +1,6 @@
 from src.models import LineFollowerConfig, RaspberryPiResponse, ControllerResponse
 from src.enums import RunStates
-from .motors import Motors
+from .motors import Motors, Time
 import numpy as np
 
 class LineFollower():
@@ -9,14 +9,16 @@ class LineFollower():
     Class responsible for handling the line follower sensor
     """
 
-    def __init__(self, config: LineFollowerConfig, motors_module: Motors, verbose: bool = False):
+    def __init__(self, config: LineFollowerConfig, motors_module: Motors, time_module:Time, verbose: bool = False):
         self.config = config
         self.verbose = verbose
         self.motors_module = motors_module
+        self.time_module = time_module
         self.turning_angle = self.motors_module.config.centerAngle
         self.sampleBuffer = []
-        self.maxSamples = 50
+        self.maxSamples = 20
         self.is_in_straight_line = False
+        self.missings_line_counter = 0
 
     def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
@@ -74,16 +76,30 @@ class LineFollower():
         # Direction calculate
         if values == [0, 0, 1, 0, 0]:
             self.turning_angle = self.motors_module.config.centerAngle
+            self.was_turning = False
+            self.missings_line_counter = 0
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
         elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]):
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
+            self.was_turning = True
+            self.missings_line_counter = 0
         # turn left
         elif values in ([0, 0, 1, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 1], [0, 0, 0, 0, 1]):
+            self.was_turning = True
             self.turning_angle = int(self.motors_module.config.centerAngle + step)
+            self.missings_line_counter = 0
         elif values == [0, 0, 0, 0, 0]:
-            return RunStates.FINDING_LINE
+            if self.was_turning:
+                self.missings_line_counter += self.time_module.get_dt_in_seconds()
+                if self.missings_line_counter > 1:
+                    self.missings_line_counter = 0
+                    return RunStates.FINDING_LINE
+                else:
+                    return RunStates.LINE_FOLLOWING
+            else:
+                return RunStates.FINDING_LINE
 
         self.motors_module.set_angle(self.turning_angle)
         self.motors_module.set_speed(self.get_speed(values))
@@ -100,10 +116,10 @@ class LineFollower():
         step = 45 
 
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
-            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
-        else: 
             self.turning_angle = int(self.motors_module.config.centerAngle - step) 
+        else: 
+            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
         self.motors_module.set_angle(self.turning_angle) 
-        self.motors_module.set_speed(self.config.finders_speed) 
+        self.motors_module.set_speed(-self.config.finders_speed) 
         
         return self.found_line(values)
