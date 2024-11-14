@@ -114,7 +114,7 @@ class LineFollower():
 
     def run_finder(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
-        step = 45 
+        step = 100 
 
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
             self.turning_angle = int(self.motors_module.config.centerAngle - step) 
