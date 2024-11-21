@@ -30,7 +30,7 @@ class Motors():
             if new_value > wanted_value:
                 new_value = wanted_value
         return new_value
-    def get_speed(self, *, in_meters_per_second : bool = False) -> int | float:
+    def get_speed(self, *, in_meters_per_second : bool = False) -> float:
         if in_meters_per_second:
             get_speed_ratio = 0
             speed = np.abs(self.speed)

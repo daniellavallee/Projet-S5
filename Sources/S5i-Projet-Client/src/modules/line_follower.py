@@ -21,11 +21,11 @@ class LineFollower():
         self.missings_line_counter = 0
         self.was_turning = True
 
-    def read(self, rpi_response:RaspberryPiResponse) -> list[bool]:
+    def read(self, rpi_response:RaspberryPiResponse):
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
         return digital_values
 
-    def get_speed(self, values: list[bool]) -> float:
+    def get_speed(self, values) -> float:
         current_value = self.get_current_value(values)
         if len(self.sampleBuffer) >= self.maxSamples:
             self.sampleBuffer.pop(0)
@@ -36,7 +36,7 @@ class LineFollower():
         diff = self.config.cruising_speed - self.config.finders_speed
         return self.config.cruising_speed - factor_decc * diff
     
-    def get_current_value(self, values: list[bool]) -> float:
+    def get_current_value(self, values) -> float:
         indexes  = []
         for i,value in enumerate(values):
             if value:
@@ -107,7 +107,7 @@ class LineFollower():
         self.lastValue = values
         return RunStates.LINE_FOLLOWING
 
-    def found_line(self, values: list[bool]) -> RunStates:
+    def found_line(self, values) -> RunStates:
         if any(values):
             return RunStates.LINE_FOLLOWING
         return RunStates.FINDING_LINE

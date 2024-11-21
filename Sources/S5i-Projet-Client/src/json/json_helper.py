@@ -17,7 +17,7 @@ def read_raspberry_pi_response(input:str) -> RaspberryPiResponse:
 def write_controller_response(response:ControllerResponse) -> str:
     return json.dumps(response, cls=EnhancedJSONEncoder)
 
-def read_configs()-> tuple[LineFollowerConfig, SonarConfig, MotorsConfig, ObstacleAvoidanceConfig]:
+def read_configs():
     with LINE_FOLLOWER_CONFIG.open("r") as f:
         data = json.load(f)
         line_follower = LineFollowerConfig(**data)
