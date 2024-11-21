@@ -1,14 +1,14 @@
 {
-    "maxSpeed": 100,
-    "minSpeed": -100,
+    "maxSpeed": 60,
+    "minSpeed": -60,
     "maxAcceleration": 40,
     "maxAngularAcc": 120,
-    "maxLeftAngle" : 45,
-    "maxRightAngle" : 135,
+    "maxLeftAngle" : 20,
+    "maxRightAngle" : 140,
     "maxSpeedInMeterPerSecond": 0.1375,
     "maxZeroZone": 20,
     "rayon_courbure": 0.12,
     "minZeroZone": -20,
     "wheelDistance": 0.14,
-    "centerAngle": 100
+    "centerAngle": 90
 }

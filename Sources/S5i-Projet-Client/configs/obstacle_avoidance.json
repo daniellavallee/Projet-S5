@@ -1,12 +1,11 @@
 {
-    "obstacleDetectedDistance" : 0.1
-    ,
-    "turnAngle1": 45,
-    "turnAngle2": 38,
-    "turnAngle3": 38,
+    "obstacleDetectedDistance" : 20,
+    "turnAngle1": 90,
+    "turnAngle2": 105,
+    "turnAngle3": 90,
     "turnAngle4": 45,
-    "straightDistance1": 0.20,
-    "straightDistance2": 0.25,
-    "straightDistance3": 0.15,
-    "backwardDistance": 0.22
+    "straightDistance1": 0.0,
+    "straightDistance2": 0.20,
+    "straightDistance3": 0.05,
+    "backwardDistance": 0.20
 }

@@ -17,7 +17,7 @@ class ObstacleManager():
         self.config = config
         self.motor_module = motor_module
         self.verbose = verbose
-        self.is_decc = False
+        self.is_decc = True
         self.sonar_buffer = []
         self.max_samples = 100
         # Obstacle avoidance state
@@ -27,26 +27,31 @@ class ObstacleManager():
         """
         Description: This method is responsible for checking if an obstacle is detected.
         """
+        corrected_value = RPi_response.sonar * 0.9638523     # 0.9638523 is the correction factor from linear regression
+        detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
+        return detected
+        if len(self.sonar_buffer) < 5:
+            return False
         t_stat, p_value = stats.ttest_1samp(self.sonar_buffer, RPi_response.sonar)
-        print("Le p-value est: ", p_value)
+        #print("Le p-value est: ", p_value)
         if len(self.sonar_buffer) >= self.max_samples:
             self.sonar_buffer.pop(0)
         self.sonar_buffer.append(RPi_response.sonar)
-        print("Sonar : ", RPi_response.sonar)
+        #print("Sonar : ", RPi_response.sonar)
         #print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
         if p_value < 0.05:
             return False
 
-        corrected_value = RPi_response.sonar * 0.9638523     # 0.9638523 is the correction factor from linear regression
-        detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
-        print("Detected: ", detected)
-        print("obstacledetecteddistance: ", self.config.obstacleDetectedDistance)
+        
+        #print("Detected: ", detected)
+        #print("obstacledetecteddistance: ", self.config.obstacleDetectedDistance)
         return detected
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """
         Description: This method is responsible for running the obstacle avoidance algorithm.
         """
+        #print(self.obstacle_avoidance_state)
         if (self.obstacle_avoidance_state == ObstacleAvoidanceState.STARTING):
             self.obstacle_avoidance_state = ObstacleAvoidanceState.STOPPING
         

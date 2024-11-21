@@ -127,6 +127,7 @@ class Motors():
             m = -1
         else:
             m = 1
+        #print(self.move_forward_state)
         # État initiale
         if self.move_forward_state == MoveForwardState.STARTING:
             self.move_forward_state = MoveForwardState.MOVING_ACC
@@ -139,9 +140,8 @@ class Motors():
             self.distance_acceleration += new_distance
             if self.get_speed() == m*self.config.maxSpeed:
                 self.move_forward_state = MoveForwardState.MOVING_FORWARD
-            elif self.distance_acceleration * 2 >= distance:
+            elif is_decc and self.distance_acceleration * 2 >= distance:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
-
         # État de mouvement
         if self.move_forward_state == MoveForwardState.MOVING_FORWARD:
             if not is_decc and self.distance_parcourue >= distance:
@@ -202,10 +202,10 @@ class Motors():
         
         # État retour angle
         elif self.turn_to_angle_state == TurnState.RETOUR_ANGLE:
-            if self.get_angle() == 90:
+            if self.get_angle() == self.config.centerAngle:
                 self.turn_to_angle_state = TurnState.STOP
             else:
-                self.set_angle(90)
+                self.set_angle(self.config.centerAngle)
 
         # État d'arrêt
         elif self.turn_to_angle_state == TurnState.STOP:
