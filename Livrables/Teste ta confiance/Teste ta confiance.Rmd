@@ -37,6 +37,46 @@ On charge ensuite les librairies nécessaires.
 loadPackage("tidyverse")
 loadPackage("DescTools")
 loadPackage("ggplot2")
-loadPackage("pracma")
 
+```
+
+# Importation des données
+
+Nous importons les données de l'étude.
+
+```{r importation_donnees, message=FALSE, warning=FALSE}
+## Importation des données
+data <- read_csv("../data/donnees_detecteur_obstacle(more).csv")
+
+```
+
+# Transformation des données
+
+Nous transformons les données pour les rendre plus faciles à manipuler.
+
+```{r transformation_donnees, message=FALSE, warning=FALSE}
+data_trans <- data %>% 
+  rename(real_distance_cm = `Sample Name`) %>%
+  rowwise() %>% # Pour évaluer les calculs sur chaque ligne
+  mutate(
+    p_val = if (var(c_across(`Sample 0`:`Sample 28`)) > 0) { # Utilise `c_across` pour sélectionner les colonnes
+      t.test(c_across(`Sample 0`:`Sample 28`), 
+             mu = `Sample 29`)$p.value
+    } else {
+      NA # Met NA si les données sont constantes
+    },
+    t_test_conclusion = ifelse(is.na(p_val), "Constant", 
+                               ifelse(p_val < 0.05, "Different", "Similar"))
+  ) %>%
+  mutate(moyenne = mean(c_across(`Sample 0`:`Sample 28`)),
+         confidence_interval_inf = moyenne - 1.96 * sd(c_across(`Sample 0`:`Sample 28`)) / sqrt(length(c_across(`Sample 0`:`Sample 28`))),
+         confidence_interval_sup = moyenne + 1.96 * sd(c_across(`Sample 0`:`Sample 28`)) / sqrt(length(c_across(`Sample 0`:`Sample 28`)))) %>%
+  ungroup() %>% # Annule `rowwise` après l'opération
+  select(real_distance_cm,
+         p_val,
+         t_test_conclusion,
+         moyenne,
+         confidence_interval_inf,
+         confidence_interval_sup)
+  
 ```
