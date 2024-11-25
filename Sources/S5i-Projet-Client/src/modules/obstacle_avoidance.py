@@ -30,15 +30,28 @@ class ObstacleManager():
         corrected_value = RPi_response.sonar * 0.9638523     # 0.9638523 is the correction factor from linear regression
         detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
         return detected
-        #if len(self.sonar_buffer) < 5:
-        #    return False
+        if len(self.sonar_buffer) < 5:
+            return False
+        
+        # t-test
+        moyenne = sum(self.sonar_buffer)/len(self.sonar_buffer)
+        mu = self.config.obstacleDetectedDistance
+        variance_ech = sum([(x - moyenne)**2 for x in self.sonar_buffer])/(len(self.sonar_buffer)-1)
+        t_stat = (moyenne - mu)/(variance_ech/len(self.sonar_buffer)**0.5)
+        print("t_stat: ", t_stat)
+
         #t_stat, p_value = stats.ttest_1samp(self.sonar_buffer, RPi_response.sonar)
         ##print("Le p-value est: ", p_value)
-        #if len(self.sonar_buffer) >= self.max_samples:
-        #    self.sonar_buffer.pop(0)
-        #self.sonar_buffer.append(RPi_response.sonar)
-        #print("Sonar : ", RPi_response.sonar)
-        #print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
+        if len(self.sonar_buffer) >= self.max_samples:
+            self.sonar_buffer.pop(0)
+        self.sonar_buffer.append(RPi_response.sonar)
+        print("Sonar : ", RPi_response.sonar)
+        print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
+
+        # Retourner false si le t-test est significatif a un seuil de 5%
+        if t_stat < 1.98:
+            return False
+        
         #if p_value < 0.05:
         #    return False
 
