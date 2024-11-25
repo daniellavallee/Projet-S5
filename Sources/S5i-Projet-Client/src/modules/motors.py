@@ -167,7 +167,9 @@ class Motors():
         
         self.set_speed(new_speed)
         return False
-
+    def is_wheel_centered(self) -> bool:
+        return self.get_angle() == self.config.centerAngle
+    
     def turn_to_angle(self, direction:Direction, angle:int=0, backward:bool=False, is_decc:bool=True) -> bool:
         """
         Description:

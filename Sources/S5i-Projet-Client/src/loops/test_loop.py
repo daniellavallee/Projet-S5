@@ -6,8 +6,8 @@ from src.models import ControllerResponse, RaspberryPiResponse
 from src.enums import Hosts
 from time import sleep
 class TestLoop(BaseLoop):
-    def __init__(self, host: Hosts = False) -> None:
-        super().__init__(host, is_verbose=False)
+    def __init__(self, host: Hosts = False, *, is_verbose: bool) -> None:
+        super().__init__(host, is_verbose=is_verbose)
     def control(self, rpi_response: RaspberryPiResponse) -> ControllerResponse:
         sys.stdout.flush()
         self.obstacle_manager.is_obstacle_detected(rpi_response)

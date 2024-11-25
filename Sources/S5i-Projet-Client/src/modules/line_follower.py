@@ -119,8 +119,15 @@ class LineFollower():
         if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
             self.turning_angle = int(self.motors_module.config.centerAngle - step) 
         else: 
-            self.turning_angle = int(self.motors_module.config.centerAngle + step) 
-        self.motors_module.set_angle(self.turning_angle) 
-        self.motors_module.set_speed(-self.config.finders_speed) 
+            self.turning_angle = int(self.motors_module.config.centerAngle + step)
         
-        return self.found_line(values)
+        if any(values):
+            self.motors_module.set_angle(self.motors_module.config.centerAngle) 
+            self.motors_module.set_speed(0) 
+            if self.motors_module.is_wheel_centered():
+                return RunStates.LINE_FOLLOWING
+        else:   
+            self.motors_module.set_angle(self.turning_angle) 
+            self.motors_module.set_speed(-self.config.finders_speed)
+        
+        return RunStates.FINDING_LINE
