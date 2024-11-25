@@ -32,11 +32,6 @@ class ObstacleManager():
         #return detected
         
         # t-test
-        moyenne = sum(self.sonar_buffer)/len(self.sonar_buffer)
-        mu = self.config.obstacleDetectedDistance
-        variance_ech = sum([(x - moyenne)**2 for x in self.sonar_buffer])/(len(self.sonar_buffer)-1)
-        t_stat = (moyenne - mu)/(variance_ech/len(self.sonar_buffer)**0.5)
-        print("t_stat: ", t_stat)
 
         #t_stat, p_value = stats.ttest_1samp(self.sonar_buffer, RPi_response.sonar)
         ##print("Le p-value est: ", p_value)
@@ -45,6 +40,11 @@ class ObstacleManager():
         self.sonar_buffer.append(RPi_response.sonar)
         if len(self.sonar_buffer) < 5:
             return False
+        moyenne = sum(self.sonar_buffer)/len(self.sonar_buffer)
+        mu = self.config.obstacleDetectedDistance
+        variance_ech = sum([(x - moyenne)**2 for x in self.sonar_buffer])/(len(self.sonar_buffer)-1)
+        t_stat = (moyenne - mu)/(variance_ech/len(self.sonar_buffer)**0.5)
+        print("t_stat: ", t_stat)
         print("Sonar : ", RPi_response.sonar)
         print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
 
