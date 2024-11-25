@@ -107,10 +107,8 @@ class LineFollower():
         self.lastValue = values
         return RunStates.LINE_FOLLOWING
 
-    def found_line(self, values) -> RunStates:
-        if any(values):
-            return RunStates.LINE_FOLLOWING
-        return RunStates.FINDING_LINE
+    def found_line(self, response: RaspberryPiResponse) -> bool:
+        return any(self.get_current_value(response.line_follower))
 
     def run_finder(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)

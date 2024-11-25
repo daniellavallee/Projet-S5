@@ -1,5 +1,5 @@
 from src.enums.states import RunStates
-from src.modules.motors import Motors
+from src.modules import Motors, LineFollower
 from src.models import RaspberryPiResponse, ObstacleAvoidanceConfig
 from src.enums import ObstacleAvoidanceState, Direction
 import numpy as np
@@ -11,12 +11,13 @@ class ObstacleManager():
     This class is responsible for handling the avoidance of an obstacle.
     """
     
-    def __init__(self, config : ObstacleAvoidanceConfig, motor_module:Motors, verbose:bool=False):
+    def __init__(self, config : ObstacleAvoidanceConfig, motor_module:Motors, line_follower:LineFollower, verbose:bool=False):
         """
         Description: This method is responsible for initializing the ObstacleManager class.
         """
         self.config = config
         self.motor_module = motor_module
+        self.line_follower = line_follower
         self.verbose = verbose
         self.is_decc = True
         self.sonar_buffer = []
@@ -82,8 +83,11 @@ class ObstacleManager():
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
-            if self.motor_module.move(self.config.straightDistance3, is_decc=self.is_decc):
+            if self.line_follower.found_line(RPi_response):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4
+            else:
+                self.motor_module.set_speed(self.motor_module.config.maxSpeed)
+                self.motor_module.set_angle(self.motor_module.config.centerAngle)
                 
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4):
             if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle4, is_decc=self.is_decc):
