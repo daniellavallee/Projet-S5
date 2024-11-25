@@ -20,7 +20,7 @@ class ObstacleManager():
         self.verbose = verbose
         self.is_decc = True
         self.sonar_buffer = []
-        self.max_samples = 25
+        self.max_samples = 5
         # Obstacle avoidance state
         self.obstacle_avoidance_state = ObstacleAvoidanceState.STARTING
 
