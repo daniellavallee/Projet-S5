@@ -45,9 +45,9 @@ class ObstacleManager():
         mu = self.config.obstacleDetectedDistance
         variance_ech = sum([(x - moyenne)**2 for x in self.sonar_buffer])/(len(self.sonar_buffer)-1)
         t_stat = (moyenne - mu)/(variance_ech/len(self.sonar_buffer)**0.5)
-        print("t_stat: ", t_stat)
-        print("Sonar : ", RPi_response.sonar)
-        print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
+        #print("t_stat: ", t_stat)
+        #print("Sonar : ", RPi_response.sonar)
+        #print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
 
         # Retourner false si le t-test est significatif a un seuil de 5%
         if t_stat < 1.98:
