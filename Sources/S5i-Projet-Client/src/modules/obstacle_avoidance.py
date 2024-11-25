@@ -27,7 +27,7 @@ class ObstacleManager():
         """
         Description: This method is responsible for checking if an obstacle is detected.
         """
-        corrected_value = RPi_response.sonar * 0.9638523 - 1.67     # 0.9638523 is the correction factor from linear regression
+        corrected_value = RPi_response.sonar * 2 #* 0.9638523 - 1.67     # 0.9638523 is the correction factor from linear regression
         RPi_response.sonar = corrected_value
         detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
         #return detected
