@@ -2,6 +2,7 @@ from src.enums.states import RunStates
 from src.modules.motors import Motors
 from src.models import RaspberryPiResponse, ObstacleAvoidanceConfig
 from src.enums import ObstacleAvoidanceState, Direction
+import numpy as np
 #from scipy import stats
 
 
@@ -29,7 +30,6 @@ class ObstacleManager():
         """
         corrected_value = RPi_response.sonar * 2 #* 0.9638523 - 1.67     # 0.9638523 is the correction factor from linear regression
         RPi_response.sonar = corrected_value
-        detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
         #return detected
         
         # t-test
@@ -41,25 +41,8 @@ class ObstacleManager():
         self.sonar_buffer.append(RPi_response.sonar)
         if len(self.sonar_buffer) < 5:
             return False
-        moyenne = sum(self.sonar_buffer)/len(self.sonar_buffer)
-        mu = self.config.obstacleDetectedDistance
-        variance_ech = sum([(x - moyenne)**2 for x in self.sonar_buffer])/(len(self.sonar_buffer)-1)
-        t_stat = (moyenne - mu)/(variance_ech/len(self.sonar_buffer)**0.5)
-        #print("t_stat: ", t_stat)
-        #print("Sonar : ", RPi_response.sonar)
-        #print("Sonar buffer: ", sum(self.sonar_buffer)/len(self.sonar_buffer))
-
-        # Retourner false si le t-test est significatif a un seuil de 5%
-        if t_stat < 1.98:
-            return False
-        
-        #if p_value < 0.05:
-        #    return False
-
-        
-        #print("Detected: ", detected)
-        #print("obstacledetecteddistance: ", self.config.obstacleDetectedDistance)
-        return detected
+        moyenne_buffer = np.mean(self.sonar_buffer)
+        return moyenne_buffer < self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """
