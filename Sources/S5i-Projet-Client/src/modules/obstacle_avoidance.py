@@ -19,7 +19,7 @@ class ObstacleManager():
         self.motor_module = motor_module
         self.line_follower = line_follower
         self.verbose = verbose
-        self.is_decc = True
+        self.is_decc = False
         self.sonar_buffer = []
         self.max_samples = 5
         # Obstacle avoidance state
