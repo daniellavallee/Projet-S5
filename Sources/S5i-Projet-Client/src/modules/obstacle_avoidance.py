@@ -60,7 +60,7 @@ class ObstacleManager():
                 self.motor_module.set_speed(0)
                 self.motor_module.set_angle(self.motor_module.config.centerAngle)
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.BACKWARD):
-            if self.motor_module.move(self.config.backwardDistance, backward=True, is_decc=self.is_decc):
+            if self.motor_module.move(self.config.backwardDistance, backward=True, is_decc=True):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1):
             if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle1, is_decc=self.is_decc):
