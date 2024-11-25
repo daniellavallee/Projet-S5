@@ -29,7 +29,7 @@ class ObstacleManager():
         """
         corrected_value = RPi_response.sonar * 0.9638523     # 0.9638523 is the correction factor from linear regression
         detected = corrected_value < self.config.obstacleDetectedDistance and corrected_value > -1
-        return detected
+        #return detected
         if len(self.sonar_buffer) < 5:
             return False
         
