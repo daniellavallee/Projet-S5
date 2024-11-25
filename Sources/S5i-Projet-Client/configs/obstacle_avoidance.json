@@ -5,7 +5,7 @@
     "turnAngle3": 90,
     "turnAngle4": 45,
     "straightDistance1": 0.10,
-    "straightDistance2": 0.10,
-    "straightDistance3": 0.05,
+    "straightDistance2": 0.05,
+    "straightDistance3": 0.02,
     "backwardDistance": 0.20
 }
