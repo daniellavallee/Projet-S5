@@ -22,6 +22,7 @@ class CalibLoop(BaseLoop):
                 f.write(title)
     def control(self, rpi_response: RaspberryPiResponse):
         sys.stdout.flush()
+        self.obstacle_manager.is_obstacle_detected(rpi_response)
         print(rpi_response, end='\r')
         self.samples.append([self.time_module.dt,rpi_response.sonar])
         if len(self.samples) > self.max_num_samples:
