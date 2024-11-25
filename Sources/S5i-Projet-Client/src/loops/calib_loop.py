@@ -4,7 +4,7 @@ from .base_loop import BaseLoop
 from src.models import RaspberryPiResponse
 from src.enums import Hosts
 from src.constants import SAMPLES_PATH
-import keyboard
+#import keyboard
 from datetime import timedelta
 
 class CalibLoop(BaseLoop):
@@ -27,6 +27,7 @@ class CalibLoop(BaseLoop):
         if len(self.samples) > self.max_num_samples:
             self.samples.pop(0)
         print(f"Samples: {sum([sample[1] for sample in self.samples])/self.max_num_samples}", end='\r')
+        """
         if keyboard.is_pressed('space'):
             if len(self.samples) < self.max_num_samples:
                 print("Not enough samples")
@@ -41,3 +42,4 @@ class CalibLoop(BaseLoop):
                     f.write(f",{sample[1]}")
                 f.write("\n")
             self.samples = []
+        """
