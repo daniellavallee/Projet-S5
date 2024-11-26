@@ -122,9 +122,7 @@ class LineFollower():
             self.motors_module.set_angle(self.motors_module.config.centerAngle) 
             self.motors_module.set_speed(0) 
             if self.motors_module.is_wheel_centered():
-                self.time_stopped += self.time_module.get_dt_in_seconds()
-                if self.time_stopped > 1:
-                    return RunStates.LINE_FOLLOWING
+                return RunStates.LINE_FOLLOWING
             else:
                 self.time_stopped = 0
         else:
