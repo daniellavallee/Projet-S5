@@ -10,7 +10,7 @@ class ReverseLoop(BaseLoop):
         if self.current_state == RunStates.STARTING:
             self.current_state = RunStates.BACKWARD
         if self.current_state == RunStates.BACKWARD:
-            if self.motors_module.move(0.30, backward=True, is_decc=True):
+            if self.motors_module.move(0.29, backward=True, is_decc=True):
                 self.current_state = RunStates.STOP
         elif self.current_state == RunStates.STOP:
             self.current_state = RunStates.OBSTACLE_AVOIDANCE
