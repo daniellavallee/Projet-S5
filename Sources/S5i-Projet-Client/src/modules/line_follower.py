@@ -123,8 +123,6 @@ class LineFollower():
             self.motors_module.set_speed(0) 
             if self.motors_module.is_wheel_centered():
                 return RunStates.LINE_FOLLOWING
-            else:
-                self.time_stopped = 0
         else:
             self.motors_module.set_angle(self.turning_angle) 
             self.motors_module.set_speed(-self.config.finders_speed)
