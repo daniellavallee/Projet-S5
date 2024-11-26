@@ -2,7 +2,6 @@ from src.models import LineFollowerConfig, RaspberryPiResponse, ControllerRespon
 from src.enums import RunStates
 from .motors import Motors, Time
 import numpy as np
-import time
 class LineFollower():
     lastValue = [0, 0, 0, 0, 0]
     """
@@ -123,8 +122,12 @@ class LineFollower():
             self.motors_module.set_angle(self.motors_module.config.centerAngle) 
             self.motors_module.set_speed(0) 
             if self.motors_module.is_wheel_centered():
-                return RunStates.LINE_FOLLOWING
-        else:   
+                self.time_stopped += self.time_module.get_dt_in_seconds()
+                if self.time_stopped > 1:
+                    return RunStates.LINE_FOLLOWING
+            else:
+                self.time_stopped = 0
+        else:
             self.motors_module.set_angle(self.turning_angle) 
             self.motors_module.set_speed(-self.config.finders_speed)
         
