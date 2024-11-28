@@ -61,7 +61,7 @@ class LineFollower():
         # Angle calculate
         if values == [0, 0, 1, 0, 0]:
             step = 0
-        elif values == [0, 1, 1, 0, 0] or values == [0, 0, 1, 1, 0] or values == [0,0,1,0,0]:
+        elif values == [0, 1, 1, 0, 0] or values == [0, 0, 1, 1, 0] or self.lastValue == [0,0,1,0,0]:
             step = a_step
         elif values == [0, 1, 0, 0, 0] or values == [0, 0, 0, 1, 0]:
             step = b_step
@@ -81,7 +81,7 @@ class LineFollower():
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
-        elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0],[0, 0, 1, 0, 0]):
+        elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]) or self.lastValue == [0, 0, 1, 0, 0]:
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
             self.was_turning = True
             self.missings_line_counter = 0
