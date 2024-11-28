@@ -81,7 +81,7 @@ class LineFollower():
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
-        elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]):
+        elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0],[0, 0, 1, 0, 0]):
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
             self.was_turning = True
             self.missings_line_counter = 0
