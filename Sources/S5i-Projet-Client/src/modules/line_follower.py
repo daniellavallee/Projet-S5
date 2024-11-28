@@ -61,7 +61,7 @@ class LineFollower():
         # Angle calculate
         if values == [0, 0, 1, 0, 0]:
             step = 0
-        elif values == [0, 1, 1, 0, 0] or values == [0, 0, 1, 1, 0]:
+        elif values == [0, 1, 1, 0, 0] or values == [0, 0, 1, 1, 0] or values == [0,0,1,0,0]:
             step = a_step
         elif values == [0, 1, 0, 0, 0] or values == [0, 0, 0, 1, 0]:
             step = b_step
