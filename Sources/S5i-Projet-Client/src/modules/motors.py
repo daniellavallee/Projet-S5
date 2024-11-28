@@ -87,8 +87,7 @@ class Motors():
         """
         Set the speed of the motors (handling acceleration/deceleration)
         """
-        #current_max_acceleration = self.get_available_acceleration()
-        current_max_acceleration = self.config.maxAcceleration
+        current_max_acceleration = self.get_available_acceleration()
         
         if self.speed == wanted_speed:
             return
