@@ -51,7 +51,7 @@ class LineFollower():
         center_index = -(center_index * 2 - 1)
     
         return center_index
-    def turn_right(self, values):
+    def turn_left(self, values):
         return values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0])
     
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
@@ -84,7 +84,7 @@ class LineFollower():
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
-        elif self.turn_right(values) or self.lastValue == [0, 0, 1, 0, 0]:
+        elif self.turn_left(values) or self.lastValue == [0, 0, 1, 0, 0]:
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
             self.was_turning = True
             self.missings_line_distance = 0
@@ -95,7 +95,7 @@ class LineFollower():
             self.missings_line_distance = 0
         elif values == [0, 0, 0, 0, 0]:
             if self.was_turning:
-                if self.turn_right(self.lastValue):
+                if self.turn_left(self.lastValue):
                     side = 1
                 else:
                     side = -1
@@ -121,24 +121,26 @@ class LineFollower():
         values = self.read(rpi_response)
         step = 45 
 
-        if self.lastValue == [0, 0, 0, 1, 0] or self.lastValue == [0, 0, 0, 0, 1]: 
-            self.turning_angle = int(self.motors_module.config.centerAngle - step) 
+        if self.turn_left(self.lastValue): 
+            direction = -1
         else: 
-            self.turning_angle = int(self.motors_module.config.centerAngle + step)
+            direction = 1
+            
+        self.turning_angle = int(self.motors_module.config.centerAngle + direction * step)
         
-        if any(values):
-            angle = self.max_turning_angle
-            if self.turn_right(self.lastValue):
-                side = 1
-            else:
-                side = -1
-            turning_angle = int(self.motors_module.config.centerAngle + side * angle)
-            self.motors_module.set_angle(turning_angle) 
-            self.motors_module.set_speed(0) 
-            if self.motors_module.get_angle() == turning_angle:
-                return RunStates.LINE_FOLLOWING
+        if values == [0, 0, 1, 0, 0]:
+            #angle = self.max_turning_angle
+            #if self.turn_left(self.lastValue):
+            #    side = 1
+            #else:
+            #    side = -1
+            #turning_angle = int(self.motors_module.config.centerAngle + side * angle)
+            #self.motors_module.set_angle(turning_angle) 
+            #self.motors_module.set_speed(0) 
+            #if self.motors_module.get_angle() == turning_angle:
+            return RunStates.LINE_FOLLOWING
         else:
             self.motors_module.set_angle(self.turning_angle) 
-            self.motors_module.set_speed(-self.config.finders_speed)
+            self.motors_module.set_speed(self.config.finders_speed)
         
         return RunStates.FINDING_LINE
