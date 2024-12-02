@@ -41,7 +41,7 @@ class ObstacleManager():
         
         #decc_distance_in_cm = self.motor_module.get_decc_distance() * 100
         
-        return moyenne_buffer <= self.config.obstacleDetectedDistance and corrected_value > -1
+        return moyenne_buffer < self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """
