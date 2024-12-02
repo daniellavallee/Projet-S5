@@ -37,7 +37,7 @@ class ObstacleManager():
         self.sonar_buffer.append(RPi_response.sonar)
         if len(self.sonar_buffer) < 5:
             return False
-        moyenne_buffer = RPi_response.sonar #np.mean(self.sonar_buffer)
+        moyenne_buffer = np.mean(self.sonar_buffer)
         
         decc_distance = self.motor_module.get_decc_distance() * 100
         
