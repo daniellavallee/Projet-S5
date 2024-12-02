@@ -1,5 +1,5 @@
 {
-    "obstacleDetectedDistance" : 20,
+    "obstacleDetectedDistance" : 30,
     "turnAngle1": 90,
     "turnAngle2": 160,
     "turnAngle3": 0,
