@@ -127,7 +127,7 @@ class LineFollower():
             self.turning_angle = int(self.motors_module.config.centerAngle + step)
         
         if any(values):
-            angle = self.max_turning_angle // 2
+            angle = self.max_turning_angle
             if self.turn_right(self.lastValue):
                 side = 1
             else:
