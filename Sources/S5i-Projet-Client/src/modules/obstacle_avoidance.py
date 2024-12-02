@@ -37,7 +37,7 @@ class ObstacleManager():
         self.sonar_buffer.append(RPi_response.sonar)
         if len(self.sonar_buffer) < 5:
             return False
-        moyenne_buffer = np.mean(self.sonar_buffer)
+        moyenne_buffer = self.sonar_buffer #np.mean(self.sonar_buffer)
         
         return moyenne_buffer <= self.config.obstacleDetectedDistance and corrected_value > -1
     
