@@ -39,8 +39,9 @@ class ObstacleManager():
             return False
         moyenne_buffer = RPi_response.sonar #np.mean(self.sonar_buffer)
         
-        print(self.motor_module.get_decc_distance())
-        return moyenne_buffer - self.motor_module.get_decc_distance() <= self.config.obstacleDetectedDistance and corrected_value > -1
+        decc_distance = self.motor_module.get_decc_distance() * 100
+        
+        return moyenne_buffer - decc_distance <= self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """
