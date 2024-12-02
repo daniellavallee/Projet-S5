@@ -3,8 +3,8 @@ from dataclasses import dataclass
 class LineFollowerConfig:
     min_white : int
     max_off_track_count : int
-    cruising_speed : int
     finders_speed : int
+    missing_line_distance: float
 
 @dataclass
 class SonarConfig:

@@ -17,7 +17,7 @@ class LineFollower():
         self.sampleBuffer = []
         self.maxSamples = 20
         self.is_in_straight_line = False
-        self.missings_line_counter = 0
+        self.missings_line_distance = 0
         self.was_turning = True
 
     def read(self, rpi_response:RaspberryPiResponse):
@@ -32,8 +32,8 @@ class LineFollower():
         # Calculate the standard deviation of the sample buffer
         factor_decc = np.std(self.sampleBuffer)
         
-        diff = self.config.cruising_speed - self.config.finders_speed
-        return self.config.cruising_speed - factor_decc * diff
+        diff = self.motors_module.config.maxSpeed - self.config.finders_speed
+        return self.motors_module.config.maxSpeed - factor_decc * diff
     
     def get_current_value(self, values) -> float:
         indexes  = []
@@ -77,24 +77,24 @@ class LineFollower():
         if values == [0, 0, 1, 0, 0]:
             self.turning_angle = self.motors_module.config.centerAngle
             self.was_turning = False
-            self.missings_line_counter = 0
+            self.missings_line_distance = 0
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
         elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]) or self.lastValue == [0, 0, 1, 0, 0]:
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
             self.was_turning = True
-            self.missings_line_counter = 0
+            self.missings_line_distance = 0
         # turn left
         elif values in ([0, 0, 1, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 1], [0, 0, 0, 0, 1]):
             self.was_turning = True
             self.turning_angle = int(self.motors_module.config.centerAngle + step)
-            self.missings_line_counter = 0
+            self.missings_line_distance = 0
         elif values == [0, 0, 0, 0, 0]:
             if self.was_turning:
-                self.missings_line_counter += self.time_module.get_dt_in_seconds()
-                if self.missings_line_counter > 1.5:
-                    self.missings_line_counter = 0
+                self.missings_line_distance += self.time_module.get_dt_in_seconds() * self.motors_module.get_speed(in_meters_per_second=True)
+                if self.missings_line_distance > 0.10:
+                    self.missings_line_distance = 0
                     return RunStates.FINDING_LINE
                 else:
                     return RunStates.LINE_FOLLOWING
