@@ -39,7 +39,7 @@ class ObstacleManager():
             return False
         moyenne_buffer = np.mean(self.sonar_buffer)
         
-        decc_distance_in_cm = self.motor_module.get_decc_distance() * 100
+        decc_distance_in_cm = self.motor_module.get_decc_distance() * 100 + 2
         
         return moyenne_buffer - decc_distance_in_cm <= self.config.obstacleDetectedDistance and corrected_value > -1
     
