@@ -26,14 +26,19 @@ def control_back_wheels(speed:int, angle:int):
         left_speed = speed
         right_speed = -speed
         
-    if (speed>0):
-        bw.left_wheel.backward(left_speed)
-        bw.right_wheel.backward(right_speed)
-    elif (speed<0):
-        bw.left_wheel.forward(left_speed)
-        bw.right_wheel.forward(right_speed)
+    if (left_speed>0):
+        bw.left_wheel.backward(abs(left_speed))
+    elif (left_speed<0):
+        bw.left_wheel.forward(abs(left_speed))
     else:
-        bw.stop()
+        bw.left_wheel.stop()
+    
+    if (right_speed>0):
+        bw.right_wheel.backward(abs(right_speed))
+    elif (right_speed<0):
+        bw.right_wheel.forward(abs(right_speed))
+    else:
+        bw.right_wheel.stop()
     
 def control(controls:ControllerResponse):
     wheel_angle = controls.wheel_angle
