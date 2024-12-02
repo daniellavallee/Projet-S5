@@ -19,6 +19,7 @@ class LineFollower():
         self.is_in_straight_line = False
         self.missings_line_distance = 0
         self.was_turning = True
+        self.max_turning_angle = 45
 
     def read(self, rpi_response:RaspberryPiResponse):
         digital_values = [value < self.config.min_white for value in rpi_response.line_follower]
@@ -59,7 +60,7 @@ class LineFollower():
         a_step = 5
         b_step = 10
         c_step = 17
-        d_step = 45
+        d_step = self.max_turning_angle
         # Angle calculate
         if values == [0, 0, 1, 0, 0]:
             step = 0
@@ -126,9 +127,15 @@ class LineFollower():
             self.turning_angle = int(self.motors_module.config.centerAngle + step)
         
         if any(values):
-            self.motors_module.set_angle(self.motors_module.config.centerAngle) 
+            angle = self.max_turning_angle // 2
+            if self.turn_right(self.lastValue):
+                side = 1
+            else:
+                side = -1
+            turning_angle = int(self.motors_module.config.centerAngle + side * angle)
+            self.motors_module.set_angle(turning_angle) 
             self.motors_module.set_speed(0) 
-            if self.motors_module.is_wheel_centered():
+            if self.motors_module.get_angle() == turning_angle:
                 return RunStates.LINE_FOLLOWING
         else:
             self.motors_module.set_angle(self.turning_angle) 
