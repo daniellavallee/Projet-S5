@@ -123,12 +123,14 @@ class LineFollower():
 
         if self.turn_left(self.lastValue): 
             direction = -1
+            stop = not self.turn_left(values) or values == [0, 0, 1, 0, 0]
         else: 
             direction = 1
+            stop = self.turn_left(values) or values == [0, 0, 1, 0, 0]
             
         self.turning_angle = int(self.motors_module.config.centerAngle + direction * step)
         
-        if values == [0, 0, 1, 0, 0]:
+        if any(values) and stop:
             #angle = self.max_turning_angle
             #if self.turn_left(self.lastValue):
             #    side = 1
