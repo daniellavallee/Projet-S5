@@ -1,6 +1,6 @@
 {
     "min_white" : 200,
     "max_off_track_count":5000,
-    "finders_speed": 60,
+    "finders_speed": 50,
     "missing_line_distance": 0.10
 }
