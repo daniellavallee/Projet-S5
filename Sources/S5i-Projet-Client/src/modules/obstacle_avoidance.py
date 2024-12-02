@@ -29,7 +29,7 @@ class ObstacleManager():
         """
         Description: This method is responsible for checking if an obstacle is detected.
         """
-        corrected_value = RPi_response.sonar + 5#* 0.9638523 - 1.67     # 0.9638523 is the correction factor from linear regression
+        corrected_value = RPi_response.sonar #* 0.9638523 - 1.67     # 0.9638523 is the correction factor from linear regression
         RPi_response.sonar = corrected_value
 
         if len(self.sonar_buffer) >= self.max_samples:
@@ -39,9 +39,9 @@ class ObstacleManager():
             return False
         moyenne_buffer = np.mean(self.sonar_buffer)
         
-        decc_distance = self.motor_module.get_decc_distance() * 100
+        decc_distance_in_cm = self.motor_module.get_decc_distance() * 100
         
-        return moyenne_buffer - decc_distance <= self.config.obstacleDetectedDistance and corrected_value > -1
+        return moyenne_buffer - decc_distance_in_cm <= self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """

@@ -40,7 +40,7 @@ class Motors():
             return get_speed_ratio * self.config.maxSpeedInMeterPerSecond
         return int(self.speed)
     def get_decc_distance(self) -> float:
-        acc_in_meters_per_second = self.config.maxAcceleration / 100 * self.config.maxSpeedInMeterPerSecond
+        acc_in_meters_per_second = self.config.maxAcceleration / 100 * self.config.maxSpeedInMeterPerSecond / 2
         return self.get_speed(in_meters_per_second=True) ** 2 / (2 * acc_in_meters_per_second)
     def get_curvature(self, angle_in_degrees:float) -> float:
         angle = angle_in_degrees - self.config.centerAngle
