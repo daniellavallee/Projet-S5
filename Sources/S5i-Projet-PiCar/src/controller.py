@@ -15,7 +15,7 @@ def control_front_wheels(angle:int):
 def control_back_wheels(speed:int, angle:int):
     bw.speed = abs(speed)
     ratio = 1 - abs((angle - 90) / 45)
-    speed_of_bracked_wheel = int(speed - speed * 0.9 * ratio)
+    speed_of_bracked_wheel = int(speed - speed * 0.96 * ratio)
     if (angle==90 or speed < 0): # Reculer ou droit
         left_speed = speed
         right_speed = speed
