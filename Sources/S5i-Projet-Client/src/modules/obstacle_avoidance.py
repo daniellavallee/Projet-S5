@@ -66,10 +66,10 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_2):
             if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle2, is_decc=self.is_decc):
-                self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1
         
-        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_2):
-            if self.motor_module.move(self.config.straightDistance2, is_decc=self.is_decc):
+        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_1):
+            if self.motor_module.move(self.config.straightDistance1, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_3):
@@ -78,14 +78,10 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
             if self.line_follower.found_line(RPi_response):
-                self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
             else:
                 self.motor_module.set_speed(self.motor_module.config.maxSpeed)
                 self.motor_module.set_angle(self.motor_module.config.centerAngle)
-                
-        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_4):
-            if self.motor_module.turn_to_angle(Direction.RIGHT_DIRECTION, self.config.turnAngle4, is_decc=self.is_decc):
-                self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOP):
             self.obstacle_avoidance_state = ObstacleAvoidanceState.STARTING
