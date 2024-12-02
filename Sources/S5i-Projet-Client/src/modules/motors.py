@@ -36,7 +36,7 @@ class Motors():
             get_speed_ratio = 0
             speed = np.abs(self.speed)
             if speed >= self.config.maxZeroZone:
-                get_speed_ratio = (speed - self.config.maxZeroZone) / (self.config.maxSpeed - self.config.maxZeroZone)
+                get_speed_ratio = (speed - self.config.maxZeroZone) / (100 - self.config.maxZeroZone)
             return get_speed_ratio * self.config.maxSpeedInMeterPerSecond
         return int(self.speed)
     def get_decc_distance(self) -> float:
