@@ -50,6 +50,8 @@ class LineFollower():
         center_index = -(center_index * 2 - 1)
     
         return center_index
+    def turn_right(self, values):
+        return values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0])
     
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
@@ -81,7 +83,7 @@ class LineFollower():
         elif values == [1, 1, 1, 1, 1] and self.is_in_straight_line:
             return RunStates.STOP
         # turn right
-        elif values in ([0, 1, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 0]) or self.lastValue == [0, 0, 1, 0, 0]:
+        elif self.turn_right(values) or self.lastValue == [0, 0, 1, 0, 0]:
             self.turning_angle = int(self.motors_module.config.centerAngle - step)
             self.was_turning = True
             self.missings_line_distance = 0
@@ -92,8 +94,13 @@ class LineFollower():
             self.missings_line_distance = 0
         elif values == [0, 0, 0, 0, 0]:
             if self.was_turning:
+                if self.turn_right(self.lastValue):
+                    side = -1
+                else:
+                    side = 1
+                self.turning_angle = int(self.motors_module.config.centerAngle + side * d_step)
                 self.missings_line_distance += self.time_module.get_dt_in_seconds() * self.motors_module.get_speed(in_meters_per_second=True)
-                if self.missings_line_distance > 0.10:
+                if self.missings_line_distance > 0.05:
                     self.missings_line_distance = 0
                     return RunStates.FINDING_LINE
                 else:
