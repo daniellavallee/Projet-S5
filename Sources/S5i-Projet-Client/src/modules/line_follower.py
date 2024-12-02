@@ -95,9 +95,9 @@ class LineFollower():
         elif values == [0, 0, 0, 0, 0]:
             if self.was_turning:
                 if self.turn_right(self.lastValue):
-                    side = -1
-                else:
                     side = 1
+                else:
+                    side = -1
                 self.turning_angle = int(self.motors_module.config.centerAngle + side * d_step)
                 self.missings_line_distance += self.time_module.get_dt_in_seconds() * self.motors_module.get_speed(in_meters_per_second=True)
                 if self.missings_line_distance > 0.05:
