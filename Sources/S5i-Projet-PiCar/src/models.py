@@ -10,3 +10,4 @@ class RaspberryPiResponse:
 class ControllerResponse:
     wheel_angle:int
     bw_speed:int
+    block_wheel:bool

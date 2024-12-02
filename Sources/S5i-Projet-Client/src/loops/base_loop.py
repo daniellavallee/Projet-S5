@@ -25,7 +25,7 @@ class BaseLoop(ABC):
     def run(self):
         ws = WebSocketClient(self.host, PORT)
         while True:
-            response = ControllerResponse(self.motors_module.get_angle(), self.motors_module.get_speed())
+            response = ControllerResponse(self.motors_module.get_angle(), self.motors_module.get_speed(), self.motors_module.block_wheel)
             message = write_controller_response(response)
             if self.is_verbose:
                 print("Sending '%s'" % response)

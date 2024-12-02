@@ -19,6 +19,7 @@ class Motors():
         self.turn_to_angle_state: TurnState = TurnState.STARTING
         self.longueur_arc = 0.0
         self.rayon_courbure = self.config.rayon_courbure
+        self.block_wheel = False
     def is_in_zero_range(self, speed:float) -> bool:
         return speed < self.config.maxZeroZone and speed > self.config.minZeroZone
     def add_to_current_value(self, current_value:float, wanted_value:int, offset:float) -> float:

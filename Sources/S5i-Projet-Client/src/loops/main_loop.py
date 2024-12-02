@@ -10,10 +10,13 @@ class MainLoop(BaseLoop):
         if self.current_state == RunStates.STARTING:
             self.current_state = RunStates.LINE_FOLLOWING
         elif self.current_state == RunStates.LINE_FOLLOWING:
+            self.motors_module.block_wheel = True
             self.current_state = self.line_follower_module.run_follower(rpi_response)
         elif self.current_state == RunStates.FINDING_LINE:
+            self.motors_module.block_wheel = True
             self.current_state = self.line_follower_module.run_finder(rpi_response)
         elif self.current_state == RunStates.OBSTACLE_AVOIDANCE:
+            self.motors_module.block_wheel = False
             self.current_state = self.obstacle_manager.run(rpi_response)
             
         if self.current_state == RunStates.STOP:

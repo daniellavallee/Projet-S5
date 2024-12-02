@@ -12,11 +12,11 @@ def control_front_wheels(angle:int):
     else:
         fw.turn(angle)
 
-def control_back_wheels(speed:int, angle:int):
+def control_back_wheels(speed:int, angle:int, block_wheel:bool):
     bw.speed = abs(speed)
     ratio = abs((angle - 90) / 45)
     speed_of_bracked_wheel = int(speed - speed * 0.8 * ratio)
-    if (angle==90 or speed < 0): # Reculer ou droit
+    if (angle==90 or speed < 0 or not block_wheel): # Reculer ou droit
         left_speed = speed
         right_speed = speed
     elif (angle<90): # Gauche
@@ -44,4 +44,4 @@ def control(controls:ControllerResponse):
     wheel_angle = controls.wheel_angle
     bw_speed = controls.bw_speed
     control_front_wheels(wheel_angle)
-    control_back_wheels(bw_speed, wheel_angle)
+    control_back_wheels(bw_speed, wheel_angle, controls.block_wheel)
