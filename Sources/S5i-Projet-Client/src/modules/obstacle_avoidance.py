@@ -39,7 +39,7 @@ class ObstacleManager():
             return False
         moyenne_buffer = np.mean(self.sonar_buffer)
         
-        return moyenne_buffer - self.motor_module.get_decc_distance() <= self.config.obstacleDetectedDistance and corrected_value > -1
+        return moyenne_buffer <= self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
         """
