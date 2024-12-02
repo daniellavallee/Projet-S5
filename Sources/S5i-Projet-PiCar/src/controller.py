@@ -20,11 +20,11 @@ def control_back_wheels(speed:int, angle:int):
         left_speed = speed
         right_speed = speed
     elif (angle<90): # Gauche
-        left_speed = speed
-        right_speed = 0
-    else:
-        left_speed = 0
+        left_speed = -speed
         right_speed = speed
+    else:
+        left_speed = speed
+        right_speed = -speed
         
     if (speed>0):
         bw.left_wheel.backward(left_speed)
