@@ -27,16 +27,16 @@ def control_back_wheels(speed:int, angle:int):
         right_speed = speed
         
     if (left_speed>0):
-        bw.left_wheel.backward(abs(left_speed))
-    elif (left_speed<0):
         bw.left_wheel.forward(abs(left_speed))
+    elif (left_speed<0):
+        bw.left_wheel.backward(abs(left_speed))
     else:
         bw.left_wheel.stop()
     
     if (right_speed>0):
-        bw.right_wheel.backward(abs(right_speed))
-    elif (right_speed<0):
         bw.right_wheel.forward(abs(right_speed))
+    elif (right_speed<0):
+        bw.right_wheel.backward(abs(right_speed))
     else:
         bw.right_wheel.stop()
     
