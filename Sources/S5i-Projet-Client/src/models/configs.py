@@ -29,6 +29,5 @@ class ObstacleAvoidanceConfig:
     obstacleDetectedDistance : int
     turnAngle1 : int
     turnAngle2 : int
-    turnAngle3 : int
     straightDistance1 : int
     backwardDistance : int
