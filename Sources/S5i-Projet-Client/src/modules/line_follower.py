@@ -101,7 +101,7 @@ class LineFollower():
                     side = -1
                 self.turning_angle = int(self.motors_module.config.centerAngle + side * d_step)
                 self.missings_line_distance += self.time_module.get_dt_in_seconds() * self.motors_module.get_speed(in_meters_per_second=True)
-                if self.missings_line_distance > 0.25:
+                if self.missings_line_distance > 0.10:
                     self.missings_line_distance = 0
                     return RunStates.FINDING_LINE
                 else:
