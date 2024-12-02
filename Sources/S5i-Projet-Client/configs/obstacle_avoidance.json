@@ -1,7 +1,7 @@
 {
     "obstacleDetectedDistance" : 19,
     "turnAngle1": 2,
-    "turnAngle2": 50,
+    "turnAngle2": 30,
     "turnAngle3": 0,
     "turnAngle4": 0,
     "straightDistance1": 0.05,
