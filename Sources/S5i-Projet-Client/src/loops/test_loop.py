@@ -14,7 +14,7 @@ class TestLoop(BaseLoop):
         if keyboard.is_pressed('up'):
             self.motors_module.set_speed(self.motors_cfg.maxSpeed)
         elif keyboard.is_pressed('down'):
-            self.motors_module.set_speed(self.motors_cfg.minSpeed)
+            self.motors_module.set_speed(-self.motors_cfg.maxSpeed)
         else:
             self.motors_module.set_speed(0)
         

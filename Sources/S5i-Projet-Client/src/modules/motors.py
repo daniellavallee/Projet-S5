@@ -93,8 +93,8 @@ class Motors():
             return
         
         #Clip the speed to the borders speed
-        if wanted_speed < self.config.minSpeed:
-            wanted_speed = self.config.minSpeed
+        if wanted_speed < -self.config.maxSpeed:
+            wanted_speed = -self.config.maxSpeed
         if wanted_speed > self.config.maxSpeed:
             wanted_speed = self.config.maxSpeed
         
