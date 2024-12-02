@@ -57,9 +57,9 @@ class LineFollower():
     def run_follower(self, rpi_response: RaspberryPiResponse) -> RunStates:
         values = self.read(rpi_response)
         
-        a_step = self.max_turning_angle#5
-        b_step = self.max_turning_angle#10
-        c_step = self.max_turning_angle#17
+        a_step = 5
+        b_step = 10
+        c_step = 17
         d_step = self.max_turning_angle
         # Angle calculate
         if values == [0, 0, 1, 0, 0]:
