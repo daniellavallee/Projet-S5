@@ -7,7 +7,7 @@
     "maxSpeedInMeterPerSecond": 0.1375,
     "maxZeroZone": 20,
     "rayon_courbure": 0.12,
-    "minZeroZone": -20,
+    "minZeroZone": -10,
     "wheelDistance": 0.14,
     "centerAngle": 90
 }
