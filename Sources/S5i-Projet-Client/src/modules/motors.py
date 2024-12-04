@@ -182,7 +182,7 @@ class Motors():
             angle:        (int) Angle en degré.
         Return: void.
         """
-        
+        print(self.turn_to_angle_state)
         self.longueur_arc = np.deg2rad(angle) * self.get_curvature(self.get_angle())
         # État initial
         if self.turn_to_angle_state == TurnState.STARTING:
