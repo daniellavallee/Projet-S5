@@ -1,5 +1,5 @@
 {
-    "maxSpeed": 60,
+    "maxSpeed": 57,
     "maxAcceleration": 35,
     "maxAngularAcc": 140,
     "maxLeftAngle" : 45,
