@@ -57,11 +57,13 @@ class ObstacleManager():
             else:
                 self.motor_module.set_speed(0)
                 self.motor_module.set_angle(self.motor_module.config.centerAngle)
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.STOPPING
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.SLEEPING):
             self.sleep_time += self.motor_module.time_module.get_dt_in_seconds()
             if self.sleep_time >= 2: # 2 seconds
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.BACKWARD
+                self.sleep_time = 0
                 
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.BACKWARD):
             if self.motor_module.move(self.config.backwardDistance, backward=True, is_decc=True):
