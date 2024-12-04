@@ -3,6 +3,7 @@ from src.modules import Motors, LineFollower
 from src.models import RaspberryPiResponse, ObstacleAvoidanceConfig
 from src.enums import ObstacleAvoidanceState, Direction
 import numpy as np
+from time import sleep
 #from scipy import stats
 
 
@@ -53,6 +54,7 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOPPING):
             if self.motor_module.get_speed() == 0:
+                sleep(2)
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.BACKWARD
             else:
                 self.motor_module.set_speed(0)
