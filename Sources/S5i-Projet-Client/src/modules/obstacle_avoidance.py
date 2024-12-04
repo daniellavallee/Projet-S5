@@ -80,7 +80,7 @@ class ObstacleManager():
             if self.motor_module.turn_to_angle(Direction.LEFT_DIRECTION, self.config.turnAngle2, is_decc=self.is_decc):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3
             if self.line_follower.found_line(RPi_response):
-                self.motor_module.turn_to_angle_state = TurnState.STOP
+                self.motor_module.turn_to_angle_state = TurnState.STARTING
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.STOP
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.AVOIDING_OBSTACLE_STRAIGHT_3):
