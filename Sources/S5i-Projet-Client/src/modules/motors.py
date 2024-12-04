@@ -138,11 +138,14 @@ class Motors():
             self.distance_parcourue = 0.0
             self.distance_acceleration = 0.0
 
-        new_speed = m*self.config.maxSpeed
+        if backward:
+            new_speed = -50
+        else:
+            new_speed = m*self.config.maxSpeed
         # État d'accélération
         if self.move_forward_state == MoveForwardState.MOVING_ACC:
             self.distance_acceleration += new_distance
-            if self.get_speed() == m*self.config.maxSpeed:
+            if self.get_speed() == new_speed:
                 self.move_forward_state = MoveForwardState.MOVING_FORWARD
             elif is_decc and self.distance_acceleration * 2 >= distance:
                 self.move_forward_state = MoveForwardState.MOVING_DECC
