@@ -40,8 +40,6 @@ class ObstacleManager():
             return False
         moyenne_buffer = np.mean(self.sonar_buffer)
         
-        #decc_distance_in_cm = self.motor_module.get_decc_distance() * 100
-        #print(moyenne_buffer)
         return moyenne_buffer < self.config.obstacleDetectedDistance and corrected_value > -1
     
     def run(self, RPi_response:RaspberryPiResponse)->RunStates:
@@ -54,11 +52,17 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.STOPPING):
             if self.motor_module.get_speed() == 0:
-                sleep(2)
-                self.obstacle_avoidance_state = ObstacleAvoidanceState.BACKWARD
+                self.sleep_time = 0
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.SLEEPING
             else:
                 self.motor_module.set_speed(0)
                 self.motor_module.set_angle(self.motor_module.config.centerAngle)
+        
+        elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.SLEEPING):
+            self.sleep_time += self.motor_module.time_module.get_dt_in_seconds()
+            if self.sleep_time >= 2: # 2 seconds
+                self.obstacle_avoidance_state = ObstacleAvoidanceState.BACKWARD
+                
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.BACKWARD):
             if self.motor_module.move(self.config.backwardDistance, backward=True, is_decc=True):
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.AVOIDING_OBSTACLE_TURN_1
