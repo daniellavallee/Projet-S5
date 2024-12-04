@@ -46,6 +46,7 @@ class ObstacleManager():
         """
         Description: This method is responsible for running the obstacle avoidance algorithm.
         """
+        print(self.obstacle_avoidance_state)
         if (self.obstacle_avoidance_state == ObstacleAvoidanceState.STARTING):
             self.obstacle_avoidance_state = ObstacleAvoidanceState.STOPPING
         

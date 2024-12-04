@@ -126,6 +126,7 @@ class Motors():
         Return:           bool when finished.
         """
         new_distance = self.get_speed(in_meters_per_second=True) * self.time_module.get_dt_in_seconds()
+        print(self.move_forward_state)
         self.distance_parcourue += new_distance
         if backward:
             m = -1
