@@ -131,8 +131,7 @@ class Motors():
             m = -1
         else:
             m = 1
-        #print(self.move_forward_state)
-        # État initiale
+
         if self.move_forward_state == MoveForwardState.STARTING:
             self.move_forward_state = MoveForwardState.MOVING_ACC
             self.distance_parcourue = 0.0
