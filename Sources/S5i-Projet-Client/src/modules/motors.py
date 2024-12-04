@@ -215,7 +215,7 @@ class Motors():
                 self.set_angle(self.config.centerAngle)
 
         # État d'arrêt
-        elif self.turn_to_angle_state == TurnState.STOP:
+        if self.turn_to_angle_state == TurnState.STOP:
             self.turn_to_angle_state = TurnState.STARTING
             return True
         
