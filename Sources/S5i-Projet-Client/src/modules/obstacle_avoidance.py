@@ -60,7 +60,7 @@ class ObstacleManager():
         
         elif (self.obstacle_avoidance_state == ObstacleAvoidanceState.SLEEPING):
             self.sleep_time += self.motor_module.time_module.get_dt_in_seconds()
-            if self.sleep_time >= 2: # 2 seconds
+            if self.sleep_time >= 1.5: # 2 seconds
                 self.obstacle_avoidance_state = ObstacleAvoidanceState.BACKWARD
                 self.sleep_time = 0
                 
