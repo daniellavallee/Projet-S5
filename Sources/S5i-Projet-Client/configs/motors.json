@@ -1,7 +1,7 @@
 {
     "maxSpeed": 80,
     "maxAcceleration": 35,
-    "maxAngularAcc": 140,
+    "maxAngularAcc": 120,
     "maxLeftAngle" : 45,
     "maxRightAngle" : 135,
     "maxSpeedInMeterPerSecond": 0.1375,
